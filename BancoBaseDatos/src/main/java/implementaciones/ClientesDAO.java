@@ -27,8 +27,8 @@ public class ClientesDAO implements IClientesDAO {
     public Cliente insertar(Cliente cliente) throws PersistenciaException {
         String codigoSQL = "Insert into clientes"
                 + "(nombre,apellido_paterno,apellido_materno,fecha_nacimiento,"
-                + "correoElectronico,contraseña,codigo_direccion) values"
-                + " (?,?,?,?,?,?,?)";
+                + "edad,correoElectronico,contraseña,codigo_direccion) values"
+                + " (?,?,?,?,?,?,?,?)";
 
         try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
                 PreparedStatement comando = conexion.prepareStatement(
@@ -38,9 +38,10 @@ public class ClientesDAO implements IClientesDAO {
             comando.setString(2, cliente.getApellidoPaterno());
             comando.setString(3, cliente.getApellidoMaterno());
             comando.setDate(4, cliente.getFechaNacimiento());
-            comando.setString(5, cliente.getCorreoElectronico());
-            comando.setString(6, cliente.getContrasena());
-            comando.setInt(7, cliente.getIdDireccion());
+            comando.setInt(5, cliente.getEdad());
+            comando.setString(6, cliente.getCorreoElectronico());
+            comando.setString(7, cliente.getContrasena());
+            comando.setInt(8, cliente.getIdDireccion());
             comando.executeUpdate();
             ResultSet llavesGeneradas = comando.getGeneratedKeys();
             if (llavesGeneradas.next()) {
