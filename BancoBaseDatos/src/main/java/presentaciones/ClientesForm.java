@@ -13,7 +13,7 @@ import interfaces.IClientesDAO;
 import interfaces.IDireccionesDAO;
 import java.sql.Date;
 import java.time.LocalDate;
-
+import validaciones.Validadores;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
@@ -26,6 +26,8 @@ public class ClientesForm extends javax.swing.JFrame {
     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
+    private final Validadores validadores = new Validadores();
+    
     /**
      * Creates new form ClientesForm
      */
@@ -201,42 +203,117 @@ public class ClientesForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private Direccion extrarDatosFormDireccion(){
+    private Direccion extraerDatosFormDireccion(){
         String calle = this.txtCalle.getText();
         String colonia  = this.txtColonia.getText();
         String numeroCasa = this.txtNumeroCasa.getText();
-        Direccion direccion = new Direccion(calle,colonia,numeroCasa);
-        return direccion;
+        if (validarCalle(calle) && validarColonia(colonia) && validarNumCasa(numeroCasa)) {
+            Direccion direccion = new Direccion(calle, colonia, numeroCasa);
+            return direccion;
+        }
+        return null;
     }
-    private Cliente extrarDatosFormCliente(){
+    
+    private boolean validarNombre(String nombre) {
+        if (!validadores.validaNombre(nombre)) {
+            JOptionPane.showMessageDialog(this, "El nombre no es válido.");
+        }
+        return validadores.validaNombre(nombre);
+    }
+
+    private boolean validarApellidoP(String apellidoP) {
+        if (!validadores.validaApellido(apellidoP)) {
+            JOptionPane.showMessageDialog(this, "El apellido paterno no es válido.");
+        }
+        return validadores.validaApellido(apellidoP);
+    }
+
+    private boolean validarApellidoM(String apellidoM) {
+        if (!validadores.validaApellido(apellidoM)) {
+            JOptionPane.showMessageDialog(this, "El apellido materno no es válido.");
+        }
+        return validadores.validaApellido(apellidoM);
+    }
+
+    private boolean validarCorreo(String correo) {
+        if (!validadores.validaCorreo(correo)) {
+            JOptionPane.showMessageDialog(this, "El correo no es válido.");
+        }
+        return validadores.validaCorreo(correo);
+    }
+
+    private boolean validarContrasena(String contrasena) {
+        if (!validadores.validaContrasena(contrasena)) {
+            JOptionPane.showMessageDialog(this, "La contraseña no es válida.");
+        }
+        return validadores.validaContrasena(contrasena);
+    }
+
+    private int validarEdad(Date fechaNacimiento) {
+        if (validadores.validaEdad(fechaNacimiento) < 15) {
+            JOptionPane.showMessageDialog(this, "La edad no es válida.");
+        }
+        return validadores.validaEdad(fechaNacimiento);
+    }
+
+    private boolean validarCalle(String calle) {
+        if (!validadores.validaCalle(calle)) {
+            JOptionPane.showMessageDialog(this, "La calle no es válida.");
+        }
+        return validadores.validaCalle(calle);
+    }
+
+    private boolean validarColonia(String colonia) {
+        if (!validadores.validaColonia(colonia)) {
+            JOptionPane.showMessageDialog(this, "La colonia no es válida.");
+        }
+        return validadores.validaColonia(colonia);
+    }
+
+    private boolean validarNumCasa(String numCasa) {
+        if (!validadores.validaNumCasa(numCasa)) {
+            JOptionPane.showMessageDialog(this, "El número de casa no es válido.");
+        }
+        return validadores.validaNumCasa(numCasa);
+    }
+    
+    private Cliente extraerDatosFormCliente() {
         String nombre = this.txtNombre.getText();
         String apellidoPaterno = this.txtApellidoPaterno.getText();
         String apellidoMaterno = this.txtApellidoMaterno.getText();
         LocalDate seleccion = clpFechaNacimiento.getSelectedDate();
-        Date fechaNacimiento = new Date(seleccion.getYear()-1900,seleccion.getMonthValue()-1,seleccion.getDayOfMonth());
+        Date fechaNacimiento = new Date(seleccion.getYear() - 1900, seleccion.getMonthValue() - 1, seleccion.getDayOfMonth());
+        Integer edad = validarEdad(fechaNacimiento);
         Integer idDireccion = this.guardarDireccion().getId();
         String correoElectronico = this.txtCorreoElectonico.getText();
         String contrasena = this.txtContraseña.getText();
-        Cliente cliente = new Cliente(nombre,apellidoPaterno,apellidoMaterno,
-        fechaNacimiento,correoElectronico,contrasena,idDireccion);
-        return cliente;
+        if (validarNombre(nombre) && edad >= 15 && validarApellidoP(apellidoPaterno) && validarApellidoM(apellidoMaterno) && validarCorreo(correoElectronico) && validarContrasena(contrasena)) {
+            Cliente cliente = new Cliente(nombre, apellidoPaterno, apellidoMaterno,
+                    fechaNacimiento, edad, correoElectronico, contrasena, idDireccion);
+            return cliente;
+        }
+        return null;
     }
+    
      public void mostrarMensajeErrorAlGuardarDireccion() {
         JOptionPane.showMessageDialog(this, "NO fue posible agregar la dirrecion",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
+    
      public void mostrarMensajeErrorAlGuardarCliente() {
         JOptionPane.showMessageDialog(this, "NO fue posible agregar el cliente",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
+    
      public void mostrarMensajeClienteGuardado() {
         JOptionPane.showMessageDialog(this, "Se agrego el cliente: ",
                 "Informacion",
                 JOptionPane.INFORMATION_MESSAGE);
     }
+    
     private Direccion guardarDireccion(){
         try{
-            Direccion direccion = this.extrarDatosFormDireccion();
+            Direccion direccion = this.extraerDatosFormDireccion();
             Direccion direccionGuardada = this.direccionesDAO.insertar(direccion);
             return direccionGuardada;
         }catch(PersistenciaException ex){
@@ -244,9 +321,10 @@ public class ClientesForm extends javax.swing.JFrame {
             return null;
         }
     }
+    
     private void guardarCliente(){
         try{
-            Cliente cliente = this.extrarDatosFormCliente();
+            Cliente cliente = this.extraerDatosFormCliente();
             Cliente clienteGuardado = this.clientesDAO.insertar(cliente);
             mostrarMensajeClienteGuardado();
         }catch(PersistenciaException ex){
@@ -260,7 +338,7 @@ public class ClientesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        
+        dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
 
