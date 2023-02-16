@@ -11,6 +11,7 @@ public class Cliente {
     private String apellidoPaterno;
     private String apellidoMaterno;
     private Date fechaNacimiento;
+    private Integer edad;
     private String correoElectronico;
     private String contrasena;
     private Integer idDireccion;
@@ -19,23 +20,24 @@ public class Cliente {
 
     }
 
-    public Cliente(String nombre, String apellidoPaterno, String apellidoMaterno, Date fechaNacimiento, String correoElectronico, String contrasena, Integer idDireccion) {
+    public Cliente(String nombre, String apellidoPaterno, String apellidoMaterno, Date fechaNacimiento, Integer edad, String correoElectronico, String contrasena, Integer idDireccion) {
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
         this.apellidoMaterno = apellidoMaterno;
         this.fechaNacimiento = fechaNacimiento;
+        this.edad = edad;
         this.correoElectronico = correoElectronico;
         this.contrasena = contrasena;
         this.idDireccion = idDireccion;
     }
 
-    
-    public Cliente(Integer id, String nombre, String apellidoPaterno, String apellidoMaterno, Date fechaNacimiento, String correoElectronico, String contrasena, Integer idDireccion) {
+    public Cliente(Integer id, String nombre, String apellidoPaterno, String apellidoMaterno, Date fechaNacimiento, Integer edad, String correoElectronico, String contrasena, Integer idDireccion) {
         this.id = id;
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
         this.apellidoMaterno = apellidoMaterno;
         this.fechaNacimiento = fechaNacimiento;
+        this.edad = edad;
         this.correoElectronico = correoElectronico;
         this.contrasena = contrasena;
         this.idDireccion = idDireccion;
@@ -79,6 +81,14 @@ public class Cliente {
 
     public void setFechaNacimiento(Date fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+    
+    public Integer getEdad() {
+        return edad;
+    }
+
+    public void setEdad(Integer edad) {
+        this.edad = edad;
     }
 
     public String getCorreoElectronico() {
