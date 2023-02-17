@@ -28,7 +28,7 @@ public class ClientesDAO implements IClientesDAO {
         String codigoSQL = "Insert into clientes"
                 + "(nombre,apellido_paterno,apellido_materno,fecha_nacimiento,"
                 + "edad,correoElectronico,contraseña,codigo_direccion) values"
-                + " (?,?,?,?,?,?,?,?)";
+                + " (?,?,?,?,?,?,aes_encrypt(?,\"hunter2\"),?)";
 
         try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
                 PreparedStatement comando = conexion.prepareStatement(

@@ -1,4 +1,3 @@
-presentaciones\InicioForm$1.class
 dominio\Direccion.class
 presentaciones\ClientesForm.class
 presentaciones\ClientesForm$2.class
@@ -7,18 +6,14 @@ implementaciones\ConexionBD.class
 main\Main.class
 implementaciones\DireccionesDAO.class
 interfaces\IDireccionesDAO.class
-presentaciones\AdministracionCuentaForm$1.class
-presentaciones\InicioForm$1$1.class
 dominio\Cliente.class
 presentaciones\MovimientosForm.class
 implementaciones\ClientesDAO.class
-presentaciones\MovimientosForm$1.class
+validaciones\Validadores.class
 presentaciones\RetiroForm.class
 interfaces\IConexionBD.class
 presentaciones\InicioForm.class
-presentaciones\TransferenciasForm$1.class
 presentaciones\TransferenciasForm.class
 interfaces\IClientesDAO.class
-presentaciones\RetiroForm$1.class
 presentaciones\ClientesForm$1.class
 presentaciones\AdministracionCuentaForm.class

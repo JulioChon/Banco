@@ -15,7 +15,7 @@ apellido_materno varchar(20) not null,
 fecha_nacimiento date not null,
 edad int ,
 correoElectronico varchar(50) not null unique,
-contraseña varchar(16) not null,
+contraseña blob(16) not null,
 codigo_direccion int not null,
 foreign key (codigo_direccion) references direcciones(id)
 );

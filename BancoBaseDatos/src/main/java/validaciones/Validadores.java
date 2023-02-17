@@ -74,7 +74,7 @@ public class Validadores {
     }
 
     public boolean validaColonia(String s) {
-        String patron = "^(?:(?:[A-Za-zÁ-Úá-ú]+\\s?)+|(?:[A-Za-zÁ-Úá-ú]+\\s\\d+)) {1,20}$";
+        String patron = "^[A-Za-z0-9]{1,20}\\s*[,.]?\\s*[0-9]*\\s*(?:(?:[A-Za-z]+(?:\\s|[-']\\s)?)+|(?:[A-Za-z]+\\.?(?:\\s|[-']\\s)?)+|(?:[A-Za-z]+-?[A-Za-z]*(?:\\s|[-']\\s)?)+)$";
 
         Pattern p = Pattern.compile(patron);
 
