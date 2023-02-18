@@ -5,17 +5,24 @@
  */
 package presentaciones;
 
+import interfaces.IClientesDAO;
+import interfaces.IDireccionesDAO;
+
 /**
  *
  * @author julio
  */
 public class InicioForm extends javax.swing.JDialog {
 
+    private final IClientesDAO clientesDAO;
+    private final IDireccionesDAO direccionesDAO;
+    
     /**
      * Creates new form InicioForm
      */
-    public InicioForm(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public InicioForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO) {
+        this.clientesDAO = clientesDAO;
+        this.direccionesDAO = direccionesDAO;
         initComponents();
     }
 
@@ -29,20 +36,36 @@ public class InicioForm extends javax.swing.JDialog {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnLogin = new javax.swing.JButton();
+        btnRetiro = new javax.swing.JButton();
+        btnCrearUsuario = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
         jLabel1.setText("¿Qué quieres hacer?");
 
-        jButton1.setText("Iniciar Sesion");
+        btnLogin.setText("Iniciar Sesion");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Retiro Sin Tarjeta");
+        btnRetiro.setText("Retiro Sin Tarjeta");
+        btnRetiro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRetiroActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Crear Usuario");
+        btnCrearUsuario.setText("Crear Usuario");
+        btnCrearUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearUsuarioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -56,9 +79,9 @@ public class InicioForm extends javax.swing.JDialog {
                         .addGap(39, 39, 39))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnCrearUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRetiro, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                            .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(231, 231, 231))))
         );
         layout.setVerticalGroup(
@@ -67,23 +90,39 @@ public class InicioForm extends javax.swing.JDialog {
                 .addGap(30, 30, 30)
                 .addComponent(jLabel1)
                 .addGap(23, 23, 23)
-                .addComponent(jButton1)
+                .addComponent(btnLogin)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
+                .addComponent(btnRetiro)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton3)
+                .addComponent(btnCrearUsuario)
                 .addContainerGap(88, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        new LoginForm(clientesDAO,direccionesDAO).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void btnCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearUsuarioActionPerformed
+        new ClientesForm(clientesDAO,direccionesDAO).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnCrearUsuarioActionPerformed
+
+    private void btnRetiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetiroActionPerformed
+        new RetiroForm(clientesDAO,direccionesDAO).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnRetiroActionPerformed
 
  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnCrearUsuario;
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JButton btnRetiro;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

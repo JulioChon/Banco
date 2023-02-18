@@ -5,16 +5,21 @@
  */
 package presentaciones;
 
+import interfaces.IClientesDAO;
+
 /**
  *
  * @author julio
  */
 public class MovimientosForm extends javax.swing.JFrame {
 
+    private final IClientesDAO clientesDAO;
+    
     /**
      * Creates new form MovimientosForm
      */
-    public MovimientosForm() {
+    public MovimientosForm(IClientesDAO clientesDAO) {
+        this.clientesDAO = clientesDAO;
         initComponents();
     }
 

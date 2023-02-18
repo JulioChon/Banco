@@ -5,16 +5,21 @@
  */
 package presentaciones;
 
+import interfaces.IClientesDAO;
+
 /**
  *
  * @author julio
  */
 public class TransferenciasForm extends javax.swing.JFrame {
 
+    private final IClientesDAO clientesDAO;
+    
     /**
      * Creates new form TransferenciasForm
      */
-    public TransferenciasForm() {
+    public TransferenciasForm(IClientesDAO clientesDAO) {
+        this.clientesDAO = clientesDAO;
         initComponents();
     }
 

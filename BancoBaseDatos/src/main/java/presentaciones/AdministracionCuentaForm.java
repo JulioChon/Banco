@@ -5,16 +5,24 @@
  */
 package presentaciones;
 
+import interfaces.IClientesDAO;
+import interfaces.IDireccionesDAO;
+
 /**
  *
  * @author julio
  */
 public class AdministracionCuentaForm extends javax.swing.JFrame {
 
+    private final IClientesDAO clientesDAO;
+    private final IDireccionesDAO direccionesDAO;
+    
     /**
      * Creates new form AdministracionCuentaForm
      */
-    public AdministracionCuentaForm() {
+    public AdministracionCuentaForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO) {
+        this.clientesDAO = clientesDAO;
+        this.direccionesDAO = direccionesDAO;
         initComponents();
     }
 
@@ -29,13 +37,13 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
 
         jMenu1 = new javax.swing.JMenu();
         jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnMovimientos = new javax.swing.JButton();
+        btnTransferencia = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
@@ -48,17 +56,27 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         jToolBar1.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jToolBar1.setRollover(true);
 
-        jButton1.setText("Movimientos ");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton1);
+        btnMovimientos.setText("Movimientos ");
+        btnMovimientos.setFocusable(false);
+        btnMovimientos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnMovimientos.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnMovimientos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMovimientosActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnMovimientos);
 
-        jButton2.setText("Transferencia");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton2);
+        btnTransferencia.setText("Transferencia");
+        btnTransferencia.setFocusable(false);
+        btnTransferencia.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnTransferencia.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnTransferencia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTransferenciaActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnTransferencia);
 
         jButton3.setText("Retiro sin Cuenta");
         jButton3.setFocusable(false);
@@ -84,11 +102,16 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(jButton7);
 
-        jButton5.setText("Salir");
-        jButton5.setFocusable(false);
-        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton5);
+        btnSalir.setText("Salir");
+        btnSalir.setFocusable(false);
+        btnSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnSalir);
 
         jLabel1.setText("Cuenta");
 
@@ -130,13 +153,26 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovimientosActionPerformed
+        new MovimientosForm(clientesDAO).setVisible(true);
+    }//GEN-LAST:event_btnMovimientosActionPerformed
+
+    private void btnTransferenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferenciaActionPerformed
+        new TransferenciasForm(clientesDAO).setVisible(true);
+    }//GEN-LAST:event_btnTransferenciaActionPerformed
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnSalirActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnMovimientos;
+    private javax.swing.JButton btnSalir;
+    private javax.swing.JButton btnTransferencia;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JComboBox<String> jComboBox1;

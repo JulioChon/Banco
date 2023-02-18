@@ -5,16 +5,24 @@
  */
 package presentaciones;
 
+import interfaces.IClientesDAO;
+import interfaces.IDireccionesDAO;
+
 /**
  *
  * @author julio
  */
 public class RetiroForm extends javax.swing.JFrame {
 
+    private final IClientesDAO clientesDAO;
+    private final IDireccionesDAO direccionesDAO;
+    
     /**
      * Creates new form RetiroForm
      */
-    public RetiroForm() {
+    public RetiroForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO) {
+        this.clientesDAO = clientesDAO;
+        this.direccionesDAO = direccionesDAO;
         initComponents();
     }
 
@@ -32,7 +40,7 @@ public class RetiroForm extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
 
@@ -44,7 +52,12 @@ public class RetiroForm extends javax.swing.JFrame {
 
         jButton1.setText("Aceptar");
 
-        jButton2.setText("Cancelar");
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Monto");
 
@@ -69,7 +82,7 @@ public class RetiroForm extends javax.swing.JFrame {
                         .addGap(104, 104, 104)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2)))
+                        .addComponent(btnCancelar)))
                 .addContainerGap(124, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -90,18 +103,23 @@ public class RetiroForm extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnCancelar))
                 .addContainerGap(144, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

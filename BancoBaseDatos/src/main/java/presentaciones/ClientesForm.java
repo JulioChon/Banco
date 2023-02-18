@@ -69,6 +69,7 @@ public class ClientesForm extends javax.swing.JFrame {
         clpFechaNacimiento = new com.github.lgooddatepicker.components.CalendarPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setText("Nombre");
 
@@ -96,8 +97,8 @@ public class ClientesForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel8.setText("Información Personal");
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
 
         jLabel9.setText("Correo Electronico");
 
@@ -216,63 +217,63 @@ public class ClientesForm extends javax.swing.JFrame {
     
     private boolean validarNombre(String nombre) {
         if (!validadores.validaNombre(nombre)) {
-            JOptionPane.showMessageDialog(this, "El nombre no es válido.");
+            JOptionPane.showMessageDialog(this, "El nombre no es válido\nSin acentos.");
         }
         return validadores.validaNombre(nombre);
     }
 
     private boolean validarApellidoP(String apellidoP) {
         if (!validadores.validaApellido(apellidoP)) {
-            JOptionPane.showMessageDialog(this, "El apellido paterno no es válido.");
+            JOptionPane.showMessageDialog(this, "El apellido paterno no es válido\nSin acentos.");
         }
         return validadores.validaApellido(apellidoP);
     }
 
     private boolean validarApellidoM(String apellidoM) {
         if (!validadores.validaApellido(apellidoM)) {
-            JOptionPane.showMessageDialog(this, "El apellido materno no es válido.");
+            JOptionPane.showMessageDialog(this, "El apellido materno no es válido\nSin acentos.");
         }
         return validadores.validaApellido(apellidoM);
     }
 
     private boolean validarCorreo(String correo) {
         if (!validadores.validaCorreo(correo)) {
-            JOptionPane.showMessageDialog(this, "El correo no es válido.");
+            JOptionPane.showMessageDialog(this, "El correo no es válido\nPuede usar (.'-_), use el formato Este@ejemplo");
         }
         return validadores.validaCorreo(correo);
     }
 
     private boolean validarContrasena(String contrasena) {
         if (!validadores.validaContrasena(contrasena)) {
-            JOptionPane.showMessageDialog(this, "La contraseña no es válida.");
+            JOptionPane.showMessageDialog(this, "La contraseña no es válida\nUse una minúscula, una mayúscula, un número y un cáracter especial (8-16)");
         }
         return validadores.validaContrasena(contrasena);
     }
 
     private int validarEdad(Date fechaNacimiento) {
         if (validadores.validaEdad(fechaNacimiento) < 15) {
-            JOptionPane.showMessageDialog(this, "La edad no es válida.");
+            JOptionPane.showMessageDialog(this, "La edad no es válida\nLa edad para crear una cuenta son 15 años en adelante");
         }
         return validadores.validaEdad(fechaNacimiento);
     }
 
     private boolean validarCalle(String calle) {
         if (!validadores.validaCalle(calle)) {
-            JOptionPane.showMessageDialog(this, "La calle no es válida.");
+            JOptionPane.showMessageDialog(this, "La calle no es válida\nSin acentos");
         }
         return validadores.validaCalle(calle);
     }
 
     private boolean validarColonia(String colonia) {
         if (!validadores.validaColonia(colonia)) {
-            JOptionPane.showMessageDialog(this, "La colonia no es válida.");
+            JOptionPane.showMessageDialog(this, "La colonia no es válida\nSin acentos");
         }
         return validadores.validaColonia(colonia);
     }
 
     private boolean validarNumCasa(String numCasa) {
         if (!validadores.validaNumCasa(numCasa)) {
-            JOptionPane.showMessageDialog(this, "El número de casa no es válido.");
+            JOptionPane.showMessageDialog(this, "El número de casa no es válido\n1-5 cáracteres");
         }
         return validadores.validaNumCasa(numCasa);
     }
@@ -284,11 +285,11 @@ public class ClientesForm extends javax.swing.JFrame {
         LocalDate seleccion = clpFechaNacimiento.getSelectedDate();
         Date fechaNacimiento = new Date(seleccion.getYear() - 1900, seleccion.getMonthValue() - 1, seleccion.getDayOfMonth());
         Integer edad = validarEdad(fechaNacimiento);
-        Integer idDireccion = this.guardarDireccion().getId();
         String correoElectronico = this.txtCorreoElectonico.getText();
         String contrasena = this.txtContraseña.getText();
         if (validarNombre(nombre) && edad >= 15 && validarApellidoP(apellidoPaterno) && validarApellidoM(apellidoMaterno) && validarCorreo(correoElectronico) && validarContrasena(contrasena)) {
-            Cliente cliente = new Cliente(nombre, apellidoPaterno, apellidoMaterno,
+        Integer idDireccion = this.guardarDireccion().getId();
+        Cliente cliente = new Cliente(nombre, apellidoPaterno, apellidoMaterno,
                     fechaNacimiento, edad, correoElectronico, contrasena, idDireccion);
             return cliente;
         }
@@ -327,8 +328,9 @@ public class ClientesForm extends javax.swing.JFrame {
             Cliente cliente = this.extraerDatosFormCliente();
             Cliente clienteGuardado = this.clientesDAO.insertar(cliente);
             mostrarMensajeClienteGuardado();
+            this.dispose();
+            new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
         }catch(PersistenciaException ex){
-            
             this.mostrarMensajeErrorAlGuardarCliente();
         }
     }
@@ -338,6 +340,7 @@ public class ClientesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

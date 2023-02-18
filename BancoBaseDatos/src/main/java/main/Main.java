@@ -10,8 +10,7 @@ import implementaciones.DireccionesDAO;
 import interfaces.IClientesDAO;
 import interfaces.IConexionBD;
 import interfaces.IDireccionesDAO;
-import presentaciones.ClientesForm;
-import presentaciones.LoginForm;
+import presentaciones.InicioForm;
 
 /**
  *
@@ -26,9 +25,8 @@ public class Main {
         IConexionBD generadorConexion = new ConexionBD("jdbc:mysql://localHost/banco", "root", "1234");
 
         IClientesDAO clientesDAO = new ClientesDAO(generadorConexion);
-//        IDireccionesDAO direccionesDAO = new DireccionesDAO(generadorConexion);
-//        new ClientesForm(clientesDAO,direccionesDAO).setVisible(true);
-          new LoginForm(clientesDAO).setVisible(true);
+        IDireccionesDAO direccionesDAO = new DireccionesDAO(generadorConexion);
+        new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
 
     }
     
