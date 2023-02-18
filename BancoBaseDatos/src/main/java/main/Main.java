@@ -23,7 +23,7 @@ public class Main {
      */
     public static void main(String[] args) {
         IConexionBD generadorConexion = new ConexionBD("jdbc:mysql://localHost/banco", "root", "1234");
-
+        
         IClientesDAO clientesDAO = new ClientesDAO(generadorConexion);
         IDireccionesDAO direccionesDAO = new DireccionesDAO(generadorConexion);
         new InicioForm(clientesDAO,direccionesDAO).setVisible(true);

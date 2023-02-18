@@ -9,7 +9,9 @@ import dominio.Cliente;
 import dominio.Direccion;
 import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
+import implementaciones.DireccionesDAO;
 import interfaces.IClientesDAO;
+import interfaces.IConexionBD;
 import interfaces.IDireccionesDAO;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -329,7 +331,7 @@ public class ClientesForm extends javax.swing.JFrame {
             Cliente clienteGuardado = this.clientesDAO.insertar(cliente);
             mostrarMensajeClienteGuardado();
             this.dispose();
-            new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
+             new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
         }catch(PersistenciaException ex){
             this.mostrarMensajeErrorAlGuardarCliente();
         }

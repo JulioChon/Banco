@@ -5,7 +5,10 @@
  */
 package presentaciones;
 
+import dominio.Cliente;
+import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
+import interfaces.IConexionBD;
 import interfaces.IDireccionesDAO;
 
 /**
@@ -14,7 +17,7 @@ import interfaces.IDireccionesDAO;
  */
 public class InicioForm extends javax.swing.JDialog {
 
-    private final IClientesDAO clientesDAO;
+     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     
     /**
@@ -108,7 +111,7 @@ public class InicioForm extends javax.swing.JDialog {
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearUsuarioActionPerformed
-        new ClientesForm(clientesDAO,direccionesDAO).setVisible(true);
+          new ClientesForm(clientesDAO,direccionesDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCrearUsuarioActionPerformed
 

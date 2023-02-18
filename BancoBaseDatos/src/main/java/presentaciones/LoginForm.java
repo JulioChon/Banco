@@ -8,6 +8,7 @@ import dominio.Cliente;
 import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
+import interfaces.IConexionBD;
 import interfaces.IDireccionesDAO;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -17,7 +18,7 @@ import javax.swing.JOptionPane;
  * @author julio
  */
 public class LoginForm extends javax.swing.JFrame {
-    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
+     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     /**
@@ -145,10 +146,10 @@ public class LoginForm extends javax.swing.JFrame {
     public Cliente consultarCliente(){
         try{
             Cliente cliente = this.extraerDatos();
-            System.out.println(cliente.getCorreoElectronico());
             Cliente clienteGuardado = this.clientesDAO.consultar(cliente.getCorreoElectronico());
             return clienteGuardado;
         }catch(PersistenciaException ex){
+            System.out.println("Hola");
             this.mostrarMensajeErrorAlConsultarCliente();
             return null;
         }
@@ -173,7 +174,7 @@ public class LoginForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
+         new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

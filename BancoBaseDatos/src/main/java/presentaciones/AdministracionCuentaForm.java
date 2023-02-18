@@ -5,7 +5,12 @@
  */
 package presentaciones;
 
+import dominio.Cliente;
+import implementaciones.ClientesDAO;
+
 import interfaces.IClientesDAO;
+import interfaces.IConexionBD;
+
 import interfaces.IDireccionesDAO;
 
 /**
@@ -14,7 +19,7 @@ import interfaces.IDireccionesDAO;
  */
 public class AdministracionCuentaForm extends javax.swing.JFrame {
 
-    private final IClientesDAO clientesDAO;
+     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     
     /**
@@ -42,10 +47,10 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        btnCrearCuenta = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cmbCuentas = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
 
@@ -96,11 +101,16 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(jButton6);
 
-        jButton7.setText("Crear Cuenta");
-        jButton7.setFocusable(false);
-        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton7);
+        btnCrearCuenta.setText("Crear Cuenta");
+        btnCrearCuenta.setFocusable(false);
+        btnCrearCuenta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCrearCuenta.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCrearCuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearCuentaActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnCrearCuenta);
 
         btnSalir.setText("Salir");
         btnSalir.setFocusable(false);
@@ -115,7 +125,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
 
         jLabel1.setText("Cuenta");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbCuentas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel2.setText("Saldo");
 
@@ -131,7 +141,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbCuentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 86, Short.MAX_VALUE))
         );
@@ -142,7 +152,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbCuentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
@@ -166,16 +176,24 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
 
+    private void crearCuenta(){
+        
+    }
+    
+    private void btnCrearCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearCuentaActionPerformed
+        
+    }//GEN-LAST:event_btnCrearCuentaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCrearCuenta;
     private javax.swing.JButton btnMovimientos;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnTransferencia;
+    private javax.swing.JComboBox<String> cmbCuentas;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;

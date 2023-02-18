@@ -6,6 +6,7 @@
 package presentaciones;
 
 import interfaces.IClientesDAO;
+import interfaces.IConexionBD;
 import interfaces.IDireccionesDAO;
 
 /**
@@ -16,7 +17,6 @@ public class RetiroForm extends javax.swing.JFrame {
 
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
-    
     /**
      * Creates new form RetiroForm
      */
