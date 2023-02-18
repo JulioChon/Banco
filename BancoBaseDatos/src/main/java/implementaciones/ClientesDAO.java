@@ -61,18 +61,17 @@ public class ClientesDAO implements IClientesDAO {
 
     @Override
     public Cliente consultar(String correoCliente) throws PersistenciaException {
-       String codigoSQL = "Select id,correoElectronico,aes_decrypt(contraseña,\"hunter2\")"
+       String codigoSQL = "Select id,correoElectronico,aes_decrypt(contraseña,'hunter2')"
                + "from clientes where correoElectronico like ?";
         try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
-                PreparedStatement comando = conexion.prepareStatement(
-                        codigoSQL, Statement.RETURN_GENERATED_KEYS);) {
+                PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
             comando.setString(1, correoCliente);
             ResultSet resultado = comando.executeQuery();
             Cliente cliente = null;
             if (resultado.next()) {
                 Integer id = resultado.getInt("id");
                 String correo = resultado.getString("correoElectronico");
-                String contraseña = resultado.getString("contraseña");
+                String contraseña = resultado.getString("aes_decrypt(contraseña,'hunter2')");
                 cliente = new Cliente(id,correo,contraseña);
             }
             return cliente;

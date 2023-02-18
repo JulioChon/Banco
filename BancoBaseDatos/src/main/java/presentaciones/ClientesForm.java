@@ -193,7 +193,7 @@ public class ClientesForm extends javax.swing.JFrame {
                             .addComponent(jLabel10)))
                     .addComponent(clpFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnAceptar)
                     .addComponent(btnCancelar))
                 .addContainerGap(34, Short.MAX_VALUE))

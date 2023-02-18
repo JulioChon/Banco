@@ -49,7 +49,10 @@ public class Cliente {
         this.contrasena = contrasena;
     }
     
-    
+    public Cliente(String correoElectronico, String contrasena) {
+        this.correoElectronico = correoElectronico;
+        this.contrasena = contrasena;
+    }
 
     public Integer getId() {
         return id;
