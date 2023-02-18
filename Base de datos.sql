@@ -4,7 +4,7 @@ create table direcciones(
 id int not null primary key auto_increment,
 calle varchar(20) not null,
 colonia varchar (20) not null,
-numeroCasa varchar(5) not null
+numeroCasa varchar(6) not null
 );
 
 create table clientes(
