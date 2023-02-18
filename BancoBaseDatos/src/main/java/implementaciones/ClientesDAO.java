@@ -1,3 +1,4 @@
+
 package implementaciones;
 
 import dominio.Cliente;
@@ -55,6 +56,29 @@ public class ClientesDAO implements IClientesDAO {
         } catch (SQLException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
             throw new PersistenciaException("No fue posible registrar cliente");
+        }
+    }
+
+    @Override
+    public Cliente consultar(String correoCliente) throws PersistenciaException {
+       String codigoSQL = "Select id,correoElectronico,aes_decrypt(contraseña,\"hunter2\")"
+               + "from clientes where correoElectronico like ?";
+        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
+                PreparedStatement comando = conexion.prepareStatement(
+                        codigoSQL, Statement.RETURN_GENERATED_KEYS);) {
+            comando.setString(1, correoCliente);
+            ResultSet resultado = comando.executeQuery();
+            Cliente cliente = null;
+            if (resultado.next()) {
+                Integer id = resultado.getInt("id");
+                String correo = resultado.getString("correoElectronico");
+                String contraseña = resultado.getString("contraseña");
+                cliente = new Cliente(id,correo,contraseña);
+            }
+            return cliente;
+        }catch (SQLException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+            throw new PersistenciaException("No fue posible encontrar el cliente");
         }
     }
 

@@ -21,13 +21,13 @@ foreign key (codigo_direccion) references direcciones(id)
 );
 
 create table cuentas(
-numero_cuenta int not null primary key,
+numero_cuenta int(8) not null unique primary key auto_increment,
 monto decimal default 0,
 fecha_apertura TIMESTAMP DEFAULT NOW(),
 codigo_cliente int not null,
 foreign key (codigo_cliente) references clientes(id)
 );
-
+ALTER TABLE cuentas AUTO_INCREMENT = 10000000;
 create table transferencias(
 id int not null primary key auto_increment,
 monto decimal not null,

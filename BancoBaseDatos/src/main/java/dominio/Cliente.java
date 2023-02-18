@@ -43,6 +43,14 @@ public class Cliente {
         this.idDireccion = idDireccion;
     }
 
+    public Cliente(Integer id, String correoElectronico, String contrasena) {
+        this.id = id;
+        this.correoElectronico = correoElectronico;
+        this.contrasena = contrasena;
+    }
+    
+    
+
     public Integer getId() {
         return id;
     }
