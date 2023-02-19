@@ -10,6 +10,7 @@ import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IRetirosSinCuenta;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
@@ -22,13 +23,15 @@ public class LoginForm extends javax.swing.JFrame {
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     private final ICuentasDAO cuentasDAO;
+    private final IRetirosSinCuenta retirosDAO;
     /**
      * Creates new form LoginForm
      */
-    public LoginForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDao) {
+    public LoginForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO,IRetirosSinCuenta retirosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
-        this.cuentasDAO = cuentasDao;
+        this.cuentasDAO = cuentasDAO;
+        this.retirosDAO = retirosDAO;
         initComponents();
     }
 
@@ -164,7 +167,7 @@ public class LoginForm extends javax.swing.JFrame {
         if(clienteConsultado.getContrasena().equals(datosForm.getContrasena())){
             this.mostrarMensajeInformacionCorrecta();
             this.dispose();
-            new AdministracionCuentaForm(clientesDAO,direccionesDAO,cuentasDAO,clienteConsultado).setVisible(true);
+            new AdministracionCuentaForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,clienteConsultado).setVisible(true);
         }else{
             this.mostrarMensajeErrorPorContrasena();
         }
@@ -175,7 +178,7 @@ public class LoginForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-         new InicioForm(clientesDAO,direccionesDAO,cuentasDAO).setVisible(true);
+         new InicioForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

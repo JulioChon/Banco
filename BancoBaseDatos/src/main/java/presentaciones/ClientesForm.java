@@ -12,6 +12,7 @@ import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IRetirosSinCuenta;
 import java.sql.Date;
 import java.time.LocalDate;
 import validaciones.Validadores;
@@ -27,16 +28,18 @@ public class ClientesForm extends javax.swing.JFrame {
     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
+    private final ICuentasDAO cuentasDAO;
+    private final IRetirosSinCuenta retirosDAO;
     private final Validadores validadores = new Validadores();
-    private final ICuentasDAO cuentasDao;
     
     /**
      * Creates new form ClientesForm
      */
-    public ClientesForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDao) {
+    public ClientesForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO, IRetirosSinCuenta retirosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
-        this.cuentasDao = cuentasDao;
+        this.cuentasDAO = cuentasDAO;
+        this.retirosDAO = retirosDAO;
         initComponents();
     }
 
@@ -332,7 +335,7 @@ public class ClientesForm extends javax.swing.JFrame {
             Cliente clienteGuardado = this.clientesDAO.insertar(cliente);
             mostrarMensajeClienteGuardado();
             this.dispose();
-             new InicioForm(clientesDAO,direccionesDAO,cuentasDao).setVisible(true);
+             new InicioForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
         }catch(PersistenciaException ex){
             this.mostrarMensajeErrorAlGuardarCliente();
         }
@@ -343,7 +346,7 @@ public class ClientesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new InicioForm(clientesDAO,direccionesDAO,cuentasDao).setVisible(true);
+        new InicioForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

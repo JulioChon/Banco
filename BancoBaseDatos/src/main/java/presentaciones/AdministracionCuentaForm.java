@@ -12,6 +12,7 @@ import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IRetirosSinCuenta;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,16 +27,18 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
-    private final ICuentasDAO cuentasDao;
+    private final ICuentasDAO cuentasDAO;
+    private final IRetirosSinCuenta retirosDAO;
     private Cliente cliente;
 
     /**
      * Creates new form AdministracionCuentaForm
      */
-    public AdministracionCuentaForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDao, Cliente cliente) {
+    public AdministracionCuentaForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuenta retirosDAO, Cliente cliente) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
-        this.cuentasDao = cuentasDao;
+        this.cuentasDAO = cuentasDAO;
+        this.retirosDAO = retirosDAO;
         this.cliente = cliente;
         initComponents();
         this.cargarCuentasCliente();
@@ -181,7 +184,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
 
     private void cargarCuentasCliente() {
         try {
-           List<Cuenta> cuentasCliente = this.cuentasDao.consultarCuentasCliente(cliente.getId());
+            List<Cuenta> cuentasCliente = this.cuentasDAO.consultarCuentasCliente(cliente.getId());
             for (Cuenta cuenta : cuentasCliente) {
                 cmbCuentas.addItem(cuenta.getNumeroCuenta());
             }
@@ -189,18 +192,29 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
             LOG.log(Level.SEVERE, ex.getMessage());
         }
     }
-    
-    private void obtenerSaldo(int numeroCuenta){
-         Cuenta cuenta =this.cuentasDao.consultarCuenta(numeroCuenta);
-         float saldo = cuenta.getMonto();
-         this.cargarSaldo(saldo);
+
+    private void obtenerSaldo(int numeroCuenta) {
+        try {
+            Cuenta cuenta = this.cuentasDAO.consultarCuenta(numeroCuenta);
+            float saldo = cuenta.getMonto();
+            this.cargarSaldo(saldo);
+        } catch (PersistenciaException e) {
+            this.mostrarMensajeErrorObtenerSaldo();
+        }
     }
-    public void cargarSaldo(float saldo){
+
+    public void cargarSaldo(float saldo) {
         this.txtSaldo.setEditable(false);
         this.txtSaldo.setText("$" + saldo);
     }
+
     public void mostrarMensajeErrorAlCrear() {
         JOptionPane.showMessageDialog(this, "Error al crear cuenta, intentar luego",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public void mostrarMensajeErrorObtenerSaldo() {
+        JOptionPane.showMessageDialog(this, "Error al obtener saldo, intentar luego",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -213,13 +227,13 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTransferenciaActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        new InicioForm(clientesDAO, direccionesDAO, cuentasDao).setVisible(true);
+        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void crearCuenta() {
         try {
-            this.cuentasDao.crearCuenta(cliente.getId());
+            this.cuentasDAO.crearCuenta(cliente.getId());
         } catch (PersistenciaException ex) {
             this.mostrarMensajeErrorAlCrear();
         }
@@ -232,8 +246,8 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCrearCuentaActionPerformed
 
     private void cmbCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCuentasActionPerformed
-       int numeroCuenta = (Integer)cmbCuentas.getSelectedItem();
-       this.obtenerSaldo(numeroCuenta);
+        int numeroCuenta = (Integer) cmbCuentas.getSelectedItem();
+        this.obtenerSaldo(numeroCuenta);
     }//GEN-LAST:event_cmbCuentasActionPerformed
 
 

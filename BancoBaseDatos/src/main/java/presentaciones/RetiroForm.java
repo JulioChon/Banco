@@ -9,7 +9,6 @@ import dominio.Cuenta;
 import dominio.RetiroSinCuenta;
 import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
-import implementaciones.CuentasDAO;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
@@ -28,15 +27,15 @@ public class RetiroForm extends javax.swing.JFrame {
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     private final ICuentasDAO cuentasDAO;
-    private final IRetirosSinCuenta retiroSinCuenta;
+    private final IRetirosSinCuenta retirosDAO;
     /**
      * Creates new form RetiroForm
      */
-    public RetiroForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO,IRetirosSinCuenta retiroSinCuenta) {
+    public RetiroForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO,IRetirosSinCuenta retirosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
-        this.retiroSinCuenta = retiroSinCuenta;
+        this.retirosDAO = retirosDAO;
         initComponents();
     }
 
@@ -151,7 +150,7 @@ public class RetiroForm extends javax.swing.JFrame {
     private void comprobarFolio(){
         try{
             RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
-            this.retiroSinCuenta.consultar(retiroSinCuenta.getFolio());
+            this.retirosDAO.consultar(retiroSinCuenta.getFolio());
         }catch (PersistenciaException ex){
              LOG.log(Level.SEVERE, ex.getMessage());
              this.mostrarMensajeErrorConsultarCuenta();
@@ -160,7 +159,7 @@ public class RetiroForm extends javax.swing.JFrame {
     private RetiroSinCuenta comprobarSaldo(){
         try{
             RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
-            RetiroSinCuenta folioConsultado = this.retiroSinCuenta.consultar(retiroSinCuenta.getFolio());
+            RetiroSinCuenta folioConsultado = this.retirosDAO.consultar(retiroSinCuenta.getFolio());
             Cuenta consultarCuenta = this.cuentasDAO.consultarCuenta(folioConsultado.getCuenta_retirada());
             if(consultarCuenta.getMonto()<retiroSinCuenta.getMonto()){
                 this.mostrarMensajeErrorSaldoInsuficiente();
@@ -181,7 +180,7 @@ public class RetiroForm extends javax.swing.JFrame {
                 
             }else{
                 if(retiroSinCuenta.getContraseña() == this.comprobarSaldo().getContraseña()){
-                  this.retiroSinCuenta.actualizarRetiro(retiroSinCuenta.getFolio(),retiroSinCuenta.getMonto(), "Cobrado");
+                  this.retirosDAO.actualizarRetiro(retiroSinCuenta.getFolio(),retiroSinCuenta.getMonto(), "Cobrado");
                 }
             }
         }catch (PersistenciaException ex){
@@ -189,7 +188,7 @@ public class RetiroForm extends javax.swing.JFrame {
         }
     }
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new InicioForm(clientesDAO,direccionesDAO,cuentasDAO).setVisible(true);
+        new InicioForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

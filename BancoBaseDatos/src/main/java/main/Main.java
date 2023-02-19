@@ -32,7 +32,7 @@ public class Main {
         IDireccionesDAO direccionesDAO = new DireccionesDAO(generadorConexion);
         ICuentasDAO cuentasDAO = new CuentasDAO(generadorConexion);
         IRetirosSinCuenta retirosSinCuentaDAO = new RetirosSinCuentaDAO(generadorConexion);
-        new InicioForm(clientesDAO,direccionesDAO,cuentasDAO).setVisible(true);
+        new InicioForm(clientesDAO,direccionesDAO,cuentasDAO,retirosSinCuentaDAO).setVisible(true);
 
     }
     
