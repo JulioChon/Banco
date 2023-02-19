@@ -8,10 +8,12 @@ import implementaciones.ClientesDAO;
 import implementaciones.ConexionBD;
 import implementaciones.CuentasDAO;
 import implementaciones.DireccionesDAO;
+import implementaciones.RetirosSinCuentaDAO;
 import interfaces.IClientesDAO;
 import interfaces.IConexionBD;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IRetirosSinCuenta;
 import presentaciones.InicioForm;
 
 /**
@@ -29,6 +31,7 @@ public class Main {
         IClientesDAO clientesDAO = new ClientesDAO(generadorConexion);
         IDireccionesDAO direccionesDAO = new DireccionesDAO(generadorConexion);
         ICuentasDAO cuentasDAO = new CuentasDAO(generadorConexion);
+        IRetirosSinCuenta retirosSinCuentaDAO = new RetirosSinCuentaDAO(generadorConexion);
         new InicioForm(clientesDAO,direccionesDAO,cuentasDAO).setVisible(true);
 
     }

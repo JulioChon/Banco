@@ -34,6 +34,13 @@ public class RetiroSinCuenta {
         this.estado = estado;
     }
 
+    public RetiroSinCuenta(Integer folio, Integer contraseña, float monto) {
+        this.folio = folio;
+        this.contraseña = contraseña;
+        this.monto = monto;
+    }
+
+    
     public RetiroSinCuenta(Integer folio) {
         this.folio = folio;
     }

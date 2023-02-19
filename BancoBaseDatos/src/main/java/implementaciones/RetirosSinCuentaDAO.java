@@ -55,7 +55,7 @@ public class RetirosSinCuentaDAO implements IRetirosSinCuenta{
 
     @Override
     public RetiroSinCuenta consultar(Integer folio) throws PersistenciaException {
-       String codigoSQL = "Select folio, aes_decrypt(contraseña,'hunter2') from "
+       String codigoSQL = "Select folio, aes_decrypt(contraseña,'hunter2'),cuenta_retirada from "
                + "retirosSinCuenta where folio = ?";
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
                 PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {

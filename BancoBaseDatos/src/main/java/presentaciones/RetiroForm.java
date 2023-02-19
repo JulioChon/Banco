@@ -5,10 +5,19 @@
  */
 package presentaciones;
 
+import dominio.Cuenta;
+import dominio.RetiroSinCuenta;
+import excepciones.PersistenciaException;
+import implementaciones.ClientesDAO;
+import implementaciones.CuentasDAO;
 import interfaces.IClientesDAO;
 import interfaces.IConexionBD;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IRetirosSinCuenta;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,16 +25,19 @@ import interfaces.IDireccionesDAO;
  */
 public class RetiroForm extends javax.swing.JFrame {
 
+    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName()); 
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     private final ICuentasDAO cuentasDAO;
+    private final IRetirosSinCuenta retiroSinCuenta;
     /**
      * Creates new form RetiroForm
      */
-    public RetiroForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO) {
+    public RetiroForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO,IRetirosSinCuenta retiroSinCuenta) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
+        this.retiroSinCuenta = retiroSinCuenta;
         initComponents();
     }
 
@@ -40,12 +52,12 @@ public class RetiroForm extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        txtFolio = new javax.swing.JTextField();
+        btnAceptar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        txtMonto = new javax.swing.JTextField();
+        txtContrasena = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -53,7 +65,12 @@ public class RetiroForm extends javax.swing.JFrame {
 
         jLabel2.setText("Contraseña");
 
-        jButton1.setText("Aceptar");
+        btnAceptar.setText("Aceptar");
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -78,12 +95,12 @@ public class RetiroForm extends javax.swing.JFrame {
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
+                            .addComponent(txtFolio)
+                            .addComponent(txtMonto, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                            .addComponent(txtContrasena)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(104, 104, 104)
-                        .addComponent(jButton1)
+                        .addComponent(btnAceptar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnCancelar)))
                 .addContainerGap(124, Short.MAX_VALUE))
@@ -94,40 +111,101 @@ public class RetiroForm extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFolio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(txtContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(btnAceptar)
                     .addComponent(btnCancelar))
-                .addContainerGap(144, Short.MAX_VALUE))
+                .addContainerGap(141, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private RetiroSinCuenta extrarDatosForm(){
+        Integer folio = Integer.getInteger(txtFolio.getText());
+        Integer contrasena = Integer.getInteger(txtContrasena.getText());
+        Float monto  = Float.valueOf(txtMonto.getText());
+        RetiroSinCuenta retiroSinCuenta = new RetiroSinCuenta(folio, contrasena, monto);
+        return retiroSinCuenta;
+    }
+    
+    public void mostrarMensajeErrorConsultarCuenta() {
+        JOptionPane.showMessageDialog(this, "El folio no es correcto",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    public void mostrarMensajeErrorSaldoInsuficiente() {
+        JOptionPane.showMessageDialog(this, "Saldo en cuenta insucificiente",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    private void comprobarFolio(){
+        try{
+            RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
+            this.retiroSinCuenta.consultar(retiroSinCuenta.getFolio());
+        }catch (PersistenciaException ex){
+             LOG.log(Level.SEVERE, ex.getMessage());
+             this.mostrarMensajeErrorConsultarCuenta();
+        }
+    }
+    private RetiroSinCuenta comprobarSaldo(){
+        try{
+            RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
+            RetiroSinCuenta folioConsultado = this.retiroSinCuenta.consultar(retiroSinCuenta.getFolio());
+            Cuenta consultarCuenta = this.cuentasDAO.consultarCuenta(folioConsultado.getCuenta_retirada());
+            if(consultarCuenta.getMonto()<retiroSinCuenta.getMonto()){
+                this.mostrarMensajeErrorSaldoInsuficiente();
+                return null;
+            }else{
+                return folioConsultado;
+            }
+        }catch (PersistenciaException ex){
+            LOG.log(Level.SEVERE, ex.getMessage());
+            return null;
+        }
+    }
+    private void realizarRetiro(){
+        try{
+            RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
+            this.comprobarFolio();
+            if(this.comprobarSaldo() == null){
+                
+            }else{
+                if(retiroSinCuenta.getContraseña() == this.comprobarSaldo().getContraseña()){
+                  this.retiroSinCuenta.actualizarRetiro(retiroSinCuenta.getFolio(),retiroSinCuenta.getMonto(), "Cobrado");
+                }
+            }
+        }catch (PersistenciaException ex){
+            LOG.log(Level.SEVERE, ex.getMessage());
+        }
+    }
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         new InicioForm(clientesDAO,direccionesDAO,cuentasDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        this.realizarRetiro();
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JPasswordField txtContrasena;
+    private javax.swing.JTextField txtFolio;
+    private javax.swing.JTextField txtMonto;
     // End of variables declaration//GEN-END:variables
 }
