@@ -6,7 +6,6 @@
 package presentaciones;
 
 import interfaces.IClientesDAO;
-import interfaces.IConexionBD;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
 
@@ -48,6 +47,7 @@ public class RetiroForm extends javax.swing.JFrame {
         jTextField3 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setText("Folio");
 
@@ -111,6 +111,7 @@ public class RetiroForm extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed

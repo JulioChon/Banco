@@ -8,7 +8,6 @@ import dominio.Cliente;
 import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
-import interfaces.IConexionBD;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
 import java.util.logging.Logger;
@@ -22,14 +21,14 @@ public class LoginForm extends javax.swing.JFrame {
     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
-    private final ICuentasDAO cuentasDao;
+    private final ICuentasDAO cuentasDAO;
     /**
      * Creates new form LoginForm
      */
     public LoginForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDao) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
-         this.cuentasDao = cuentasDao;
+        this.cuentasDAO = cuentasDao;
         initComponents();
     }
 
@@ -124,7 +123,7 @@ public class LoginForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-     public void mostrarMensajeErrorAlConsultarCliente() {
+    public void mostrarMensajeErrorAlConsultarCliente() {
         JOptionPane.showMessageDialog(this, "El cliente no existe",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
@@ -165,7 +164,7 @@ public class LoginForm extends javax.swing.JFrame {
         if(clienteConsultado.getContrasena().equals(datosForm.getContrasena())){
             this.mostrarMensajeInformacionCorrecta();
             this.dispose();
-            new AdministracionCuentaForm(clientesDAO,direccionesDAO,cuentasDao,clienteConsultado).setVisible(true);
+            new AdministracionCuentaForm(clientesDAO,direccionesDAO,cuentasDAO,clienteConsultado).setVisible(true);
         }else{
             this.mostrarMensajeErrorPorContrasena();
         }
@@ -176,7 +175,7 @@ public class LoginForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-         new InicioForm(clientesDAO,direccionesDAO,cuentasDao).setVisible(true);
+         new InicioForm(clientesDAO,direccionesDAO,cuentasDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

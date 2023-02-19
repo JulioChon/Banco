@@ -32,10 +32,13 @@
                       <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="btnCrearUsuario" alignment="1" max="32767" attributes="0"/>
-                          <Component id="btnRetiro" alignment="1" pref="141" max="32767" attributes="0"/>
-                          <Component id="btnLogin" alignment="1" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="btnCrearUsuario" min="-2" pref="141" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="btnRetiro" alignment="1" pref="141" max="32767" attributes="0"/>
+                              <Component id="btnLogin" alignment="1" max="32767" attributes="0"/>
+                              <Component id="btnDeposito" alignment="0" pref="141" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace min="-2" pref="231" max="-2" attributes="0"/>
                   </Group>
@@ -51,10 +54,12 @@
               <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
               <Component id="btnLogin" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="btnRetiro" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="btnCrearUsuario" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="88" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="btnDeposito" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="btnRetiro" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="62" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -90,6 +95,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCrearUsuarioActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnDeposito">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Depositar a Cuenta"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDepositoActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

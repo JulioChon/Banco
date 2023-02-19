@@ -5,10 +5,7 @@
  */
 package presentaciones;
 
-import dominio.Cliente;
-import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
-import interfaces.IConexionBD;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
 
@@ -45,6 +42,7 @@ public class InicioForm extends javax.swing.JDialog {
         btnLogin = new javax.swing.JButton();
         btnRetiro = new javax.swing.JButton();
         btnCrearUsuario = new javax.swing.JButton();
+        btnDeposito = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -73,6 +71,13 @@ public class InicioForm extends javax.swing.JDialog {
             }
         });
 
+        btnDeposito.setText("Depositar a Cuenta");
+        btnDeposito.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDepositoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -84,10 +89,12 @@ public class InicioForm extends javax.swing.JDialog {
                         .addComponent(jLabel1)
                         .addGap(39, 39, 39))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnCrearUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnRetiro, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
-                            .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnCrearUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(btnRetiro, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                                .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnDeposito, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)))
                         .addGap(231, 231, 231))))
         );
         layout.setVerticalGroup(
@@ -98,10 +105,12 @@ public class InicioForm extends javax.swing.JDialog {
                 .addGap(23, 23, 23)
                 .addComponent(btnLogin)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnRetiro)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnCrearUsuario)
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnDeposito)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnRetiro)
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         pack();
@@ -114,7 +123,7 @@ public class InicioForm extends javax.swing.JDialog {
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearUsuarioActionPerformed
-          new ClientesForm(clientesDAO,direccionesDAO,cuentasDao).setVisible(true);
+        new ClientesForm(clientesDAO,direccionesDAO,cuentasDao).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCrearUsuarioActionPerformed
 
@@ -123,10 +132,16 @@ public class InicioForm extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_btnRetiroActionPerformed
 
+    private void btnDepositoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepositoActionPerformed
+        new DepositosForm(clientesDAO,direccionesDAO,cuentasDao).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnDepositoActionPerformed
+
  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCrearUsuario;
+    private javax.swing.JButton btnDeposito;
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnRetiro;
     private javax.swing.JLabel jLabel1;
