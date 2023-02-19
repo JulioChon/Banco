@@ -11,7 +11,6 @@ import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
 import implementaciones.CuentasDAO;
 import interfaces.IClientesDAO;
-import interfaces.IConexionBD;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
 import interfaces.IRetirosSinCuenta;
@@ -60,6 +59,7 @@ public class RetiroForm extends javax.swing.JFrame {
         txtContrasena = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setText("Folio");
 
@@ -128,6 +128,7 @@ public class RetiroForm extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private RetiroSinCuenta extrarDatosForm(){

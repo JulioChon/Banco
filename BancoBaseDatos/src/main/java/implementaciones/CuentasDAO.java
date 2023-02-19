@@ -58,15 +58,15 @@ public class CuentasDAO implements ICuentasDAO {
 
     @Override
     public Cuenta consultarCuenta(Integer numeroCuenta){
-       String codigoSQL = "Select monto from cuentas where numero_cuenta = ? ";
+       String codigoSQL = "Select codigo_cliente from cuentas where numero_cuenta = ? ";
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
                 PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
            comando.setInt(1, numeroCuenta);
             ResultSet resultado = comando.executeQuery();
             Cuenta cuenta = new Cuenta ();
              if (resultado.next()) {
-                float monto = resultado.getFloat("monto");
-                cuenta.setMonto(monto);
+                Integer cliente = resultado.getInt("codigo_cliente");
+                cuenta.setCodigoCliente(cliente);
                 cuenta.setNumeroCuenta(numeroCuenta);
              }
              return cuenta;
@@ -82,7 +82,7 @@ public class CuentasDAO implements ICuentasDAO {
       String codigoSQL = "Select numero_cuenta from cuentas where codigo_cliente = ?";
        List<Cuenta> listaCuentas = new LinkedList<>();
         try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
-                PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
+            PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
             comando.setInt(1, codigoCliente);
              ResultSet resultado = comando.executeQuery();
              Cuenta cuenta = null;
@@ -98,6 +98,19 @@ public class CuentasDAO implements ICuentasDAO {
         }
 
     }
-    
-    
+
+    @Override
+    public Cuenta actualizarSaldo(Integer numeroCuenta, float monto) {
+        String codigoSQL = "update cuentas set monto= ? where numero_cuenta= ?";
+       try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
+            PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
+            comando.setInt(1, numeroCuenta);
+            comando.setFloat(2, monto);
+            comando.executeUpdate();
+            return consultarCuenta(numeroCuenta);
+       }catch (SQLException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+            return null;
+        }
+    }
 }

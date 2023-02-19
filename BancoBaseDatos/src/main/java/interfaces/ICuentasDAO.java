@@ -15,7 +15,7 @@ import java.util.List;
 public interface ICuentasDAO {
     
     Cuenta crearCuenta(Integer codigoCliente) throws PersistenciaException;;
-    Cuenta consultarCuenta(Integer numeroCuenta);
+    Cuenta consultarCuenta(Integer numeroCuenta) throws PersistenciaException;
     List<Cuenta> consultarCuentasCliente(Integer codigoCliente) throws PersistenciaException;
-    
+    Cuenta actualizarSaldo(Integer numeroCuenta, float monto) throws PersistenciaException;
 }
