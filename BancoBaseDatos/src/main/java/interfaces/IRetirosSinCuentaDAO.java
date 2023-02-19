@@ -11,7 +11,7 @@ import excepciones.PersistenciaException;
  *
  * @author julio
  */
-public interface IRetirosSinCuenta {
+public interface IRetirosSinCuentaDAO {
     RetiroSinCuenta crearRetiro(Integer cuentaOrigen) throws PersistenciaException;
     RetiroSinCuenta consultar (Integer folio) throws PersistenciaException;
     void actualizarRetiro(Integer folio,Float monto,String estado) throws PersistenciaException;

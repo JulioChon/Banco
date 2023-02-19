@@ -58,7 +58,7 @@ public class CuentasDAO implements ICuentasDAO {
 
     @Override
     public Cuenta consultarCuenta(Integer numeroCuenta){
-       String codigoSQL = "Select codigo_cliente from cuentas where numero_cuenta = ? ";
+       String codigoSQL = "Select codigo_cliente,monto from cuentas where numero_cuenta = ? ";
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
                 PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
            comando.setInt(1, numeroCuenta);
@@ -66,8 +66,10 @@ public class CuentasDAO implements ICuentasDAO {
             Cuenta cuenta = new Cuenta ();
              if (resultado.next()) {
                 Integer cliente = resultado.getInt("codigo_cliente");
+                float monto = resultado.getFloat("monto");
                 cuenta.setCodigoCliente(cliente);
                 cuenta.setNumeroCuenta(numeroCuenta);
+                cuenta.setMonto(monto);
              }
              return cuenta;
        }catch (SQLException ex) {
@@ -101,11 +103,11 @@ public class CuentasDAO implements ICuentasDAO {
 
     @Override
     public Cuenta actualizarSaldo(Integer numeroCuenta, float monto) {
-        String codigoSQL = "update cuentas set monto= ? where numero_cuenta= ?";
+        String codigoSQL = "update cuentas set monto= monto + ? where numero_cuenta= ?";
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
             PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
-            comando.setInt(1, numeroCuenta);
-            comando.setFloat(2, monto);
+            comando.setFloat(1, monto);
+            comando.setInt(2, numeroCuenta);
             comando.executeUpdate();
             return consultarCuenta(numeroCuenta);
        }catch (SQLException ex) {
@@ -113,4 +115,22 @@ public class CuentasDAO implements ICuentasDAO {
             return null;
         }
     }
+
+    @Override
+    public void transferencia(Integer cuentaEmisor, Integer cuentaDestino, float monto) throws PersistenciaException {
+       String codigoSQL = "call codigoTransferencia(?,?,?)";
+       try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
+            PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
+            comando.setInt(1, cuentaEmisor);
+            comando.setInt(2, cuentaDestino);
+            comando.setFloat(3, monto);
+            comando.executeUpdate();
+       }catch (SQLException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+            throw new PersistenciaException("Error en la trasferencia");
+        }
+
+    }
+    
+    
 }

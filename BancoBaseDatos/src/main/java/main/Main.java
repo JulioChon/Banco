@@ -13,7 +13,7 @@ import interfaces.IClientesDAO;
 import interfaces.IConexionBD;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
-import interfaces.IRetirosSinCuenta;
+import interfaces.IRetirosSinCuentaDAO;
 import presentaciones.InicioForm;
 
 /**
@@ -31,7 +31,7 @@ public class Main {
         IClientesDAO clientesDAO = new ClientesDAO(generadorConexion);
         IDireccionesDAO direccionesDAO = new DireccionesDAO(generadorConexion);
         ICuentasDAO cuentasDAO = new CuentasDAO(generadorConexion);
-        IRetirosSinCuenta retirosSinCuentaDAO = new RetirosSinCuentaDAO(generadorConexion);
+        IRetirosSinCuentaDAO retirosSinCuentaDAO = new RetirosSinCuentaDAO(generadorConexion);
         new InicioForm(clientesDAO,direccionesDAO,cuentasDAO,retirosSinCuentaDAO).setVisible(true);
 
     }

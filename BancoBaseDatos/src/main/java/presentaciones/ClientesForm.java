@@ -12,7 +12,7 @@ import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
-import interfaces.IRetirosSinCuenta;
+import interfaces.IRetirosSinCuentaDAO;
 import java.sql.Date;
 import java.time.LocalDate;
 import validaciones.Validadores;
@@ -29,13 +29,13 @@ public class ClientesForm extends javax.swing.JFrame {
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     private final ICuentasDAO cuentasDAO;
-    private final IRetirosSinCuenta retirosDAO;
+    private final IRetirosSinCuentaDAO retirosDAO;
     private final Validadores validadores = new Validadores();
     
     /**
      * Creates new form ClientesForm
      */
-    public ClientesForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO, IRetirosSinCuenta retirosDAO) {
+    public ClientesForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;

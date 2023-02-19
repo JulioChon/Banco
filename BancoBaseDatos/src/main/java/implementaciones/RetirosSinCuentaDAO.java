@@ -7,7 +7,7 @@ package implementaciones;
 import dominio.RetiroSinCuenta;
 import excepciones.PersistenciaException;
 import interfaces.IConexionBD;
-import interfaces.IRetirosSinCuenta;
+import interfaces.IRetirosSinCuentaDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author julio
  */
-public class RetirosSinCuentaDAO implements IRetirosSinCuenta{
+public class RetirosSinCuentaDAO implements IRetirosSinCuentaDAO{
     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
     private final IConexionBD GENERADOR_CONEXIONES;
 

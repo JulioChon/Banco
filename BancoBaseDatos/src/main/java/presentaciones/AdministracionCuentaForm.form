@@ -101,7 +101,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTransferenciaActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton3">
+        <Component class="javax.swing.JButton" name="btnRetiroSinCuenta">
           <Properties>
             <Property name="text" type="java.lang.String" value="Retiro sin Cuenta"/>
             <Property name="focusable" type="boolean" value="false"/>

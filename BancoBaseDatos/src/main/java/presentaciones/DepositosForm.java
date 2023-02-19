@@ -9,7 +9,7 @@ import excepciones.PersistenciaException;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
-import interfaces.IRetirosSinCuenta;
+import interfaces.IRetirosSinCuentaDAO;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,14 +21,14 @@ public class DepositosForm extends javax.swing.JFrame {
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     private final ICuentasDAO cuentasDAO;
-    private final IRetirosSinCuenta retirosDAO;
+    private final IRetirosSinCuentaDAO retirosDAO;
     private Integer numCuenta;
     private float monto;
 
     /**
      * Creates new form DepositosForm
      */
-    public DepositosForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuenta retirosDAO) {
+    public DepositosForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;

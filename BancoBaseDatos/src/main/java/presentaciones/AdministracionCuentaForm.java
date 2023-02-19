@@ -12,7 +12,7 @@ import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
-import interfaces.IRetirosSinCuenta;
+import interfaces.IRetirosSinCuentaDAO;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,13 +28,13 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     private final ICuentasDAO cuentasDAO;
-    private final IRetirosSinCuenta retirosDAO;
+    private final IRetirosSinCuentaDAO retirosDAO;
     private Cliente cliente;
-
+    private List <Cuenta> cuentasCliente;
     /**
      * Creates new form AdministracionCuentaForm
      */
-    public AdministracionCuentaForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuenta retirosDAO, Cliente cliente) {
+    public AdministracionCuentaForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
@@ -57,7 +57,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         btnMovimientos = new javax.swing.JButton();
         btnTransferencia = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnRetiroSinCuenta = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         btnCrearCuenta = new javax.swing.JButton();
@@ -97,11 +97,11 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         });
         jToolBar1.add(btnTransferencia);
 
-        jButton3.setText("Retiro sin Cuenta");
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton3);
+        btnRetiroSinCuenta.setText("Retiro sin Cuenta");
+        btnRetiroSinCuenta.setFocusable(false);
+        btnRetiroSinCuenta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnRetiroSinCuenta.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(btnRetiroSinCuenta);
 
         jButton4.setText("Actualizar Datos ");
         jButton4.setFocusable(false);
@@ -184,7 +184,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
 
     private void cargarCuentasCliente() {
         try {
-            List<Cuenta> cuentasCliente = this.cuentasDAO.consultarCuentasCliente(cliente.getId());
+            cuentasCliente = this.cuentasDAO.consultarCuentasCliente(cliente.getId());
             for (Cuenta cuenta : cuentasCliente) {
                 cmbCuentas.addItem(cuenta.getNumeroCuenta());
             }
@@ -223,7 +223,8 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMovimientosActionPerformed
 
     private void btnTransferenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferenciaActionPerformed
-        new TransferenciasForm(clientesDAO).setVisible(true);
+        new TransferenciasForm(clientesDAO,direccionesDAO, cuentasDAO, retirosDAO,cliente,cuentasCliente).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnTransferenciaActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
@@ -254,10 +255,10 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCrearCuenta;
     private javax.swing.JButton btnMovimientos;
+    private javax.swing.JButton btnRetiroSinCuenta;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnTransferencia;
     private javax.swing.JComboBox<Integer> cmbCuentas;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;

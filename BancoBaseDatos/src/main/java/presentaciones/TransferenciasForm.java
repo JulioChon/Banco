@@ -5,7 +5,17 @@
  */
 package presentaciones;
 
+import dominio.Cliente;
+import dominio.Cuenta;
+import excepciones.PersistenciaException;
+import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
+import interfaces.ICuentasDAO;
+import interfaces.IDireccionesDAO;
+import interfaces.IRetirosSinCuentaDAO;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -13,14 +23,33 @@ import interfaces.IClientesDAO;
  */
 public class TransferenciasForm extends javax.swing.JFrame {
 
+    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
     private final IClientesDAO clientesDAO;
-    
+    private final IDireccionesDAO direccionesDAO;
+    private final ICuentasDAO cuentasDAO;
+    private final IRetirosSinCuentaDAO retirosDAO;
+    private Cliente cliente;
+    private List<Cuenta> cuentasCliente;
+    private int numCuenta;
+
     /**
      * Creates new form TransferenciasForm
      */
-    public TransferenciasForm(IClientesDAO clientesDAO) {
+    public TransferenciasForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente, List<Cuenta> cuentasCliente) {
         this.clientesDAO = clientesDAO;
+        this.direccionesDAO = direccionesDAO;
+        this.cuentasDAO = cuentasDAO;
+        this.retirosDAO = retirosDAO;
+        this.cliente = cliente;
+        this.cuentasCliente = cuentasCliente;
         initComponents();
+        this.cargarCuentas();
+    }
+
+    private void cargarCuentas() {
+        for (Cuenta cuenta : cuentasCliente) {
+            cmbCuentas.addItem(cuenta.getNumeroCuenta());
+        }
     }
 
     /**
@@ -35,13 +64,13 @@ public class TransferenciasForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        cmbCuentas = new javax.swing.JComboBox<>();
+        txtCuentaDestino = new javax.swing.JTextField();
+        txtMonto = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
         btnAceptar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
+        txtContraseña = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -52,11 +81,32 @@ public class TransferenciasForm extends javax.swing.JFrame {
 
         jLabel3.setText("Monto");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbCuentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCuentasActionPerformed(evt);
+            }
+        });
+
+        txtCuentaDestino.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCuentaDestinoKeyTyped(evt);
+            }
+        });
+
+        txtMonto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtMontoKeyTyped(evt);
+            }
+        });
 
         jLabel4.setText("Contraseña");
 
         btnAceptar.setText("Aceptar");
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -80,10 +130,10 @@ public class TransferenciasForm extends javax.swing.JFrame {
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField3)
-                            .addComponent(jComboBox1, 0, 134, Short.MAX_VALUE)))
+                            .addComponent(txtCuentaDestino)
+                            .addComponent(txtMonto)
+                            .addComponent(cmbCuentas, 0, 134, Short.MAX_VALUE)
+                            .addComponent(txtContraseña)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(100, 100, 100)
                         .addComponent(btnAceptar)
@@ -97,19 +147,19 @@ public class TransferenciasForm extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbCuentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCuentaDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAceptar)
@@ -121,20 +171,93 @@ public class TransferenciasForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    public void mostrarMensajeErrorAlConsultarCuenta() {
+        JOptionPane.showMessageDialog(this, "La cuenta no existe",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void mostrarMensajeErrorCuentaExistente() {
+        JOptionPane.showMessageDialog(this, "NO se puede hacer transferencias a la misma cuenta",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void mostrarMensajeErrorContrasena() {
+        JOptionPane.showMessageDialog(this, "Verificar Contraseña",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private boolean validarContrasena(Integer numCuenta) {
+        if (txtContraseña != null) {
+            String contrasena = txtContraseña.getText();
+            if (cliente.getContrasena().equals(contrasena)) {
+                return true;
+            } else {
+                this.mostrarMensajeErrorContrasena();
+                return false;
+            }
+        } else {
+            this.mostrarMensajeErrorContrasena();
+            return false;
+        }
+
+    }
+
+    private void comprobarCuentaDestino() {
+        try {
+            int cuentaDestino = Integer.parseInt(txtCuentaDestino.getText());
+            Cuenta cuenta = this.cuentasDAO.consultarCuenta(cuentaDestino);
+            if (cuenta.getCodigoCliente() != null) {
+                if (numCuenta != cuenta.getNumeroCuenta()) {
+                    if (this.validarContrasena(numCuenta)) {
+                        float monto = Float.parseFloat(txtMonto.getText());
+                        this.cuentasDAO.transferencia(numCuenta, cuentaDestino, monto);
+                    }
+                } else {
+                    this.mostrarMensajeErrorCuentaExistente();
+                }
+            } else {
+                this.mostrarMensajeErrorAlConsultarCuenta();
+            }
+        } catch (PersistenciaException ex) {
+            this.mostrarMensajeErrorAlConsultarCuenta();
+        }
+    }
+
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+        new AdministracionCuentaForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,cliente).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+          this.comprobarCuentaDestino();
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private void cmbCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCuentasActionPerformed
+            this.numCuenta = (Integer)cmbCuentas.getSelectedItem();
+    }//GEN-LAST:event_cmbCuentasActionPerformed
+
+    private void txtCuentaDestinoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCuentaDestinoKeyTyped
+        char car = evt.getKeyChar();
+        if (car < '0' || car > '9')
+            evt.consume();
+    }//GEN-LAST:event_txtCuentaDestinoKeyTyped
+
+    private void txtMontoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoKeyTyped
+        char car = evt.getKeyChar();
+        if ((car < '0' || car > '9') && (car < ',' || car > '.'))
+            evt.consume();
+    }//GEN-LAST:event_txtMontoKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<Integer> cmbCuentas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JPasswordField txtContraseña;
+    private javax.swing.JTextField txtCuentaDestino;
+    private javax.swing.JTextField txtMonto;
     // End of variables declaration//GEN-END:variables
 }
