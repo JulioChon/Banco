@@ -73,8 +73,9 @@ public class ClientesDAO implements IClientesDAO {
                 String correo = resultado.getString("correoElectronico");
                 String contraseña = resultado.getString("aes_decrypt(contraseña,'hunter2')");
                 cliente = new Cliente(id,correo,contraseña);
+                return cliente;
             }
-            return cliente;
+            throw new PersistenciaException("No fue posible encontrar el cliente");
         }catch (SQLException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
             throw new PersistenciaException("No fue posible encontrar el cliente");

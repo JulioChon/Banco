@@ -9,6 +9,7 @@ import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.IConexionBD;
+import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -18,15 +19,17 @@ import javax.swing.JOptionPane;
  * @author julio
  */
 public class LoginForm extends javax.swing.JFrame {
-     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
+    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
+    private final ICuentasDAO cuentasDao;
     /**
      * Creates new form LoginForm
      */
-    public LoginForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO) {
+    public LoginForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDao) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
+         this.cuentasDao = cuentasDao;
         initComponents();
     }
 
@@ -149,7 +152,6 @@ public class LoginForm extends javax.swing.JFrame {
             Cliente clienteGuardado = this.clientesDAO.consultar(cliente.getCorreoElectronico());
             return clienteGuardado;
         }catch(PersistenciaException ex){
-            System.out.println("Hola");
             this.mostrarMensajeErrorAlConsultarCliente();
             return null;
         }
@@ -163,7 +165,7 @@ public class LoginForm extends javax.swing.JFrame {
         if(clienteConsultado.getContrasena().equals(datosForm.getContrasena())){
             this.mostrarMensajeInformacionCorrecta();
             this.dispose();
-            new AdministracionCuentaForm(clientesDAO,direccionesDAO).setVisible(true);
+            new AdministracionCuentaForm(clientesDAO,direccionesDAO,cuentasDao,clienteConsultado).setVisible(true);
         }else{
             this.mostrarMensajeErrorPorContrasena();
         }
@@ -174,7 +176,7 @@ public class LoginForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-         new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
+         new InicioForm(clientesDAO,direccionesDAO,cuentasDao).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

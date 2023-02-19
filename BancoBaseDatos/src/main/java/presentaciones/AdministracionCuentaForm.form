@@ -44,7 +44,7 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="cmbCuentas" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField1" min="-2" pref="107" max="-2" attributes="0"/>
+                  <Component id="txtSaldo" min="-2" pref="107" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="0" pref="86" max="32767" attributes="0"/>
           </Group>
@@ -62,7 +62,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField1" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtSaldo" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -154,18 +154,11 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="cmbCuentas">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="Item 1"/>
-            <StringItem index="1" value="Item 2"/>
-            <StringItem index="2" value="Item 3"/>
-            <StringItem index="3" value="Item 4"/>
-          </StringArray>
-        </Property>
-      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbCuentasActionPerformed"/>
+      </Events>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Integer&gt;"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
@@ -173,7 +166,7 @@
         <Property name="text" type="java.lang.String" value="Saldo"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField1">
+    <Component class="javax.swing.JTextField" name="txtSaldo">
     </Component>
   </SubComponents>
 </Form>

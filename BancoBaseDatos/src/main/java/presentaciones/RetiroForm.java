@@ -7,6 +7,7 @@ package presentaciones;
 
 import interfaces.IClientesDAO;
 import interfaces.IConexionBD;
+import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
 
 /**
@@ -17,12 +18,14 @@ public class RetiroForm extends javax.swing.JFrame {
 
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
+    private final ICuentasDAO cuentasDAO;
     /**
      * Creates new form RetiroForm
      */
-    public RetiroForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO) {
+    public RetiroForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
+        this.cuentasDAO = cuentasDAO;
         initComponents();
     }
 
@@ -111,7 +114,7 @@ public class RetiroForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
+        new InicioForm(clientesDAO,direccionesDAO,cuentasDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

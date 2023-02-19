@@ -9,6 +9,7 @@ import dominio.Cliente;
 import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.IConexionBD;
+import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
 
 /**
@@ -17,15 +18,17 @@ import interfaces.IDireccionesDAO;
  */
 public class InicioForm extends javax.swing.JDialog {
 
-     private final IClientesDAO clientesDAO;
+    private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
+    private final ICuentasDAO cuentasDao;
     
     /**
      * Creates new form InicioForm
      */
-    public InicioForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO) {
+    public InicioForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDao) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
+        this.cuentasDao = cuentasDao;
         initComponents();
     }
 
@@ -106,17 +109,17 @@ public class InicioForm extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        new LoginForm(clientesDAO,direccionesDAO).setVisible(true);
+        new LoginForm(clientesDAO,direccionesDAO,cuentasDao).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearUsuarioActionPerformed
-          new ClientesForm(clientesDAO,direccionesDAO).setVisible(true);
+          new ClientesForm(clientesDAO,direccionesDAO,cuentasDao).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCrearUsuarioActionPerformed
 
     private void btnRetiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetiroActionPerformed
-        new RetiroForm(clientesDAO,direccionesDAO).setVisible(true);
+        new RetiroForm(clientesDAO,direccionesDAO,cuentasDao).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRetiroActionPerformed
 

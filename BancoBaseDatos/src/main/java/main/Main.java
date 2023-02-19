@@ -6,9 +6,11 @@ package main;
 
 import implementaciones.ClientesDAO;
 import implementaciones.ConexionBD;
+import implementaciones.CuentasDAO;
 import implementaciones.DireccionesDAO;
 import interfaces.IClientesDAO;
 import interfaces.IConexionBD;
+import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
 import presentaciones.InicioForm;
 
@@ -26,7 +28,8 @@ public class Main {
         
         IClientesDAO clientesDAO = new ClientesDAO(generadorConexion);
         IDireccionesDAO direccionesDAO = new DireccionesDAO(generadorConexion);
-        new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
+        ICuentasDAO cuentasDAO = new CuentasDAO(generadorConexion);
+        new InicioForm(clientesDAO,direccionesDAO,cuentasDAO).setVisible(true);
 
     }
     

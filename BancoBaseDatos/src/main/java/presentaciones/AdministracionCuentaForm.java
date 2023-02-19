@@ -6,12 +6,16 @@
 package presentaciones;
 
 import dominio.Cliente;
+import dominio.Cuenta;
+import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
-
 import interfaces.IClientesDAO;
-import interfaces.IConexionBD;
-
+import interfaces.ICuentasDAO;
 import interfaces.IDireccionesDAO;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,16 +23,22 @@ import interfaces.IDireccionesDAO;
  */
 public class AdministracionCuentaForm extends javax.swing.JFrame {
 
-     private final IClientesDAO clientesDAO;
+    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
+    private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
-    
+    private final ICuentasDAO cuentasDao;
+    private Cliente cliente;
+
     /**
      * Creates new form AdministracionCuentaForm
      */
-    public AdministracionCuentaForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO) {
+    public AdministracionCuentaForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDao, Cliente cliente) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
+        this.cuentasDao = cuentasDao;
+        this.cliente = cliente;
         initComponents();
+        this.cargarCuentasCliente();
     }
 
     /**
@@ -52,7 +62,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         cmbCuentas = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtSaldo = new javax.swing.JTextField();
 
         jMenu1.setText("jMenu1");
 
@@ -125,7 +135,11 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
 
         jLabel1.setText("Cuenta");
 
-        cmbCuentas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbCuentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCuentasActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Saldo");
 
@@ -142,7 +156,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cmbCuentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 86, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -156,12 +170,37 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cargarCuentasCliente() {
+        try {
+           List<Cuenta> cuentasCliente = this.cuentasDao.consultarCuentasCliente(cliente.getId());
+            for (Cuenta cuenta : cuentasCliente) {
+                cmbCuentas.addItem(cuenta.getNumeroCuenta());
+            }
+        } catch (PersistenciaException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+        }
+    }
+    
+    private void obtenerSaldo(int numeroCuenta){
+         Cuenta cuenta =this.cuentasDao.consultarCuenta(numeroCuenta);
+         float saldo = cuenta.getMonto();
+         this.cargarSaldo(saldo);
+    }
+    public void cargarSaldo(float saldo){
+        this.txtSaldo.setEditable(false);
+        this.txtSaldo.setText("$" + saldo);
+    }
+    public void mostrarMensajeErrorAlCrear() {
+        JOptionPane.showMessageDialog(this, "Error al crear cuenta, intentar luego",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
     private void btnMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovimientosActionPerformed
         new MovimientosForm(clientesDAO).setVisible(true);
@@ -172,17 +211,28 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTransferenciaActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        new InicioForm(clientesDAO,direccionesDAO).setVisible(true);
+        new InicioForm(clientesDAO, direccionesDAO, cuentasDao).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
 
-    private void crearCuenta(){
-        
+    private void crearCuenta() {
+        try {
+            this.cuentasDao.crearCuenta(cliente.getId());
+        } catch (PersistenciaException ex) {
+            this.mostrarMensajeErrorAlCrear();
+        }
     }
-    
+
     private void btnCrearCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearCuentaActionPerformed
-        
+        this.crearCuenta();
+        cmbCuentas.removeAllItems();
+        this.cargarCuentasCliente();
     }//GEN-LAST:event_btnCrearCuentaActionPerformed
+
+    private void cmbCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCuentasActionPerformed
+       int numeroCuenta = (Integer)cmbCuentas.getSelectedItem();
+       this.obtenerSaldo(numeroCuenta);
+    }//GEN-LAST:event_cmbCuentasActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -190,14 +240,14 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     private javax.swing.JButton btnMovimientos;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnTransferencia;
-    private javax.swing.JComboBox<String> cmbCuentas;
+    private javax.swing.JComboBox<Integer> cmbCuentas;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JTextField txtSaldo;
     // End of variables declaration//GEN-END:variables
 }
