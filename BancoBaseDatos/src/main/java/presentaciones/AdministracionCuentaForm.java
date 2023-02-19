@@ -7,6 +7,7 @@ package presentaciones;
 
 import dominio.Cliente;
 import dominio.Cuenta;
+import dominio.RetiroSinCuenta;
 import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
@@ -31,6 +32,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     private final IRetirosSinCuentaDAO retirosDAO;
     private Cliente cliente;
     private List <Cuenta> cuentasCliente;
+    private int numeroCuenta;
     /**
      * Creates new form AdministracionCuentaForm
      */
@@ -101,6 +103,11 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         btnRetiroSinCuenta.setFocusable(false);
         btnRetiroSinCuenta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnRetiroSinCuenta.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnRetiroSinCuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRetiroSinCuentaActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnRetiroSinCuenta);
 
         jButton4.setText("Actualizar Datos ");
@@ -240,6 +247,26 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         }
     }
 
+    public void mostrarMensajeErrorCrearRetiroSinCuenta() {
+        JOptionPane.showMessageDialog(this, "Error no se pudo crear el retiro sin cuenta",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public void mostrarMensajeDatosParaRetiro(RetiroSinCuenta informacion) {
+        JOptionPane.showMessageDialog(this, "El folio del retiro es: " + informacion.getFolio()
+                + "La Contraseña para realizar el retiro es: " + informacion.getContraseña(),
+                "Informacion", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void retiroSinCuenta(){
+        try{
+            RetiroSinCuenta folioRetiro = this.retirosDAO.crearRetiro(numeroCuenta);
+            RetiroSinCuenta datosConsultados  = this.retirosDAO.consultar(folioRetiro.getFolio());
+            this.mostrarMensajeDatosParaRetiro(datosConsultados);
+        } catch (PersistenciaException ex) {
+            this.mostrarMensajeErrorCrearRetiroSinCuenta();
+        }
+    }
     private void btnCrearCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearCuentaActionPerformed
         this.crearCuenta();
         cmbCuentas.removeAllItems();
@@ -247,9 +274,13 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCrearCuentaActionPerformed
 
     private void cmbCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCuentasActionPerformed
-        int numeroCuenta = (Integer) cmbCuentas.getSelectedItem();
+         numeroCuenta = (Integer) cmbCuentas.getSelectedItem();
         this.obtenerSaldo(numeroCuenta);
     }//GEN-LAST:event_cmbCuentasActionPerformed
+
+    private void btnRetiroSinCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetiroSinCuentaActionPerformed
+       this.retiroSinCuenta();
+    }//GEN-LAST:event_btnRetiroSinCuentaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -66,5 +66,23 @@ begin
 END
 $$
 
-call retiroSinCuenta(1,10000001,200)
+delimiter $$
+CREATE PROCEDURE cambiar_estado_retiro_sin_cuenta(in folioRetiro int)
+BEGIN
+    DECLARE registro_time DATETIME;
+    DECLARE actual_time DATETIME;
+    DECLARE tiempo_transcurrido INT;
+    SELECT fecha FROM retirossincuenta WHERE folio = folioRetiro INTO registro_time;
+    SET actual_time = NOW();
+    SET tiempo_transcurrido = TIMESTAMPDIFF(MINUTE, registro_time, actual_time);
+    IF tiempo_transcurrido > 10 THEN
+        UPDATE retirossincuenta SET estado = 'no cobrado' WHERE folio = folioRetiro;
+    END IF;
+END
+$$
+
+
+
+
+
 

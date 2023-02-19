@@ -244,7 +244,7 @@ public class TransferenciasForm extends javax.swing.JFrame {
 
     private void txtMontoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoKeyTyped
         char car = evt.getKeyChar();
-        if ((car < '0' || car > '9') && (car < ',' || car > '.'))
+        if ((car < '0' || car > '9') && (car < '.' ))
             evt.consume();
     }//GEN-LAST:event_txtMontoKeyTyped
 

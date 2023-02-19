@@ -28,11 +28,14 @@ public class RetiroSinCuenta {
         this.cuenta_retirada = cuenta_retirada;
     }
 
-    public RetiroSinCuenta(Integer folio, Integer contraseña, String estado) {
+    public RetiroSinCuenta(Integer folio, Integer contraseña, String estado, Integer cuenta_retirada) {
         this.folio = folio;
         this.contraseña = contraseña;
         this.estado = estado;
+        this.cuenta_retirada = cuenta_retirada;
     }
+
+    
 
     public RetiroSinCuenta(Integer folio, Integer contraseña, float monto) {
         this.folio = folio;

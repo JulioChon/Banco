@@ -23,15 +23,16 @@ import javax.swing.JOptionPane;
  */
 public class RetiroForm extends javax.swing.JFrame {
 
-    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName()); 
+    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     private final ICuentasDAO cuentasDAO;
     private final IRetirosSinCuentaDAO retirosDAO;
+
     /**
      * Creates new form RetiroForm
      */
-    public RetiroForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO,IRetirosSinCuentaDAO retirosDAO) {
+    public RetiroForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
@@ -64,6 +65,12 @@ public class RetiroForm extends javax.swing.JFrame {
 
         jLabel2.setText("Contraseña");
 
+        txtFolio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFolioKeyTyped(evt);
+            }
+        });
+
         btnAceptar.setText("Aceptar");
         btnAceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -79,6 +86,18 @@ public class RetiroForm extends javax.swing.JFrame {
         });
 
         jLabel3.setText("Monto");
+
+        txtMonto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtMontoKeyTyped(evt);
+            }
+        });
+
+        txtContrasena.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtContrasenaKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -130,65 +149,126 @@ public class RetiroForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private RetiroSinCuenta extrarDatosForm(){
-        Integer folio = Integer.getInteger(txtFolio.getText());
-        Integer contrasena = Integer.getInteger(txtContrasena.getText());
-        Float monto  = Float.valueOf(txtMonto.getText());
-        RetiroSinCuenta retiroSinCuenta = new RetiroSinCuenta(folio, contrasena, monto);
-        return retiroSinCuenta;
+    private RetiroSinCuenta extrarDatosForm() throws PersistenciaException {
+        if (txtFolio.getText().isEmpty() && txtContrasena.getText().isEmpty() && txtMonto.getText().isEmpty()) {
+            this.mostrarMensajeErrorDatos();
+            throw new PersistenciaException("");
+        } else {
+            Integer folio = Integer.parseInt(txtFolio.getText());
+            Integer contrasena = Integer.parseInt(txtContrasena.getText());
+            Float monto = Float.valueOf(txtMonto.getText());
+            RetiroSinCuenta retiroSinCuenta = new RetiroSinCuenta(folio, contrasena, monto);
+            return retiroSinCuenta;
+
+        }
+
     }
-    
+
     public void mostrarMensajeErrorConsultarCuenta() {
         JOptionPane.showMessageDialog(this, "El folio no es correcto",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
+
+    public void mostrarMensajeErrorDatos() {
+        JOptionPane.showMessageDialog(this, "Todos los datos deben de estar llenos",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     public void mostrarMensajeErrorSaldoInsuficiente() {
         JOptionPane.showMessageDialog(this, "Saldo en cuenta insucificiente",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
-    private void comprobarFolio(){
-        try{
+
+    public void mostrarMensajeErrorContrasena() {
+        JOptionPane.showMessageDialog(this, "La Contraseña no es correcta",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void mostrarMensajeErrorEstado() {
+        JOptionPane.showMessageDialog(this, "Este folio ya fue cobrado o el tiempo vencio",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void mostrarMensajeRealizado() {
+        JOptionPane.showMessageDialog(this, "Retiro realizado",
+                "Informacion", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void limpiarDatos() {
+        this.txtFolio.setText("");
+        this.txtContrasena.setText("");
+        this.txtMonto.setText("");
+    }
+
+    private void comprobarFolio() {
+        try {
             RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
             this.retirosDAO.consultar(retiroSinCuenta.getFolio());
-        }catch (PersistenciaException ex){
-             LOG.log(Level.SEVERE, ex.getMessage());
-             this.mostrarMensajeErrorConsultarCuenta();
+        } catch (PersistenciaException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+            this.mostrarMensajeErrorConsultarCuenta();
         }
     }
-    private RetiroSinCuenta comprobarSaldo(){
-        try{
+
+    private RetiroSinCuenta comprobarSaldo() {
+        try {
             RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
             RetiroSinCuenta folioConsultado = this.retirosDAO.consultar(retiroSinCuenta.getFolio());
             Cuenta consultarCuenta = this.cuentasDAO.consultarCuenta(folioConsultado.getCuenta_retirada());
-            if(consultarCuenta.getMonto()<retiroSinCuenta.getMonto()){
+
+            if (consultarCuenta.getMonto() < retiroSinCuenta.getMonto()) {
                 this.mostrarMensajeErrorSaldoInsuficiente();
                 return null;
-            }else{
+            } else {
                 return folioConsultado;
             }
-        }catch (PersistenciaException ex){
+        } catch (PersistenciaException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
             return null;
         }
     }
-    private void realizarRetiro(){
-        try{
-            RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
-            this.comprobarFolio();
-            if(this.comprobarSaldo() == null){
-                
-            }else{
-                if(retiroSinCuenta.getContraseña() == this.comprobarSaldo().getContraseña()){
-                  this.retirosDAO.actualizarRetiro(retiroSinCuenta.getFolio(),retiroSinCuenta.getMonto(), "Cobrado");
-                }
+
+    private boolean comprobarEstadoTiempo(RetiroSinCuenta retiroSinCuenta) {
+        try {
+            this.retirosDAO.comprobarEstao(retiroSinCuenta.getFolio());
+            RetiroSinCuenta estado = this.retirosDAO.consultar(retiroSinCuenta.getFolio());
+            if (estado.getEstado().equals("Pendiente")) {
+                return true;
+            } else {
+                return false;
             }
-        }catch (PersistenciaException ex){
+        } catch (PersistenciaException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
+            return false;
         }
     }
+
+    private void realizarRetiro() {
+        try {
+            RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
+            this.comprobarFolio();
+            RetiroSinCuenta datosComprobados = this.comprobarSaldo();
+            if (datosComprobados == null) {
+            } else {
+                if (retiroSinCuenta.getContraseña().equals(datosComprobados.getContraseña())) {
+                    if (this.comprobarEstadoTiempo(retiroSinCuenta)) {
+                        this.retirosDAO.actualizarRetiro(datosComprobados.getFolio(), datosComprobados.getCuenta_retirada(), retiroSinCuenta.getMonto());
+                        this.mostrarMensajeRealizado();
+                        this.limpiarDatos();
+                    } else {
+                        this.mostrarMensajeErrorEstado();
+                    }
+                } else {
+                    this.mostrarMensajeErrorContrasena();
+                }
+            }
+        } catch (PersistenciaException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+        }
+
+    }
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new InicioForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
+        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -196,7 +276,24 @@ public class RetiroForm extends javax.swing.JFrame {
         this.realizarRetiro();
     }//GEN-LAST:event_btnAceptarActionPerformed
 
-  
+    private void txtContrasenaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContrasenaKeyTyped
+        char car = evt.getKeyChar();
+        if (car < '0' || car > '9')
+            evt.consume();
+    }//GEN-LAST:event_txtContrasenaKeyTyped
+
+    private void txtFolioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFolioKeyTyped
+        char car = evt.getKeyChar();
+        if (car < '0' || car > '9')
+            evt.consume();
+    }//GEN-LAST:event_txtFolioKeyTyped
+
+    private void txtMontoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoKeyTyped
+        char car = evt.getKeyChar();
+        if ((car < '0' || car > '9') && (car < '.'))
+            evt.consume();
+    }//GEN-LAST:event_txtMontoKeyTyped
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;

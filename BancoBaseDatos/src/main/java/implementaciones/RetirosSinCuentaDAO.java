@@ -55,7 +55,7 @@ public class RetirosSinCuentaDAO implements IRetirosSinCuentaDAO{
 
     @Override
     public RetiroSinCuenta consultar(Integer folio) throws PersistenciaException {
-       String codigoSQL = "Select folio, aes_decrypt(contraseña,'hunter2'),cuenta_retirada from "
+       String codigoSQL = "Select folio, aes_decrypt(contraseña,'hunter2'),cuenta_retirada,estado from "
                + "retirosSinCuenta where folio = ?";
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
                 PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
@@ -64,9 +64,10 @@ public class RetirosSinCuentaDAO implements IRetirosSinCuentaDAO{
            RetiroSinCuenta retiroSinCuenta = null;
            if (resultado.next()) {
                Integer folioRetiro = resultado.getInt("folio");
-               Integer contraseña = resultado.getInt(" aes_decrypt(contraseña,'hunter2')");
+               Integer contraseña = resultado.getInt("aes_decrypt(contraseña,'hunter2')");
                String estado = resultado.getString("estado");
-               retiroSinCuenta = new RetiroSinCuenta(folio, contraseña, estado);
+               Integer cuentaRetirada  = resultado.getInt("cuenta_retirada");
+               retiroSinCuenta = new RetiroSinCuenta(folio, contraseña, estado,cuentaRetirada);
                return retiroSinCuenta;
            }
            throw new PersistenciaException("La cuenta no existe");
@@ -78,13 +79,13 @@ public class RetirosSinCuentaDAO implements IRetirosSinCuentaDAO{
     }
 
     @Override
-    public void actualizarRetiro(Integer folio,Float monto, String estado) throws PersistenciaException {
+    public void actualizarRetiro(Integer folio,Integer numeCuenta,Float monto) throws PersistenciaException {
        String codigoSQL = "call retiroSinCuenta(?,?,?)";
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
                 PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
            comando.setInt(1, folio);
-           comando.setFloat(2, monto);
-           comando.setString(3, estado);
+           comando.setInt(2, numeCuenta);
+           comando.setFloat(3, monto);
            comando.executeUpdate();
        } catch (SQLException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
@@ -92,5 +93,21 @@ public class RetirosSinCuentaDAO implements IRetirosSinCuentaDAO{
         }     
 
     }
+
+    @Override
+    public void comprobarEstao(Integer folio) throws PersistenciaException {
+      String codigoSQL = "call  cambiar_estado_retiro_sin_cuenta(?)";
+      try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
+                PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
+          comando.setInt(1, folio);
+          comando.executeUpdate();
+      }catch (SQLException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+            throw new PersistenciaException("No fue consultar el estado");
+        }  
+
+    }
+    
+    
     
 }

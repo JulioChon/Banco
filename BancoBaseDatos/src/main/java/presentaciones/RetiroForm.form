@@ -91,6 +91,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtFolio">
+      <Events>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtFolioKeyTyped"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnAceptar">
       <Properties>
@@ -114,8 +117,14 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtMonto">
+      <Events>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtMontoKeyTyped"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JPasswordField" name="txtContrasena">
+      <Events>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtContrasenaKeyTyped"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
