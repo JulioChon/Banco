@@ -40,9 +40,10 @@ foreign key (codigo_receptor) references cuentas(numero_cuenta)
 
 create table retirosSinCuenta(
 folio int not null primary key auto_increment,
-contraseña int(8) not null,
-monto decimal(8,4) not null,
+contraseña blob(8) not null,
+monto decimal(8,4) not null default 0,
 fecha TIMESTAMP DEFAULT NOW(),
+estado enum ("No Cobrado","Pendiente","Cobrado") default "Pendiente", 
 cuenta_retirada int not null,
 foreign key (cuenta_retirada) references cuentas(numero_cuenta)
 );

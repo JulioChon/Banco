@@ -29,7 +29,7 @@ $$
 delimiter $$
 Create trigger generarContrasena before insert on retirosSinCuenta
 for each row begin 
-set new.contraseña = LPAD(FLOOR(RAND() * 99999999), 8, '0');
+set new.contraseña = aes_encrypt(LPAD(FLOOR(RAND() * 99999999), 8, '0'),"hunter2");
 end;
 $$
 
@@ -49,3 +49,22 @@ BEGIN
     END IF;
 END
 $$
+
+delimiter $$ 
+CREATE PROCEDURE retiroSinCuenta(in folioRetiro int,IN emisor INT,IN montoRetiro DECIMAL(10, 2))
+begin 
+     DECLARE saldo_origen DECIMAL(10, 2);
+	START TRANSACTION;
+    SELECT monto INTO saldo_origen FROM cuentas WHERE numero_cuenta = emisor FOR UPDATE;
+    IF (saldo_origen >= montoRetiro) THEN
+    UPDATE cuentas SET monto = monto - montoRetiro WHERE numero_cuenta = emisor;
+    Update retirosSinCuenta set monto = montoRetiro,Estado = "Cobrado" Where folio = folioRetiro;
+       COMMIT;
+    ELSE
+        ROLLBACK;
+    END IF;
+END
+$$
+
+call retiroSinCuenta(1,10000001,200)
+
