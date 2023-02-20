@@ -85,6 +85,7 @@ public class MovimientosForm extends javax.swing.JFrame {
     public void transferenciasRealizas(){
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try{
+             // aqui es donde le mandas el periodo, primero la fecha inicio y despues la final
             List<Transferencia> transferenciasRealizadas = this.movimientosDAO.realizadas(numeroCuenta, configPaginado);
             DefaultTableModel modeloTabla = (DefaultTableModel) this.tblTransferencias.getModel();
             modeloTabla.setRowCount(0);
@@ -103,6 +104,7 @@ public class MovimientosForm extends javax.swing.JFrame {
     public void transferenciasRecibidas(){
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try{
+             // aqui es donde le mandas el periodo, primero la fecha inicio y despues la final
             List<Transferencia> transferenciasRecibidas = this.movimientosDAO.recibidas(numeroCuenta, configPaginado);
             DefaultTableModel modeloTabla = (DefaultTableModel) this.tblTransferencias.getModel();
             modeloTabla.setRowCount(0);
@@ -121,6 +123,7 @@ public class MovimientosForm extends javax.swing.JFrame {
     public void retiros(){
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try{
+             // aqui es donde le mandas el periodo, primero la fecha inicio y despues la final
             List<RetiroSinCuenta> retirosSinCuentaRealizados = this.movimientosDAO.realizar(numeroCuenta, configPaginado) ;
             DefaultTableModel modeloTabla = (DefaultTableModel) this.tblOtrosMovimientos.getModel();
             modeloTabla.setRowCount(0);
@@ -139,6 +142,7 @@ public class MovimientosForm extends javax.swing.JFrame {
     public void depositos(){
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try{
+             // aqui es donde le mandas el periodo, primero la fecha inicio y despues la final
             List<Deposito> depostisos = this.movimientosDAO.Depocitosrecibidos(numeroCuenta, configPaginado);
             DefaultTableModel modeloTabla = (DefaultTableModel) this.tblOtrosMovimientos.getModel();
             modeloTabla.setRowCount(0);

@@ -39,7 +39,7 @@ public class TransferenciasForm extends javax.swing.JFrame {
     /**
      * Creates new form TransferenciasForm
      */
-    public TransferenciasForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente, List<Cuenta> cuentasCliente,IDepositosDAO depositosDAO,IMoviminetosDAO movimientosDAO) {
+    public TransferenciasForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente, List<Cuenta> cuentasCliente, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
@@ -192,12 +192,21 @@ public class TransferenciasForm extends javax.swing.JFrame {
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    public void mostrarMensajeErorMonto(){
+    public void mostrarMensajeErorMonto() {
         JOptionPane.showMessageDialog(this, "La cuenta no tiene los suficientes fondos",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
-    
+
+    public void mostrarMensajeErorConMonto() {
+        JOptionPane.showMessageDialog(this, "Monto no disponible",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void mostrarMensajeTransferencia() {
+        JOptionPane.showMessageDialog(this, "Transferencia realizada",
+                "Informacion", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private boolean validarContrasena(Integer numCuenta) {
         if (txtContraseña != null) {
             String contrasena = txtContraseña.getText();
@@ -221,8 +230,16 @@ public class TransferenciasForm extends javax.swing.JFrame {
             if (cuenta.getCodigoCliente() != null) {
                 if (numCuenta != cuenta.getNumeroCuenta()) {
                     if (this.validarContrasena(numCuenta)) {
-                        float monto = Float.parseFloat(txtMonto.getText());
-                        this.cuentasDAO.transferencia(numCuenta, cuentaDestino, monto);
+                        if (txtMonto.getText().isEmpty() || Float.parseFloat(txtMonto.getText()) == 0.0) {
+                            this.mostrarMensajeErorConMonto();
+                        } else {
+                            float monto = Float.parseFloat(txtMonto.getText());
+                            this.cuentasDAO.transferencia(numCuenta, cuentaDestino, monto);
+                            this.mostrarMensajeTransferencia();
+                            new AdministracionCuentaForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, cliente, depositosDAO, movimientosDAO).setVisible(true);
+                            this.dispose();
+                        }
+
                     }
                 } else {
                     this.mostrarMensajeErrorCuentaExistente();
@@ -236,16 +253,16 @@ public class TransferenciasForm extends javax.swing.JFrame {
     }
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new AdministracionCuentaForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,cliente,depositosDAO,movimientosDAO).setVisible(true);
+        new AdministracionCuentaForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, cliente, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-          this.comprobarCuentaDestino();
+        this.comprobarCuentaDestino();
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void cmbCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCuentasActionPerformed
-            this.numCuenta = (Integer)cmbCuentas.getSelectedItem();
+        this.numCuenta = (Integer) cmbCuentas.getSelectedItem();
     }//GEN-LAST:event_cmbCuentasActionPerformed
 
     private void txtCuentaDestinoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCuentaDestinoKeyTyped
@@ -256,7 +273,7 @@ public class TransferenciasForm extends javax.swing.JFrame {
 
     private void txtMontoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoKeyTyped
         char car = evt.getKeyChar();
-        if ((car < '0' || car > '9') && (car < '.' ))
+        if ((car < '0' || car > '9') && (car < '.'))
             evt.consume();
     }//GEN-LAST:event_txtMontoKeyTyped
 

@@ -94,7 +94,7 @@ public class MovimientosDAO implements IMoviminetosDAO {
     // primero va la fecha inicio y despues de la fecha final
     @Override
     public List<RetiroSinCuenta> realizar(Integer cuentaOrigen,ConfiguracionPaginado paginado) throws PersistenciaException {
-       String codigoSQL = "call historialRetirosSinCuenta(?,?,?,?,?)";
+       String codigoSQL = "call historialRetirosSinCuenta(?,?,?)";
        List<RetiroSinCuenta> retirosSinCuentaRealizados = new LinkedList<>();
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
             PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
