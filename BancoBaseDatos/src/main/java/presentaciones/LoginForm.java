@@ -9,7 +9,9 @@ import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
+import interfaces.IDepositosDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IMoviminetosDAO;
 import interfaces.IRetirosSinCuentaDAO;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -19,19 +21,25 @@ import javax.swing.JOptionPane;
  * @author julio
  */
 public class LoginForm extends javax.swing.JFrame {
+
     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     private final ICuentasDAO cuentasDAO;
     private final IRetirosSinCuentaDAO retirosDAO;
+    private final IDepositosDAO depositosDAO;
+    private final IMoviminetosDAO movimientosDAO;
+
     /**
      * Creates new form LoginForm
      */
-    public LoginForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO,IRetirosSinCuentaDAO retirosDAO) {
+    public LoginForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
         this.retirosDAO = retirosDAO;
+        this.depositosDAO = depositosDAO;
+        this.movimientosDAO = movimientosDAO;
         initComponents();
     }
 
@@ -130,55 +138,59 @@ public class LoginForm extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "El cliente no existe",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-      public void mostrarMensajeErrorPorContrasena() {
+
+    public void mostrarMensajeErrorPorContrasena() {
         JOptionPane.showMessageDialog(this, "La contraseña no es correcta",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
+
     // metodo temporal
     public void mostrarMensajeInformacionCorrecta() {
         JOptionPane.showMessageDialog(this, "Informacion correcta",
                 "Informacion",
                 JOptionPane.INFORMATION_MESSAGE);
-    }  
-      
-    public Cliente extraerDatos(){
+    }
+
+    public Cliente extraerDatos() {
         String correo = txtCorreo.getText();
         String contrasena = txtContraseña.getText();
-        Cliente cliente = new Cliente (correo,contrasena);
+        Cliente cliente = new Cliente(correo, contrasena);
         return cliente;
     }
-    
-    public Cliente consultarCliente(){
-        try{
+
+    public Cliente consultarCliente() {
+        try {
             Cliente cliente = this.extraerDatos();
             Cliente clienteGuardado = this.clientesDAO.consultar(cliente.getCorreoElectronico());
             return clienteGuardado;
-        }catch(PersistenciaException ex){
+        } catch (PersistenciaException ex) {
             this.mostrarMensajeErrorAlConsultarCliente();
             return null;
         }
     }
-    // este metodo debe de ser Cliente porque vamos a mandar los datos del cliente 
-    // a la ventana de administracionCuenta para asi poder consultar las cuentas 
-    // del cliente
-    public void comprobacionDatos(){
+
+
+    public void comprobacionDatos() {
         Cliente datosForm = this.extraerDatos();
         Cliente clienteConsultado = this.consultarCliente();
-        if(clienteConsultado.getContrasena().equals(datosForm.getContrasena())){
-            this.mostrarMensajeInformacionCorrecta();
-            this.dispose();
-            new AdministracionCuentaForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,clienteConsultado).setVisible(true);
-        }else{
-            this.mostrarMensajeErrorPorContrasena();
+        if (clienteConsultado != null) {
+            if (clienteConsultado.getContrasena().equals(datosForm.getContrasena())) {
+                this.mostrarMensajeInformacionCorrecta();
+                this.dispose();
+                new AdministracionCuentaForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, clienteConsultado, depositosDAO, movimientosDAO).setVisible(true);
+            } else {
+                this.mostrarMensajeErrorPorContrasena();
+            }
         }
+
     }
-    
+
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
-       this.comprobacionDatos();
+        this.comprobacionDatos();
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-         new InicioForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
+        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

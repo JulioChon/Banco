@@ -4,6 +4,7 @@
  */
 package dominio;
 
+import java.sql.Date;
 import java.util.Objects;
 
 /**
@@ -16,6 +17,7 @@ public class RetiroSinCuenta {
     private float monto;
     private String estado;
     private Integer cuenta_retirada;
+    private Date fecha;
     
     public RetiroSinCuenta() {
     }
@@ -33,6 +35,12 @@ public class RetiroSinCuenta {
         this.contraseña = contraseña;
         this.estado = estado;
         this.cuenta_retirada = cuenta_retirada;
+    }
+
+    public RetiroSinCuenta(float monto, Integer folio, Date fecha) {
+        this.monto = monto;
+        this.folio = folio;
+        this.fecha = fecha;
     }
 
     
@@ -66,6 +74,14 @@ public class RetiroSinCuenta {
 
     public float getMonto() {
         return monto;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
     public void setMonto(float monto) {

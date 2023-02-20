@@ -11,7 +11,9 @@ import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
+import interfaces.IDepositosDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IMoviminetosDAO;
 import interfaces.IRetirosSinCuentaDAO;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -24,22 +26,26 @@ import javax.swing.JOptionPane;
  * @author julio
  */
 public class ClientesForm extends javax.swing.JFrame {
-    
+
     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
     private final ICuentasDAO cuentasDAO;
     private final IRetirosSinCuentaDAO retirosDAO;
     private final Validadores validadores = new Validadores();
-    
+    private final IDepositosDAO depositosDAO;
+    private final IMoviminetosDAO movimientosDAO;
+
     /**
      * Creates new form ClientesForm
      */
-    public ClientesForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO) {
+    public ClientesForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
         this.retirosDAO = retirosDAO;
+        this.depositosDAO = depositosDAO;
+        this.movimientosDAO = movimientosDAO;
         initComponents();
     }
 
@@ -210,9 +216,9 @@ public class ClientesForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private Direccion extraerDatosFormDireccion(){
+    private Direccion extraerDatosFormDireccion() {
         String calle = this.txtCalle.getText();
-        String colonia  = this.txtColonia.getText();
+        String colonia = this.txtColonia.getText();
         String numeroCasa = this.txtNumeroCasa.getText();
         if (validarCalle(calle) && validarColonia(colonia) && validarNumCasa(numeroCasa)) {
             Direccion direccion = new Direccion(calle, colonia, numeroCasa);
@@ -220,7 +226,7 @@ public class ClientesForm extends javax.swing.JFrame {
         }
         return null;
     }
-    
+
     private boolean validarNombre(String nombre) {
         if (!validadores.validaNombre(nombre)) {
             JOptionPane.showMessageDialog(this, "El nombre no es válido\nSin acentos.");
@@ -283,70 +289,85 @@ public class ClientesForm extends javax.swing.JFrame {
         }
         return validadores.validaNumCasa(numCasa);
     }
-    
+
+    private void mensajeErrorFecha() {
+        JOptionPane.showMessageDialog(this, "No seleccionaste ninguna fecha");
+
+    }
+
     private Cliente extraerDatosFormCliente() {
         String nombre = this.txtNombre.getText();
         String apellidoPaterno = this.txtApellidoPaterno.getText();
         String apellidoMaterno = this.txtApellidoMaterno.getText();
         LocalDate seleccion = clpFechaNacimiento.getSelectedDate();
-        Date fechaNacimiento = new Date(seleccion.getYear() - 1900, seleccion.getMonthValue() - 1, seleccion.getDayOfMonth());
-        Integer edad = validarEdad(fechaNacimiento);
-        String correoElectronico = this.txtCorreoElectonico.getText();
-        String contrasena = this.txtContraseña.getText();
-        if (validarNombre(nombre) && edad >= 15 && validarApellidoP(apellidoPaterno) && validarApellidoM(apellidoMaterno) && validarCorreo(correoElectronico) && validarContrasena(contrasena)) {
-        Integer idDireccion = this.guardarDireccion().getId();
-        Cliente cliente = new Cliente(nombre, apellidoPaterno, apellidoMaterno,
-                    fechaNacimiento, edad, correoElectronico, contrasena, idDireccion);
-            return cliente;
+        Date fechaNacimiento;
+        if (seleccion != null) {
+            fechaNacimiento = new Date(seleccion.getYear() - 1900, seleccion.getMonthValue() - 1, seleccion.getDayOfMonth());
+            Integer edad = validarEdad(fechaNacimiento);
+            String correoElectronico = this.txtCorreoElectonico.getText();
+            String contrasena = this.txtContraseña.getText();
+            if (validarNombre(nombre) && edad >= 15 && validarApellidoP(apellidoPaterno) && validarApellidoM(apellidoMaterno) && validarCorreo(correoElectronico) && validarContrasena(contrasena)) {
+                Integer idDireccion = this.guardarDireccion().getId();
+                Cliente cliente = new Cliente(nombre, apellidoPaterno, apellidoMaterno,
+                        fechaNacimiento, edad, correoElectronico, contrasena, idDireccion);
+                return cliente;
+            }
+        } else {
+           this.mensajeErrorFecha();
         }
+
         return null;
     }
-    
-     public void mostrarMensajeErrorAlGuardarDireccion() {
+
+    public void mostrarMensajeErrorAlGuardarDireccion() {
         JOptionPane.showMessageDialog(this, "NO fue posible agregar la dirrecion",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
-     public void mostrarMensajeErrorAlGuardarCliente() {
-        JOptionPane.showMessageDialog(this, "NO fue posible agregar el cliente",
+
+    public void mostrarMensajeErrorAlGuardarCliente() {
+        JOptionPane.showMessageDialog(this, "NO fue posible agregar el cliente, ya que este ya existe",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
-     public void mostrarMensajeClienteGuardado() {
+
+    public void mostrarMensajeClienteGuardado() {
         JOptionPane.showMessageDialog(this, "Se agrego el cliente: ",
                 "Informacion",
                 JOptionPane.INFORMATION_MESSAGE);
     }
-    
-    private Direccion guardarDireccion(){
-        try{
+
+    private Direccion guardarDireccion() {
+        try {
             Direccion direccion = this.extraerDatosFormDireccion();
             Direccion direccionGuardada = this.direccionesDAO.insertar(direccion);
             return direccionGuardada;
-        }catch(PersistenciaException ex){
+        } catch (PersistenciaException ex) {
             this.mostrarMensajeErrorAlGuardarDireccion();
             return null;
         }
     }
-    
-    private void guardarCliente(){
-        try{
+
+    private void guardarCliente() {
+        try {
             Cliente cliente = this.extraerDatosFormCliente();
-            Cliente clienteGuardado = this.clientesDAO.insertar(cliente);
-            mostrarMensajeClienteGuardado();
-            this.dispose();
-             new InicioForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
-        }catch(PersistenciaException ex){
+            if (cliente != null) {
+                Cliente clienteGuardado = this.clientesDAO.insertar(cliente);
+                mostrarMensajeClienteGuardado();
+                this.dispose();
+                new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
+                dispose();
+            }
+
+        } catch (PersistenciaException ex) {
             this.mostrarMensajeErrorAlGuardarCliente();
         }
     }
-    
+
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         this.guardarCliente();
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new InicioForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
+        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

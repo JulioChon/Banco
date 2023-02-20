@@ -8,7 +8,9 @@ import dominio.Cuenta;
 import excepciones.PersistenciaException;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
+import interfaces.IDepositosDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IMoviminetosDAO;
 import interfaces.IRetirosSinCuentaDAO;
 import javax.swing.JOptionPane;
 
@@ -24,15 +26,19 @@ public class DepositosForm extends javax.swing.JFrame {
     private final IRetirosSinCuentaDAO retirosDAO;
     private Integer numCuenta;
     private float monto;
+    private final IDepositosDAO depositosDAO;
+    private final IMoviminetosDAO movimientosDAO;
 
     /**
      * Creates new form DepositosForm
      */
-    public DepositosForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO) {
+    public DepositosForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO,IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
         this.retirosDAO = retirosDAO;
+        this.depositosDAO = depositosDAO;
+        this.movimientosDAO = movimientosDAO;;
         initComponents();
     }
 
@@ -165,9 +171,10 @@ public class DepositosForm extends javax.swing.JFrame {
             Cuenta cuentaConsultada = consultarCuenta();
             if (cuentaConsultada.getCodigoCliente()!=null) {
                 this.cuentasDAO.actualizarSaldo(numCuenta, monto);
+                this.depositosDAO.insertarDeposito(numCuenta, monto);
                 this.mostrarMensajeInformacionCorrecta();
+                new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
                 this.dispose();
-                new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO).setVisible(true);
             }else{
                 this.mostrarMensajeErrorAlConsultarCuenta();
             }
@@ -177,7 +184,7 @@ public class DepositosForm extends javax.swing.JFrame {
     }
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO).setVisible(true);
+        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

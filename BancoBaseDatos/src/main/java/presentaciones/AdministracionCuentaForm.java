@@ -12,7 +12,9 @@ import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
+import interfaces.IDepositosDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IMoviminetosDAO;
 import interfaces.IRetirosSinCuentaDAO;
 import java.util.List;
 import java.util.logging.Level;
@@ -33,15 +35,19 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     private Cliente cliente;
     private List <Cuenta> cuentasCliente;
     private int numeroCuenta;
+    private final IDepositosDAO depositosDAO;
+    private final IMoviminetosDAO movimientosDAO;
     /**
      * Creates new form AdministracionCuentaForm
      */
-    public AdministracionCuentaForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente) {
+    public AdministracionCuentaForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente,IDepositosDAO depositosDAO,IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
         this.retirosDAO = retirosDAO;
         this.cliente = cliente;
+        this.depositosDAO = depositosDAO;
+        this.movimientosDAO = movimientosDAO;
         initComponents();
         this.cargarCuentasCliente();
     }
@@ -226,16 +232,17 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     }
 
     private void btnMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovimientosActionPerformed
-        new MovimientosForm(clientesDAO).setVisible(true);
+        new MovimientosForm(clientesDAO,direccionesDAO, cuentasDAO, retirosDAO,cliente,cuentasCliente, depositosDAO,movimientosDAO).setVisible(true);
+        this.dispose();;
     }//GEN-LAST:event_btnMovimientosActionPerformed
 
     private void btnTransferenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferenciaActionPerformed
-        new TransferenciasForm(clientesDAO,direccionesDAO, cuentasDAO, retirosDAO,cliente,cuentasCliente).setVisible(true);
+        new TransferenciasForm(clientesDAO,direccionesDAO, cuentasDAO, retirosDAO,cliente,cuentasCliente, depositosDAO,movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnTransferenciaActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO).setVisible(true);
+        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO,movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
 

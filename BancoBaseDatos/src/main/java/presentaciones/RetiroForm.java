@@ -11,7 +11,9 @@ import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
+import interfaces.IDepositosDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IMoviminetosDAO;
 import interfaces.IRetirosSinCuentaDAO;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,15 +30,19 @@ public class RetiroForm extends javax.swing.JFrame {
     private final IDireccionesDAO direccionesDAO;
     private final ICuentasDAO cuentasDAO;
     private final IRetirosSinCuentaDAO retirosDAO;
+    private final IDepositosDAO depositosDAO;
+    private final IMoviminetosDAO movimientosDAO;
 
     /**
      * Creates new form RetiroForm
      */
-    public RetiroForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO) {
+    public RetiroForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO,IDepositosDAO depositosDAO,IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
         this.retirosDAO = retirosDAO;
+        this.depositosDAO = depositosDAO;
+        this.movimientosDAO = movimientosDAO;
         initComponents();
     }
 
@@ -268,7 +274,7 @@ public class RetiroForm extends javax.swing.JFrame {
 
     }
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO).setVisible(true);
+        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 

@@ -7,7 +7,9 @@ package presentaciones;
 
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
+import interfaces.IDepositosDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IMoviminetosDAO;
 import interfaces.IRetirosSinCuentaDAO;
 
 /**
@@ -20,15 +22,19 @@ public class InicioForm extends javax.swing.JDialog {
     private final IDireccionesDAO direccionesDAO;
     private final ICuentasDAO cuentasDAO;
     private final IRetirosSinCuentaDAO retirosDAO;
+    private final  IDepositosDAO depositosDAO;
+    private final  IMoviminetosDAO movimientosDAO;
     
     /**
      * Creates new form InicioForm
      */
-    public InicioForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO) {
+    public InicioForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO,IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
         this.retirosDAO = retirosDAO;
+        this.depositosDAO = depositosDAO;
+        this.movimientosDAO = movimientosDAO;
         initComponents();
     }
 
@@ -121,22 +127,22 @@ public class InicioForm extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        new LoginForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
+        new LoginForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearUsuarioActionPerformed
-        new ClientesForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
+        new ClientesForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCrearUsuarioActionPerformed
 
     private void btnRetiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetiroActionPerformed
-        new RetiroForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
+        new RetiroForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRetiroActionPerformed
 
     private void btnDepositoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepositoActionPerformed
-        new DepositosForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO).setVisible(true);
+        new DepositosForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnDepositoActionPerformed
 

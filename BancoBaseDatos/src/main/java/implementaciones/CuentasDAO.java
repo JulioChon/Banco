@@ -127,7 +127,7 @@ public class CuentasDAO implements ICuentasDAO {
             comando.executeUpdate();
        }catch (SQLException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
-            throw new PersistenciaException("Error en la trasferencia");
+            throw new PersistenciaException("La cuenta no tiene los fondos suficiente para realizar la transferencia ");
         }
 
     }

@@ -11,7 +11,9 @@ import excepciones.PersistenciaException;
 import implementaciones.ClientesDAO;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
+import interfaces.IDepositosDAO;
 import interfaces.IDireccionesDAO;
+import interfaces.IMoviminetosDAO;
 import interfaces.IRetirosSinCuentaDAO;
 import java.util.List;
 import java.util.logging.Logger;
@@ -31,17 +33,21 @@ public class TransferenciasForm extends javax.swing.JFrame {
     private Cliente cliente;
     private List<Cuenta> cuentasCliente;
     private int numCuenta;
+    private final IDepositosDAO depositosDAO;
+    private final IMoviminetosDAO movimientosDAO;
 
     /**
      * Creates new form TransferenciasForm
      */
-    public TransferenciasForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente, List<Cuenta> cuentasCliente) {
+    public TransferenciasForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente, List<Cuenta> cuentasCliente,IDepositosDAO depositosDAO,IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
         this.retirosDAO = retirosDAO;
         this.cliente = cliente;
         this.cuentasCliente = cuentasCliente;
+        this.depositosDAO = depositosDAO;
+        this.movimientosDAO = movimientosDAO;
         initComponents();
         this.cargarCuentas();
     }
@@ -186,6 +192,12 @@ public class TransferenciasForm extends javax.swing.JFrame {
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    public void mostrarMensajeErorMonto(){
+        JOptionPane.showMessageDialog(this, "La cuenta no tiene los suficientes fondos",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    
     private boolean validarContrasena(Integer numCuenta) {
         if (txtContraseña != null) {
             String contrasena = txtContraseña.getText();
@@ -219,12 +231,12 @@ public class TransferenciasForm extends javax.swing.JFrame {
                 this.mostrarMensajeErrorAlConsultarCuenta();
             }
         } catch (PersistenciaException ex) {
-            this.mostrarMensajeErrorAlConsultarCuenta();
+            this.mostrarMensajeErorMonto();
         }
     }
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new AdministracionCuentaForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,cliente).setVisible(true);
+        new AdministracionCuentaForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,cliente,depositosDAO,movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
