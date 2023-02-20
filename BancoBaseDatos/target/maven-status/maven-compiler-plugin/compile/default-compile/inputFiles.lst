@@ -8,7 +8,6 @@ C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\j
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\dominio\Cuenta.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\interfaces\IClientesDAO.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\implementaciones\ClientesDAO.java
-C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\implementaciones\IMovimientosDAO.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\presentaciones\DepositosForm.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\presentaciones\LoginForm.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\dominio\Transferencia.java
@@ -20,6 +19,7 @@ C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\j
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\excepciones\PersistenciaException.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\dominio\Cliente.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\presentaciones\MovimientosForm.java
+C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\utils\ConfiguracionPaginado.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\implementaciones\CuentasDAO.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\validaciones\Validadores.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\dominio\RetiroSinCuenta.java
@@ -28,4 +28,5 @@ C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\j
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\dominio\Direccion.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\implementaciones\DireccionesDAO.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\presentaciones\AdministracionCuentaForm.java
+C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\implementaciones\MovimientosDAO.java
 C:\Users\julio\OneDrive\Documentos\BancoProyecto\Banco\BancoBaseDatos\src\main\java\main\Main.java

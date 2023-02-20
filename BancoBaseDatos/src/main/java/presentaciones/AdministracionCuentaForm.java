@@ -270,7 +270,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Error no se pudo crear el retiro sin cuenta",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
+
     public void mostrarMensajeErrorAlCancelar() {
         JOptionPane.showMessageDialog(this, "Error no se pudo cancelar la cuenta",
                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -286,11 +286,11 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Se ha eliminado la cuenta",
                 "Hecho", JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     public int mostrarMensajeConfirmacionCancelar() {
         return JOptionPane.showOptionDialog(this, "¿Esta seguro que desea eliminar la cuenta " + numeroCuenta + "? (Saldo: " + this.txtSaldo.getText() + ")",
-                    "Confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-                    null, new Object[]{"Sí", "No"}, JOptionPane.YES_OPTION);
+                "Confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, new Object[]{"Sí", "No"}, JOptionPane.YES_OPTION);
     }
 
     private void retiroSinCuenta() {
@@ -320,8 +320,14 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCrearCuentaActionPerformed
 
     private void cmbCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCuentasActionPerformed
-        numeroCuenta = (Integer) cmbCuentas.getSelectedItem();
-        this.obtenerSaldo(numeroCuenta);
+        if (cmbCuentas.getSelectedItem() == null) {
+            this.cargarCuentasCliente();
+            numeroCuenta = (Integer) cmbCuentas.getSelectedItem();
+        } else {
+            numeroCuenta = (Integer) cmbCuentas.getSelectedItem();
+            this.obtenerSaldo(numeroCuenta);
+        }
+
     }//GEN-LAST:event_cmbCuentasActionPerformed
 
     private void btnRetiroSinCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetiroSinCuentaActionPerformed
@@ -335,7 +341,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarCuentaActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        new ClientesForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO,cliente.getCorreoElectronico()).setVisible(true);
+        new ClientesForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO, cliente.getCorreoElectronico()).setVisible(true);
     }//GEN-LAST:event_btnActualizarActionPerformed
 
 

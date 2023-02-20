@@ -75,6 +75,8 @@ public class MovimientosForm extends javax.swing.JFrame {
         LocalDate minFecha = LocalDate.of(1920, 01, 01);
         dtpDesde.getSettings().setDateRangeLimits(minFecha, fechaActual);
         dtpHasta.getSettings().setDateRangeLimits(minFecha, fechaActual);
+        this.dtpDesde.getComponentDateTextField().setEditable(false);
+        this.dtpHasta.getComponentDateTextField().setEditable(false);
     }
     private void cargarCuentas() {
         for (Cuenta cuenta : cuentasCliente) {
@@ -184,7 +186,7 @@ public class MovimientosForm extends javax.swing.JFrame {
         }
     }
     
-    public void filtrarPorFechas(){
+    public void filtrarPorFechas(){  
         this.fechaDesde=Date.valueOf(this.dtpDesde.getDate());
         this.fechaHasta=Date.valueOf(this.dtpHasta.getDate().plusDays(1));
         this.cargarTablaTransferencias();
