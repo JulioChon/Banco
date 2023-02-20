@@ -34,6 +34,8 @@ public class MovimientosDAO implements IMoviminetosDAO {
         this.GENERADOR_CONEXIONES = GENERADOR_CONEXIONES;
     }
 
+    // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
+    // primero va la fecha inicio y despues de la fecha final
     @Override
     public List<Transferencia> realizadas(Integer cuentaOrigen,ConfiguracionPaginado paginado) throws PersistenciaException {
        String codigoSQL = "Call historialTransferenciasRealizadas(?,?,?)";
@@ -60,6 +62,8 @@ public class MovimientosDAO implements IMoviminetosDAO {
         }
     }
 
+    // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
+    // primero va la fecha inicio y despues de la fecha final
     @Override
     public List<Transferencia> recibidas(Integer cuentaDestino,ConfiguracionPaginado paginado) throws PersistenciaException {
      String codigoSQL = "Call historialTransferenciasRecibidas(?,?,?)";
@@ -86,10 +90,11 @@ public class MovimientosDAO implements IMoviminetosDAO {
         }
 
     }
-
+    // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
+    // primero va la fecha inicio y despues de la fecha final
     @Override
     public List<RetiroSinCuenta> realizar(Integer cuentaOrigen,ConfiguracionPaginado paginado) throws PersistenciaException {
-       String codigoSQL = "call historialRetirosSinCuenta(?,?,?)";
+       String codigoSQL = "call historialRetirosSinCuenta(?,?,?,?,?)";
        List<RetiroSinCuenta> retirosSinCuentaRealizados = new LinkedList<>();
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
             PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
@@ -113,6 +118,8 @@ public class MovimientosDAO implements IMoviminetosDAO {
 
     }
 
+    // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
+    // primero va la fecha inicio y despues de la fecha final
     @Override
     public List<Deposito> Depocitosrecibidos(Integer cuentaDestino,ConfiguracionPaginado paginado) throws PersistenciaException {
        String codigoSQL = "call depositos(?,?,?)";
