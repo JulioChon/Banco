@@ -30,8 +30,26 @@ public class DireccionesDAO implements IDireccionesDAO {
     }
 
     @Override
-    public Direccion consultar(Integer id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Direccion consultar(Integer id)  throws PersistenciaException{
+        String codigoSQL = "Select id,calle,colonia,numeroCasa "
+                + "from direcciones where id like ?";
+        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
+                PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
+            comando.setInt(1, id);
+            ResultSet resultado = comando.executeQuery();
+            Direccion direccion = null;
+            if (resultado.next()) {
+                String calle = resultado.getString("calle");
+                String colonia = resultado.getString("colonia");
+                String numeroCasa = resultado.getString("numeroCasa");
+                direccion = new Direccion(id, calle, colonia, numeroCasa);
+                return direccion;
+            }
+            throw new PersistenciaException("No fue posible encontrar la dirección");
+        }catch (SQLException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+            throw new PersistenciaException("No fue posible encontrar la dirección");
+        }
     }
 
     @Override

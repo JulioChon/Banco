@@ -35,18 +35,26 @@ public class ClientesForm extends javax.swing.JFrame {
     private final Validadores validadores = new Validadores();
     private final IDepositosDAO depositosDAO;
     private final IMoviminetosDAO movimientosDAO;
+    private final String correoCliente;
+    private Cliente cliente;
+    private Integer id;
 
     /**
      * Creates new form ClientesForm
      */
-    public ClientesForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
+    public ClientesForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO, String correoCliente) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
         this.retirosDAO = retirosDAO;
         this.depositosDAO = depositosDAO;
         this.movimientosDAO = movimientosDAO;
+        this.correoCliente = correoCliente;
         initComponents();
+        this.cargar();
+        LocalDate fechaActual = LocalDate.now();
+        LocalDate minFecha = LocalDate.of(1920, 01, 01);
+        clpFechaNacimiento.getSettings().setDateRangeLimits(minFecha, fechaActual);
     }
 
     /**
@@ -216,6 +224,44 @@ public class ClientesForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cargar() {
+        if (this.validar()) {
+            id = cliente.getId();
+            btnAceptar.setText("Actualizar");
+            this.txtNombre.setText(cliente.getNombre());
+            this.txtApellidoPaterno.setText(cliente.getApellidoPaterno());
+            this.txtApellidoMaterno.setText(cliente.getApellidoMaterno());
+            this.txtCorreoElectonico.setText(cliente.getCorreoElectronico());
+            this.txtContraseña.setText(cliente.getContrasena());
+            this.cargarDireccion();
+            this.clpFechaNacimiento.setSelectedDate(cliente.getFechaNacimiento().toLocalDate());
+        }
+    }
+
+    private void cargarDireccion() {
+        try {
+            Direccion direccion = this.direccionesDAO.consultar(cliente.getIdDireccion());
+            this.txtCalle.setText(direccion.getCalle());
+            this.txtColonia.setText(direccion.getColonia());
+            this.txtNumeroCasa.setText(direccion.getNumeroCasa());
+        } catch (PersistenciaException e) {
+            this.mensajeErrorDireccion();
+        }
+    }
+
+    private boolean validar() {
+        try {
+            cliente = this.clientesDAO.consultar(correoCliente);
+            return cliente != null;
+        } catch (PersistenciaException e) {
+            return false;
+        }
+    }
+
+    private void mensajeErrorDireccion() {
+        JOptionPane.showMessageDialog(this, "No se encontro la dirección");
+    }
+
     private Direccion extraerDatosFormDireccion() {
         String calle = this.txtCalle.getText();
         String colonia = this.txtColonia.getText();
@@ -313,7 +359,7 @@ public class ClientesForm extends javax.swing.JFrame {
                 return cliente;
             }
         } else {
-           this.mensajeErrorFecha();
+            this.mensajeErrorFecha();
         }
 
         return null;
@@ -329,8 +375,19 @@ public class ClientesForm extends javax.swing.JFrame {
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    public void mostrarMensajeErrorAlActualizarCliente() {
+        JOptionPane.showMessageDialog(this, "NO fue posible actualizar el cliente",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     public void mostrarMensajeClienteGuardado() {
         JOptionPane.showMessageDialog(this, "Se agrego el cliente: ",
+                "Informacion",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void mostrarMensajeClienteActualizado() {
+        JOptionPane.showMessageDialog(this, "Se actualizo el cliente: ",
                 "Informacion",
                 JOptionPane.INFORMATION_MESSAGE);
     }
@@ -346,15 +403,28 @@ public class ClientesForm extends javax.swing.JFrame {
         }
     }
 
+    private void actualizarCliente() {
+        try {
+            Cliente cliente = this.extraerDatosFormCliente();
+            if (cliente != null) {
+                Cliente clienteGuardado = this.clientesDAO.actualizar(cliente,id);
+                mostrarMensajeClienteActualizado();
+                dispose();
+            }
+
+        } catch (PersistenciaException ex) {
+            this.mostrarMensajeErrorAlActualizarCliente();
+        }
+    }
+
     private void guardarCliente() {
         try {
             Cliente cliente = this.extraerDatosFormCliente();
             if (cliente != null) {
                 Cliente clienteGuardado = this.clientesDAO.insertar(cliente);
                 mostrarMensajeClienteGuardado();
-                this.dispose();
                 new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
-                dispose();
+                this.dispose();
             }
 
         } catch (PersistenciaException ex) {
@@ -363,12 +433,19 @@ public class ClientesForm extends javax.swing.JFrame {
     }
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        this.guardarCliente();
+        if (!this.validar()) {
+            this.guardarCliente();
+        } else {
+            this.actualizarCliente();
+        }
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
+        if (!this.validar()) {
+            new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
+        }
         dispose();
+
     }//GEN-LAST:event_btnCancelarActionPerformed
 
 

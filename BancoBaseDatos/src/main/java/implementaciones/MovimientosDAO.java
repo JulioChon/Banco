@@ -37,14 +37,16 @@ public class MovimientosDAO implements IMoviminetosDAO {
     // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
     // primero va la fecha inicio y despues de la fecha final
     @Override
-    public List<Transferencia> realizadas(Integer cuentaOrigen,ConfiguracionPaginado paginado) throws PersistenciaException {
-       String codigoSQL = "Call historialTransferenciasRealizadas(?,?,?)";
+    public List<Transferencia> realizadas(Integer cuentaOrigen,ConfiguracionPaginado paginado,Date fechaDesde,Date fechaHasta) throws PersistenciaException {
+       String codigoSQL = "Call historialTransferenciasRealizadas(?,?,?,?,?)";
        List<Transferencia> transferenciasRealizadas = new LinkedList<>();
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
             PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
              comando.setInt(1, cuentaOrigen);
              comando.setInt(2, paginado.getElementoPorPagina());
              comando.setInt(3,paginado.getElementosASaltar() );
+             comando.setDate(4, fechaDesde);
+             comando.setDate(5, fechaHasta);
              ResultSet resultado = comando.executeQuery();
              Transferencia transferencia = null;
              while (resultado.next()) {
@@ -65,14 +67,16 @@ public class MovimientosDAO implements IMoviminetosDAO {
     // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
     // primero va la fecha inicio y despues de la fecha final
     @Override
-    public List<Transferencia> recibidas(Integer cuentaDestino,ConfiguracionPaginado paginado) throws PersistenciaException {
-     String codigoSQL = "Call historialTransferenciasRecibidas(?,?,?)";
+    public List<Transferencia> recibidas(Integer cuentaDestino,ConfiguracionPaginado paginado,Date fechaDesde,Date fechaHasta) throws PersistenciaException {
+     String codigoSQL = "Call historialTransferenciasRecibidas(?,?,?,?,?)";
        List<Transferencia> transferenciasRecibidas = new LinkedList<>();
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
             PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
              comando.setInt(1, cuentaDestino);
              comando.setInt(2, paginado.getElementoPorPagina());
              comando.setInt(3,paginado.getElementosASaltar() );
+             comando.setDate(4, fechaDesde);
+             comando.setDate(5, fechaHasta);
              ResultSet resultado = comando.executeQuery();
              Transferencia transferencia = null;
              while (resultado.next()) {
@@ -93,14 +97,16 @@ public class MovimientosDAO implements IMoviminetosDAO {
     // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
     // primero va la fecha inicio y despues de la fecha final
     @Override
-    public List<RetiroSinCuenta> realizar(Integer cuentaOrigen,ConfiguracionPaginado paginado) throws PersistenciaException {
-       String codigoSQL = "call historialRetirosSinCuenta(?,?,?)";
+    public List<RetiroSinCuenta> realizar(Integer cuentaOrigen,ConfiguracionPaginado paginado,Date fechaDesde,Date fechaHasta) throws PersistenciaException {
+       String codigoSQL = "call historialRetirosSinCuenta(?,?,?,?,?)";
        List<RetiroSinCuenta> retirosSinCuentaRealizados = new LinkedList<>();
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
             PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
              comando.setInt(1, cuentaOrigen);
              comando.setInt(2, paginado.getElementoPorPagina());
              comando.setInt(3,paginado.getElementosASaltar() );
+             comando.setDate(4, fechaDesde);
+             comando.setDate(5, fechaHasta);
              ResultSet resultado = comando.executeQuery();
              RetiroSinCuenta retiroSinCuenta = null;
              while (resultado.next()) {
@@ -121,21 +127,23 @@ public class MovimientosDAO implements IMoviminetosDAO {
     // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
     // primero va la fecha inicio y despues de la fecha final
     @Override
-    public List<Deposito> Depocitosrecibidos(Integer cuentaDestino,ConfiguracionPaginado paginado) throws PersistenciaException {
-       String codigoSQL = "call depositos(?,?,?)";
-       List<Deposito> depostisos = new LinkedList<>();
-       try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
+    public List<Deposito> Depocitosrecibidos(Integer cuentaDestino,ConfiguracionPaginado paginado,Date fechaDesde,Date fechaHasta) throws PersistenciaException {
+        String codigoSQL = "call depositos(?,?,?,?,?)";
+        List<Deposito> depostisos = new LinkedList<>();
+        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
             PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
              comando.setInt(1, cuentaDestino);
              comando.setInt(2, paginado.getElementoPorPagina());
              comando.setInt(3,paginado.getElementosASaltar() );
+             comando.setDate(4, fechaDesde);
+             comando.setDate(5, fechaHasta);
              ResultSet resultado = comando.executeQuery();
              Deposito deposito = null;
              while (resultado.next()) {
-                 Integer folio = resultado.getInt("id");
+                 Integer id = resultado.getInt("id");
                  float monto = resultado.getFloat("monto");
                  Date fecha = resultado.getDate("fecha");
-                 deposito = new Deposito(monto, fecha,folio);
+                 deposito = new Deposito(monto, fecha, id);
                  depostisos.add(deposito);
             }
              

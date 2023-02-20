@@ -106,12 +106,3 @@ where numero_cuenta = cuenta and  depositosacuenta.fecha between fechaInicio and
 end;
 $$
 
-
-
-
-
-
-
-
-
-

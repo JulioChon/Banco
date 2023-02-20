@@ -33,14 +33,15 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     private final ICuentasDAO cuentasDAO;
     private final IRetirosSinCuentaDAO retirosDAO;
     private Cliente cliente;
-    private List <Cuenta> cuentasCliente;
+    private List<Cuenta> cuentasCliente;
     private int numeroCuenta;
     private final IDepositosDAO depositosDAO;
     private final IMoviminetosDAO movimientosDAO;
+
     /**
      * Creates new form AdministracionCuentaForm
      */
-    public AdministracionCuentaForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente,IDepositosDAO depositosDAO,IMoviminetosDAO movimientosDAO) {
+    public AdministracionCuentaForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
@@ -66,8 +67,8 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         btnMovimientos = new javax.swing.JButton();
         btnTransferencia = new javax.swing.JButton();
         btnRetiroSinCuenta = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btnActualizar = new javax.swing.JButton();
+        btnCancelarCuenta = new javax.swing.JButton();
         btnCrearCuenta = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -82,6 +83,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
 
         jToolBar1.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jToolBar1.setRollover(true);
+        jToolBar1.setEnabled(false);
 
         btnMovimientos.setText("Movimientos ");
         btnMovimientos.setFocusable(false);
@@ -116,17 +118,27 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         });
         jToolBar1.add(btnRetiroSinCuenta);
 
-        jButton4.setText("Actualizar Datos ");
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton4);
+        btnActualizar.setText("Actualizar Datos ");
+        btnActualizar.setFocusable(false);
+        btnActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnActualizar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnActualizar);
 
-        jButton6.setText("Cancelar Cuenta ");
-        jButton6.setFocusable(false);
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton6);
+        btnCancelarCuenta.setText("Cancelar Cuenta ");
+        btnCancelarCuenta.setFocusable(false);
+        btnCancelarCuenta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCancelarCuenta.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCancelarCuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarCuentaActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnCancelarCuenta);
 
         btnCrearCuenta.setText("Crear Cuenta");
         btnCrearCuenta.setFocusable(false);
@@ -178,7 +190,7 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -225,24 +237,24 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Error al crear cuenta, intentar luego",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
+
     public void mostrarMensajeErrorObtenerSaldo() {
         JOptionPane.showMessageDialog(this, "Error al obtener saldo, intentar luego",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     private void btnMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovimientosActionPerformed
-        new MovimientosForm(clientesDAO,direccionesDAO, cuentasDAO, retirosDAO,cliente,cuentasCliente, depositosDAO,movimientosDAO).setVisible(true);
+        new MovimientosForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, cliente, cuentasCliente, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();;
     }//GEN-LAST:event_btnMovimientosActionPerformed
 
     private void btnTransferenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferenciaActionPerformed
-        new TransferenciasForm(clientesDAO,direccionesDAO, cuentasDAO, retirosDAO,cliente,cuentasCliente, depositosDAO,movimientosDAO).setVisible(true);
+        new TransferenciasForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, cliente, cuentasCliente, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnTransferenciaActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO,movimientosDAO).setVisible(true);
+        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
 
@@ -259,21 +271,48 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
     
+    public void mostrarMensajeErrorAlCancelar() {
+        JOptionPane.showMessageDialog(this, "Error no se pudo cancelar la cuenta",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     public void mostrarMensajeDatosParaRetiro(RetiroSinCuenta informacion) {
         JOptionPane.showMessageDialog(this, "El folio del retiro es: " + informacion.getFolio()
                 + "La Contraseña para realizar el retiro es: " + informacion.getContraseña(),
                 "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }
+
+    public void mostrarMensajeCuentaEliminada() {
+        JOptionPane.showMessageDialog(this, "Se ha eliminado la cuenta",
+                "Hecho", JOptionPane.INFORMATION_MESSAGE);
+    }
     
-    private void retiroSinCuenta(){
-        try{
+    public int mostrarMensajeConfirmacionCancelar() {
+        return JOptionPane.showOptionDialog(this, "¿Esta seguro que desea eliminar la cuenta " + numeroCuenta + "? (Saldo: " + this.txtSaldo.getText() + ")",
+                    "Confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                    null, new Object[]{"Sí", "No"}, JOptionPane.YES_OPTION);
+    }
+
+    private void retiroSinCuenta() {
+        try {
             RetiroSinCuenta folioRetiro = this.retirosDAO.crearRetiro(numeroCuenta);
-            RetiroSinCuenta datosConsultados  = this.retirosDAO.consultar(folioRetiro.getFolio());
+            RetiroSinCuenta datosConsultados = this.retirosDAO.consultar(folioRetiro.getFolio());
             this.mostrarMensajeDatosParaRetiro(datosConsultados);
         } catch (PersistenciaException ex) {
             this.mostrarMensajeErrorCrearRetiroSinCuenta();
         }
     }
+
+    private void cancelarCuenta() {
+        try {
+            if (this.mostrarMensajeConfirmacionCancelar() == (JOptionPane.YES_OPTION)) {
+                this.cuentasDAO.cancelarCuenta(numeroCuenta);
+            }
+        } catch (PersistenciaException e) {
+            this.mostrarMensajeErrorAlCrear();
+        }
+    }
+
     private void btnCrearCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearCuentaActionPerformed
         this.crearCuenta();
         cmbCuentas.removeAllItems();
@@ -281,24 +320,34 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCrearCuentaActionPerformed
 
     private void cmbCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCuentasActionPerformed
-         numeroCuenta = (Integer) cmbCuentas.getSelectedItem();
+        numeroCuenta = (Integer) cmbCuentas.getSelectedItem();
         this.obtenerSaldo(numeroCuenta);
     }//GEN-LAST:event_cmbCuentasActionPerformed
 
     private void btnRetiroSinCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetiroSinCuentaActionPerformed
-       this.retiroSinCuenta();
+        this.retiroSinCuenta();
     }//GEN-LAST:event_btnRetiroSinCuentaActionPerformed
+
+    private void btnCancelarCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCuentaActionPerformed
+        this.cancelarCuenta();
+        cmbCuentas.removeAllItems();
+        this.cargarCuentasCliente();
+    }//GEN-LAST:event_btnCancelarCuentaActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        new ClientesForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO,cliente.getCorreoElectronico()).setVisible(true);
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnCancelarCuenta;
     private javax.swing.JButton btnCrearCuenta;
     private javax.swing.JButton btnMovimientos;
     private javax.swing.JButton btnRetiroSinCuenta;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnTransferencia;
     private javax.swing.JComboBox<Integer> cmbCuentas;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;

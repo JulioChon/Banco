@@ -140,6 +140,11 @@ public class DepositosForm extends javax.swing.JFrame {
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
     
+    public void mostrarMensajeErrorAlVerificarEstado() {
+        JOptionPane.showMessageDialog(this, "La cuenta esta cancelada",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
     public void mostrarMensajeErrorAlActualizarSaldo() {
         JOptionPane.showMessageDialog(this, "No se pudo depositar el saldo",
                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -165,16 +170,24 @@ public class DepositosForm extends javax.swing.JFrame {
         }
     }
 
+    public boolean verificarEstado(Cuenta cuenta){
+        return cuenta.getEstado().equals("Activa");
+    }
+    
     public void actualizarSaldo(){
         try {
             this.extraerDatos();
             Cuenta cuentaConsultada = consultarCuenta();
             if (cuentaConsultada.getCodigoCliente()!=null) {
+                if(verificarEstado(cuentaConsultada)){
                 this.cuentasDAO.actualizarSaldo(numCuenta, monto);
                 this.depositosDAO.insertarDeposito(numCuenta, monto);
                 this.mostrarMensajeInformacionCorrecta();
                 new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
                 this.dispose();
+                }else{
+                    this.mostrarMensajeErrorAlVerificarEstado();
+                }
             }else{
                 this.mostrarMensajeErrorAlConsultarCuenta();
             }

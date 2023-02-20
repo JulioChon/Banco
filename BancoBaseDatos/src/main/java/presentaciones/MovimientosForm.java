@@ -19,8 +19,9 @@ import interfaces.IDireccionesDAO;
 import interfaces.IMoviminetosDAO;
 import interfaces.IRetirosSinCuentaDAO;
 import java.awt.event.ItemEvent;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.LinkedList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,6 +47,9 @@ public class MovimientosForm extends javax.swing.JFrame {
     private int tipoTransferencia;
     private int tipoOtroMovimiento;
     private final IMoviminetosDAO movimientosDAO;
+    private Date fechaDesde;
+    private Date fechaHasta;
+    
     /**
      * Creates new form MovimientosForm
      */
@@ -65,6 +69,12 @@ public class MovimientosForm extends javax.swing.JFrame {
         this.cargarTablaTransferencias();
         this.tipoOtroMovimiento = 1;
         this.tipoTransferencia = 1;
+        this.fechaDesde = Date.valueOf(LocalDate.of(1920, 01, 01));
+        this.fechaHasta = Date.valueOf(LocalDate.now().plusDays(1));
+        LocalDate fechaActual = LocalDate.now();
+        LocalDate minFecha = LocalDate.of(1920, 01, 01);
+        dtpDesde.getSettings().setDateRangeLimits(minFecha, fechaActual);
+        dtpHasta.getSettings().setDateRangeLimits(minFecha, fechaActual);
     }
     private void cargarCuentas() {
         for (Cuenta cuenta : cuentasCliente) {
@@ -86,7 +96,7 @@ public class MovimientosForm extends javax.swing.JFrame {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try{
              // aqui es donde le mandas el periodo, primero la fecha inicio y despues la final
-            List<Transferencia> transferenciasRealizadas = this.movimientosDAO.realizadas(numeroCuenta, configPaginado);
+            List<Transferencia> transferenciasRealizadas = this.movimientosDAO.realizadas(numeroCuenta, configPaginado,fechaDesde,fechaHasta);
             DefaultTableModel modeloTabla = (DefaultTableModel) this.tblTransferencias.getModel();
             modeloTabla.setRowCount(0);
             for (Transferencia transferenciasRealizada : transferenciasRealizadas) {
@@ -105,7 +115,7 @@ public class MovimientosForm extends javax.swing.JFrame {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try{
              // aqui es donde le mandas el periodo, primero la fecha inicio y despues la final
-            List<Transferencia> transferenciasRecibidas = this.movimientosDAO.recibidas(numeroCuenta, configPaginado);
+            List<Transferencia> transferenciasRecibidas = this.movimientosDAO.recibidas(numeroCuenta, configPaginado,fechaDesde,fechaHasta);
             DefaultTableModel modeloTabla = (DefaultTableModel) this.tblTransferencias.getModel();
             modeloTabla.setRowCount(0);
             for (Transferencia transferenciasRecibida : transferenciasRecibidas) {
@@ -124,7 +134,7 @@ public class MovimientosForm extends javax.swing.JFrame {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try{
              // aqui es donde le mandas el periodo, primero la fecha inicio y despues la final
-            List<RetiroSinCuenta> retirosSinCuentaRealizados = this.movimientosDAO.realizar(numeroCuenta, configPaginado) ;
+            List<RetiroSinCuenta> retirosSinCuentaRealizados = this.movimientosDAO.realizar(numeroCuenta, configPaginado,fechaDesde,fechaHasta) ;
             DefaultTableModel modeloTabla = (DefaultTableModel) this.tblOtrosMovimientos.getModel();
             modeloTabla.setRowCount(0);
             for (RetiroSinCuenta retirosSinCuentaRealizado : retirosSinCuentaRealizados) {
@@ -143,14 +153,14 @@ public class MovimientosForm extends javax.swing.JFrame {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try{
              // aqui es donde le mandas el periodo, primero la fecha inicio y despues la final
-            List<Deposito> depostisos = this.movimientosDAO.Depocitosrecibidos(numeroCuenta, configPaginado);
+            List<Deposito> depositos = this.movimientosDAO.Depocitosrecibidos(numeroCuenta, configPaginado,fechaDesde,fechaHasta);
             DefaultTableModel modeloTabla = (DefaultTableModel) this.tblOtrosMovimientos.getModel();
             modeloTabla.setRowCount(0);
-            for (Deposito depostiso : depostisos) {
+            for (Deposito deposito : depositos) {
                 Object[] fila = {
-                     depostiso.getId(),
-                     depostiso.getMonto(),
-                     formatter.format(depostiso.getFecha())
+                     deposito.getId(),
+                     deposito.getMonto(),
+                     formatter.format(deposito.getFecha())
                  };
                  modeloTabla.addRow(fila);
             }
@@ -172,6 +182,13 @@ public class MovimientosForm extends javax.swing.JFrame {
         }else{
             this.retiros();
         }
+    }
+    
+    public void filtrarPorFechas(){
+        this.fechaDesde=Date.valueOf(this.dtpDesde.getDate());
+        this.fechaHasta=Date.valueOf(this.dtpHasta.getDate().plusDays(1));
+        this.cargarTablaTransferencias();
+        this.cargarTablaOtrosMovimientos();
     }
 
     /**
@@ -200,6 +217,13 @@ public class MovimientosForm extends javax.swing.JFrame {
         btnRedroceder = new javax.swing.JButton();
         btnAvanzar = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
+        jSeparator1 = new javax.swing.JSeparator();
+        lblFecha = new javax.swing.JLabel();
+        dtpDesde = new com.github.lgooddatepicker.components.DatePicker();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        dtpHasta = new com.github.lgooddatepicker.components.DatePicker();
+        btnFiltrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -332,18 +356,24 @@ public class MovimientosForm extends javax.swing.JFrame {
             }
         });
 
+        lblFecha.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        lblFecha.setText("Buscar por fecha");
+
+        jLabel5.setText("Desde");
+
+        jLabel6.setText("Hasta");
+
+        btnFiltrar.setText("Filtrar");
+        btnFiltrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFiltrarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cmbCuentas, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCancelar)
-                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -354,7 +384,7 @@ public class MovimientosForm extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnTransaferenciasRecibidas))
                     .addComponent(pnlTablaTransferencias, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnRetiros)
@@ -366,17 +396,45 @@ public class MovimientosForm extends javax.swing.JFrame {
                         .addComponent(pnlTablaOtrosMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addContainerGap())))
             .addGroup(layout.createSequentialGroup()
-                .addGap(219, 219, 219)
-                .addComponent(btnRedroceder)
-                .addGap(18, 18, 18)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(53, 53, 53)
-                .addComponent(btnAvanzar)
+                .addGap(280, 280, 280)
+                .addComponent(jLabel2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(268, 268, 268))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cmbCuentas, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCancelar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jSeparator1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(219, 219, 219)
+                                .addComponent(btnRedroceder)
+                                .addGap(18, 18, 18)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnAvanzar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(lblFecha)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(dtpDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(dtpHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnFiltrar)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -386,9 +444,9 @@ public class MovimientosForm extends javax.swing.JFrame {
                     .addComponent(cmbCuentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
                     .addComponent(btnCancelar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel4)
@@ -401,12 +459,24 @@ public class MovimientosForm extends javax.swing.JFrame {
                     .addComponent(pnlTablaTransferencias, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pnlTablaOtrosMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnRedroceder)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRedroceder)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAvanzar))
-                .addGap(35, 35, 35))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblFecha)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(dtpDesde, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel5)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(dtpHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnFiltrar))
+                            .addComponent(jLabel6))))
+                .addContainerGap())
         );
 
         pack();
@@ -461,22 +531,33 @@ public class MovimientosForm extends javax.swing.JFrame {
         retrocederPagina();
     }//GEN-LAST:event_btnRedrocederActionPerformed
 
+    private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
+        this.filtrarPorFechas();
+    }//GEN-LAST:event_btnFiltrarActionPerformed
+
  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAvanzar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnDepositos;
+    private javax.swing.JButton btnFiltrar;
     private javax.swing.JButton btnRedroceder;
     private javax.swing.JButton btnRetiros;
     private javax.swing.JButton btnTransaferenciasRecibidas;
     private javax.swing.JButton btnTransferenciasRealizadas;
     private javax.swing.JComboBox<Integer> cmbCuentas;
+    private com.github.lgooddatepicker.components.DatePicker dtpDesde;
+    private com.github.lgooddatepicker.components.DatePicker dtpHasta;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblFecha;
     private javax.swing.JScrollPane pnlTablaOtrosMovimientos;
     private javax.swing.JScrollPane pnlTablaTransferencias;
     private javax.swing.JTable tblOtrosMovimientos;

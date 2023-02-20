@@ -2,6 +2,7 @@ package dominio;
 
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Cliente {
@@ -17,7 +18,14 @@ public class Cliente {
     private Integer idDireccion;
 
     public Cliente() {
-
+        this.nombre = "";
+        this.apellidoPaterno = "";
+        this.apellidoMaterno = "";
+        this.fechaNacimiento = Date.valueOf(LocalDate.now());
+        this.edad = 0;
+        this.correoElectronico = "";
+        this.contrasena = "";
+        this.idDireccion = 0;
     }
 
     public Cliente(String nombre, String apellidoPaterno, String apellidoMaterno, Date fechaNacimiento, Integer edad, String correoElectronico, String contrasena, Integer idDireccion) {

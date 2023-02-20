@@ -1,5 +1,6 @@
 create database banco;
 use banco;
+
 create table direcciones(
 id int not null primary key auto_increment,
 calle varchar(20) not null,
@@ -24,10 +25,13 @@ create table cuentas(
 numero_cuenta int(8) not null unique primary key auto_increment,
 monto decimal(8,4) default 0,
 fecha_apertura TIMESTAMP DEFAULT NOW(),
+estado enum("Activa","Cancelada") default "Activa",
 codigo_cliente int not null,
 foreign key (codigo_cliente) references clientes(id)
 );
+
 ALTER TABLE cuentas AUTO_INCREMENT = 10000000;
+
 create table transferencias(
 id int not null primary key auto_increment,
 monto decimal(8,4) not null,

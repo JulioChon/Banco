@@ -5,6 +5,7 @@
  */
 package presentaciones;
 
+import dominio.Cliente;
 import interfaces.IClientesDAO;
 import interfaces.ICuentasDAO;
 import interfaces.IDepositosDAO;
@@ -16,7 +17,7 @@ import interfaces.IRetirosSinCuentaDAO;
  *
  * @author julio
  */
-public class InicioForm extends javax.swing.JDialog {
+public class InicioForm extends javax.swing.JFrame {
 
     private final IClientesDAO clientesDAO;
     private final IDireccionesDAO direccionesDAO;
@@ -132,7 +133,8 @@ public class InicioForm extends javax.swing.JDialog {
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearUsuarioActionPerformed
-        new ClientesForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
+        Cliente cliente = null;
+        new ClientesForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,depositosDAO,movimientosDAO, null).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCrearUsuarioActionPerformed
 

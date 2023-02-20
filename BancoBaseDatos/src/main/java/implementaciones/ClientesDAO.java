@@ -6,6 +6,7 @@ import excepciones.PersistenciaException;
 import interfaces.IClientesDAO;
 import interfaces.IConexionBD;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -60,7 +61,9 @@ public class ClientesDAO implements IClientesDAO {
 
     @Override
     public Cliente consultar(String correoCliente) throws PersistenciaException {
-       String codigoSQL = "Select id,correoElectronico,aes_decrypt(contraseña,'hunter2')"
+       String codigoSQL = "Select id,nombre,apellido_paterno,apellido_materno,"
+               + "fecha_nacimiento,edad,correoElectronico,"
+               + "aes_decrypt(contraseña,'hunter2'),codigo_direccion "
                + "from clientes where correoElectronico like ?";
         try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
                 PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
@@ -69,20 +72,46 @@ public class ClientesDAO implements IClientesDAO {
             Cliente cliente = null;
             if (resultado.next()) {
                 Integer id = resultado.getInt("id");
+                String nombre = resultado.getString("nombre");
+                String apellidoPaterno = resultado.getString("apellido_paterno");
+                String apellidoMaterno = resultado.getString("apellido_materno");
+                Date fechaNacimiento = resultado.getDate("fecha_nacimiento");
+                Integer edad = resultado.getInt("edad");
                 String correo = resultado.getString("correoElectronico");
                 String contraseña = resultado.getString("aes_decrypt(contraseña,'hunter2')");
-                cliente = new Cliente(id,correo,contraseña);
-                return cliente;
+                Integer codigoDirección = resultado.getInt("codigo_direccion");
+                cliente = new Cliente(id, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, edad, correo, contraseña, codigoDirección);    
             }
-            throw new PersistenciaException("No fue posible encontrar el cliente");
+            return cliente;
+//            throw new PersistenciaException("No fue posible encontrar el cliente");
         }catch (SQLException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
             throw new PersistenciaException("No fue posible encontrar el cliente");
         }
     }
 
- 
-
-    
-
+    @Override
+    public Cliente actualizar(Cliente cliente, Integer id) throws PersistenciaException {
+        String codigoSQL = "update clientes set nombre = ?,apellido_paterno = ?,"
+                + "apellido_materno = ?,fecha_nacimiento = ?,edad = ?,"
+                + "correoElectronico = ?,contraseña = aes_encrypt(?,\"hunter2\"),"
+                + "codigo_direccion = ? where id = ?";
+       try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
+            PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
+            comando.setString(1, cliente.getNombre());
+            comando.setString(2, cliente.getApellidoPaterno());
+            comando.setString(3, cliente.getApellidoMaterno());
+            comando.setDate(4, cliente.getFechaNacimiento());
+            comando.setInt(5, cliente.getEdad());
+            comando.setString(6, cliente.getCorreoElectronico());
+            comando.setString(7, cliente.getContrasena());
+            comando.setInt(8, cliente.getIdDireccion());
+            comando.setInt(9, id);
+            comando.executeUpdate();
+            return consultar(cliente.getCorreoElectronico());
+       }catch (SQLException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+            return null;
+        }
+    }
 }

@@ -14,6 +14,7 @@ public class Cuenta {
     private Integer numeroCuenta;
     private float monto;
     private Integer codigoCliente;
+    private String estado;
 
     public Cuenta() {
     }
@@ -52,6 +53,14 @@ public class Cuenta {
         this.codigoCliente = codigoCliente;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 7;
@@ -76,10 +85,7 @@ public class Cuenta {
 
     @Override
     public String toString() {
-        return "Cuenta{" + "numeroCuenta=" + numeroCuenta + ", monto=" + monto + ", codigoCliente=" + codigoCliente + '}';
+        return "Cuenta{" + "numeroCuenta=" + numeroCuenta + ", monto=" + monto + ", codigoCliente=" + codigoCliente + ", estado=" + estado + '}';
     }
-    
-    
-    
-    
+
 }

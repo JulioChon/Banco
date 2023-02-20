@@ -58,7 +58,7 @@ public class CuentasDAO implements ICuentasDAO {
 
     @Override
     public Cuenta consultarCuenta(Integer numeroCuenta){
-       String codigoSQL = "Select codigo_cliente,monto from cuentas where numero_cuenta = ? ";
+       String codigoSQL = "Select codigo_cliente,monto,estado from cuentas where numero_cuenta = ? ";
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
                 PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
            comando.setInt(1, numeroCuenta);
@@ -67,9 +67,11 @@ public class CuentasDAO implements ICuentasDAO {
              if (resultado.next()) {
                 Integer cliente = resultado.getInt("codigo_cliente");
                 float monto = resultado.getFloat("monto");
+                String estado = resultado.getString("estado");
                 cuenta.setCodigoCliente(cliente);
                 cuenta.setNumeroCuenta(numeroCuenta);
                 cuenta.setMonto(monto);
+                cuenta.setEstado(estado);
              }
              return cuenta;
        }catch (SQLException ex) {
@@ -81,11 +83,12 @@ public class CuentasDAO implements ICuentasDAO {
 
     @Override
     public List<Cuenta> consultarCuentasCliente(Integer codigoCliente) throws PersistenciaException {
-      String codigoSQL = "Select numero_cuenta from cuentas where codigo_cliente = ?";
+      String codigoSQL = "Select numero_cuenta from cuentas where codigo_cliente = ? and estado = ?";
        List<Cuenta> listaCuentas = new LinkedList<>();
         try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
             PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
             comando.setInt(1, codigoCliente);
+            comando.setString(2,"Activa");
              ResultSet resultado = comando.executeQuery();
              Cuenta cuenta = null;
               while (resultado.next()) {
@@ -107,6 +110,21 @@ public class CuentasDAO implements ICuentasDAO {
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
             PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
             comando.setFloat(1, monto);
+            comando.setInt(2, numeroCuenta);
+            comando.executeUpdate();
+            return consultarCuenta(numeroCuenta);
+       }catch (SQLException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+            return null;
+        }
+    }
+    
+    @Override
+    public Cuenta cancelarCuenta(Integer numeroCuenta) {
+        String codigoSQL = "update cuentas set estado = ? where numero_cuenta= ?";
+       try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
+            PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
+            comando.setString(1, "Cancelada");
             comando.setInt(2, numeroCuenta);
             comando.executeUpdate();
             return consultarCuenta(numeroCuenta);

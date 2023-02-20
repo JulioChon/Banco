@@ -192,12 +192,17 @@ public class TransferenciasForm extends javax.swing.JFrame {
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    public void mostrarMensajeErorMonto() {
+    public void mostrarMensajeErrorMonto() {
         JOptionPane.showMessageDialog(this, "La cuenta no tiene los suficientes fondos",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
+    
+    public void mostrarMensajeErrorAlVerificarEstado() {
+        JOptionPane.showMessageDialog(this, "La cuenta destino esta cancelada",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
-    public void mostrarMensajeErorConMonto() {
+    public void mostrarMensajeErrorConMonto() {
         JOptionPane.showMessageDialog(this, "Monto no disponible",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
@@ -223,23 +228,30 @@ public class TransferenciasForm extends javax.swing.JFrame {
 
     }
 
+    public boolean verificarEstado(Cuenta cuenta) {
+        return cuenta.getEstado().equals("Activa");
+    }
+
     private void comprobarCuentaDestino() {
         try {
             int cuentaDestino = Integer.parseInt(txtCuentaDestino.getText());
             Cuenta cuenta = this.cuentasDAO.consultarCuenta(cuentaDestino);
             if (cuenta.getCodigoCliente() != null) {
                 if (numCuenta != cuenta.getNumeroCuenta()) {
-                    if (this.validarContrasena(numCuenta)) {
-                        if (txtMonto.getText().isEmpty() || Float.parseFloat(txtMonto.getText()) == 0.0) {
-                            this.mostrarMensajeErorConMonto();
-                        } else {
-                            float monto = Float.parseFloat(txtMonto.getText());
-                            this.cuentasDAO.transferencia(numCuenta, cuentaDestino, monto);
-                            this.mostrarMensajeTransferencia();
-                            new AdministracionCuentaForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, cliente, depositosDAO, movimientosDAO).setVisible(true);
-                            this.dispose();
+                    if (verificarEstado(cuenta)) {
+                        if (this.validarContrasena(numCuenta)) {
+                            if (txtMonto.getText().isEmpty() || Float.parseFloat(txtMonto.getText()) == 0.0) {
+                                this.mostrarMensajeErrorConMonto();
+                            } else {
+                                float monto = Float.parseFloat(txtMonto.getText());
+                                this.cuentasDAO.transferencia(numCuenta, cuentaDestino, monto);
+                                this.mostrarMensajeTransferencia();
+                                new AdministracionCuentaForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, cliente, depositosDAO, movimientosDAO).setVisible(true);
+                                this.dispose();
+                            }
                         }
-
+                    }else{
+                        this.mostrarMensajeErrorAlVerificarEstado();
                     }
                 } else {
                     this.mostrarMensajeErrorCuentaExistente();
@@ -248,7 +260,7 @@ public class TransferenciasForm extends javax.swing.JFrame {
                 this.mostrarMensajeErrorAlConsultarCuenta();
             }
         } catch (PersistenciaException ex) {
-            this.mostrarMensajeErorMonto();
+            this.mostrarMensajeErrorMonto();
         }
     }
 
