@@ -1,28 +1,37 @@
 
 delimiter $$
-CREATE PROCEDURE historialTransferenciasRealizadas(in numeroReferencia int)
+CREATE PROCEDURE historialTransferenciasRealizadas(in numeroReferencia int,in numeroElementos int, in elemntosSaltar int,in fechaInicio date,in fechaFinal date )
 begin 
-  Select numero_cuenta,transferencias.monto,transferencias.fecha from cuentas 
+  Select transferencias.codigo_receptor,transferencias.monto,transferencias.fecha from cuentas 
   inner join transferencias on cuentas.numero_cuenta = transferencias.codigo_emisor
-  where cuentas.numero_cuenta = numeroReferencia;
+  where cuentas.numero_cuenta = numeroReferencia and  transferencias.fecha between fechaInicio and  fechaFinal
+  order by transferencias.fecha desc
+  limit numeroElementos offset elemntosSaltar ;
 end; 
 $$ 
 
 delimiter $$
-CREATE PROCEDURE historialRetirosSinCuenta(in numeroReferencia int)
+CREATE PROCEDURE historialRetirosSinCuenta(in numeroReferencia int,in numeroElementos int, in elemntosSaltar int,in fechaInicio date,in fechaFinal date)
 begin 
-  Select numero_cuenta,retirossincuenta.monto,retirossincuenta.monto from cuentas 
+  Select retirossincuenta.monto,retirossincuenta.fecha,folio from cuentas 
   inner join retirossincuenta on cuentas.numero_cuenta = retirossincuenta.cuenta_retirada
-  where cuentas.numero_cuenta = numeroReferencia and retirossincuenta.estado like "Cobrado";
+  where cuentas.numero_cuenta = numeroReferencia and retirossincuenta.estado like "Cobrado" 
+  and  retirossincuenta.fecha between fechaInicio and  fechaFinal
+  order by retirossincuenta.fecha desc
+  limit numeroElementos offset elemntosSaltar ;
 end; 
 $$ 
+drop procedure historialTransferenciasRealizadas
+
+
 
 delimiter $$
-CREATE PROCEDURE historialTransferenciasRecibidas(in numeroReferencia int)
+CREATE PROCEDURE historialTransferenciasRecibidas(in numeroReferencia int, in numeroElementos int,in elemntosSaltar int,in fechaInicio date,in fechaFinal date)
 begin 
-  Select numero_cuenta,transferencias.monto,transferencias.fecha from cuentas 
+  Select transferencias.codigo_emisor,transferencias.monto,transferencias.fecha from cuentas 
   inner join transferencias on cuentas.numero_cuenta = transferencias.codigo_Receptor
-  where cuentas.numero_cuenta = numeroReferencia;
+  where cuentas.numero_cuenta = numeroReferencia and  transferencias.fecha between fechaInicio and  fechaFinal
+  order by transferencias.fecha desc limit numeroElementos offset elemntosSaltar;
 end; 
 $$ 
 
@@ -45,10 +54,13 @@ BEGIN
         INSERT INTO transferencias (monto, codigo_emisor, codigo_receptor) VALUES (montoTransferencia, emisor, receptor);
         COMMIT;
     ELSE
+        signal sqlstate '45000' set message_text = "La cuenta no tiene los fondos suficiente para realizar la transferencia";
         ROLLBACK;
     END IF;
 END
 $$
+
+
 
 delimiter $$ 
 CREATE PROCEDURE retiroSinCuenta(in folioRetiro int,IN emisor INT,IN montoRetiro DECIMAL(10, 2))
@@ -69,17 +81,34 @@ $$
 delimiter $$
 CREATE PROCEDURE cambiar_estado_retiro_sin_cuenta(in folioRetiro int)
 BEGIN
+    DECLARE estado_retiro varchar(20);
     DECLARE registro_time DATETIME;
     DECLARE actual_time DATETIME;
     DECLARE tiempo_transcurrido INT;
+    Select estado from retirossincuenta WHERE folio = folioRetiro into estado_retiro;
     SELECT fecha FROM retirossincuenta WHERE folio = folioRetiro INTO registro_time;
     SET actual_time = NOW();
     SET tiempo_transcurrido = TIMESTAMPDIFF(MINUTE, registro_time, actual_time);
-    IF tiempo_transcurrido > 10 THEN
+    IF tiempo_transcurrido > 10 and estado_retiro like "Pendiente" THEN
         UPDATE retirossincuenta SET estado = 'no cobrado' WHERE folio = folioRetiro;
     END IF;
 END
 $$
+
+
+
+delimiter $$
+CREATE PROCEDURE depositos(in cuenta int,in numeroElementos int,in elemntosSaltar int ,in fechaInicio date,in fechaFinal date)
+begin 
+select depositosacuenta.id, depositosacuenta.monto, depositosacuenta.fecha from cuentas
+inner join depositosacuenta on depositosacuenta.cuenta_depositada = numero_cuenta
+where numero_cuenta = cuenta and  depositosacuenta.fecha between fechaInicio and  fechaFinal order by depositosacuenta.fecha desc limit numeroElementos offset elemntosSaltar;
+end;
+$$
+
+
+
+
 
 
 
