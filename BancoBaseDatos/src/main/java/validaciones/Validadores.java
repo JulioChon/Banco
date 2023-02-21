@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ *  Clase de validadores a usar
  * @author esteb
  */
 public class Validadores {

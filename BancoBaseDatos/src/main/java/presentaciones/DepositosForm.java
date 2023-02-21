@@ -19,25 +19,32 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * Frame de depósitos
  * @author esteb
  */
 public class DepositosForm extends javax.swing.JFrame {
 
-    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
-    private final IClientesDAO clientesDAO;
-    private final IDireccionesDAO direccionesDAO;
-    private final ICuentasDAO cuentasDAO;
-    private final IRetirosSinCuentaDAO retirosDAO;
-    private Integer numCuenta;
-    private float monto;
-    private final IDepositosDAO depositosDAO;
-    private final IMoviminetosDAO movimientosDAO;
+    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());//Logger para errores
+    private final IClientesDAO clientesDAO;//Interfaz de clientes
+    private final IDireccionesDAO direccionesDAO;//Interfaz de direcciones
+    private final ICuentasDAO cuentasDAO;//Interfaz de cuentas
+    private final IRetirosSinCuentaDAO retirosDAO;//Interfaz de retiros
+    private Integer numCuenta;//Número a depositar
+    private float monto;//Monto a depositar
+    private final IDepositosDAO depositosDAO;//Interfaz de depósitos
+    private final IMoviminetosDAO movimientosDAO;//Interfaz de movimientos
 
     /**
-     * Creates new form DepositosForm
+     * Constructor del formulario para depósitos, solo carga las interfaces.
+     *
+     * @param clientesDAO Interfaz de clientes
+     * @param direccionesDAO Interfaz de direcciones
+     * @param cuentasDAO Interfaz de cuentas
+     * @param retirosDAO Interfaz de retiros
+     * @param depositosDAO Interfaz de depósitos
+     * @param movimientosDAO Interfaz de movimientos
      */
-    public DepositosForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO,IMoviminetosDAO movimientosDAO) {
+    public DepositosForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
@@ -216,42 +223,70 @@ public class DepositosForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Mensaje de error al consultar cuenta inexistente
+     */
     public void mostrarMensajeErrorAlConsultarCuenta() {
         JOptionPane.showMessageDialog(this, "La cuenta no existe",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
+
+    /**
+     * Mensaje de error al verificar el estado, si este es "Cancelada" no es
+     * posible el depósito
+     */
     public void mostrarMensajeErrorAlVerificarEstado() {
         JOptionPane.showMessageDialog(this, "La cuenta esta cancelada",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
+
+    /**
+     * Mensaje de error en caso de cualquiera falla al actualizar el saldo.
+     */
     public void mostrarMensajeErrorAlActualizarSaldo() {
         JOptionPane.showMessageDialog(this, "No se pudo depositar el saldo",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Mensaje informativo para cuando se realiza un depósito correctamente.
+     */
     public void mostrarMensajeInformacionCorrecta() {
         JOptionPane.showMessageDialog(this, "Se depositó correctamente",
                 "Informacion",
                 JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
+    /**
+     * Mensaje de error en caso de que alguno de los campos esten vacíos.
+     */
     public void mostrarMensajeErrorDatos() {
         JOptionPane.showMessageDialog(this, "Todos los datos deben de estar llenos",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Método que extrae los datos para el depósito, los válida y asigna, en
+     * caso de error llama a sus respectivos mensajes.
+     *
+     * @throws PersistenciaException Excepción lanzada al tener un error
+     */
     public void extraerDatos() throws PersistenciaException {
         if (txtCuenta.getText().isEmpty() || txtMonto.getText().isEmpty()) {
             this.mostrarMensajeErrorDatos();
             throw new PersistenciaException("");
-        }else{
+        } else {
             numCuenta = Integer.valueOf(txtCuenta.getText());
             monto = Float.parseFloat(txtMonto.getText());
         }
     }
 
+    /**
+     * Método que llama a la interfaz para consultar una cuenta, en caso de
+     * error llama a su mensaje.
+     *
+     * @return Cuenta consultada, nulo en caso de error.
+     */
     public Cuenta consultarCuenta() {
         try {
             return this.cuentasDAO.consultarCuenta(numCuenta);
@@ -261,67 +296,119 @@ public class DepositosForm extends javax.swing.JFrame {
         }
     }
 
-    public boolean verificarEstado(Cuenta cuenta){
+    /**
+     * Método que verifica si el estado de la cuenta a depositar es "Activa".
+     *
+     * @param cuenta Cuenta a verificar
+     * @return Boolean dependiendo de la cuenta
+     */
+    public boolean verificarEstado(Cuenta cuenta) {
         return cuenta.getEstado().equals("Activa");
     }
-    
-    public void actualizarSaldo(){
+
+    /**
+     * Método encargado de extraer los datos, consultar cuentas, verificarlas y
+     * realizar el depósito, muestra mensaje si fue correcto y regresa al incio,
+     * en cualquier caso de error da un mensaje diferente.
+     */
+    public void actualizarSaldo() {
         try {
             this.extraerDatos();
             Cuenta cuentaConsultada = consultarCuenta();
-            if (cuentaConsultada.getCodigoCliente()!=null) {
-                if(verificarEstado(cuentaConsultada)){
-                this.cuentasDAO.actualizarSaldo(numCuenta, monto);
-                this.depositosDAO.insertarDeposito(numCuenta, monto);
-                this.mostrarMensajeInformacionCorrecta();
-                new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
-                this.dispose();
-                }else{
+            if (cuentaConsultada.getCodigoCliente() != null) {
+                if (verificarEstado(cuentaConsultada)) {
+                    this.cuentasDAO.actualizarSaldo(numCuenta, monto);
+                    this.depositosDAO.insertarDeposito(numCuenta, monto);
+                    this.mostrarMensajeInformacionCorrecta();
+                    new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
+                    this.dispose();
+                } else {
                     this.mostrarMensajeErrorAlVerificarEstado();
                 }
-            }else{
+            } else {
                 this.mostrarMensajeErrorAlConsultarCuenta();
             }
-        } catch (PersistenciaException ex){
+        } catch (PersistenciaException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
         }
     }
 
+    /**
+     * Método que se acciona al dar click al botón para volver a la ventana
+     * principal.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
+        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para actualizar el saldo
+     * correspondiente al depósito realizado.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         this.actualizarSaldo();
     }//GEN-LAST:event_btnAceptarActionPerformed
 
+    /**
+     * Evento que restringe los caracteres para el monto, permitiendo solo
+     * numeros, comas y puntos.
+     *
+     * @param evt Evento que se crea al teclear algo encima
+     */
     private void txtMontoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoKeyTyped
         char car = evt.getKeyChar();
         if ((car < '0' || car > '9') && (car < ',' || car > '.'))
             evt.consume();
     }//GEN-LAST:event_txtMontoKeyTyped
 
+    /**
+     * Evento que restringe los caracteres para el numero de cuenta, permitiendo
+     * solo numeros.
+     *
+     * @param evt Evento que se crea al teclear algo encima
+     */
     private void txtCuentaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCuentaKeyTyped
         char car = evt.getKeyChar();
         if (car < '0' || car > '9')
             evt.consume();
     }//GEN-LAST:event_txtCuentaKeyTyped
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de aceptar para cambiar
+     * de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMousePressed
         this.btnAceptar.setContentAreaFilled(false);
         this.btnAceptar.setOpaque(true);
-        this.btnAceptar.setBackground(new Color(148,116,69));
+        this.btnAceptar.setBackground(new Color(148, 116, 69));
     }//GEN-LAST:event_btnAceptarMousePressed
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de cancelar para
+     * cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCancelarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMousePressed
         this.btnCancelar.setContentAreaFilled(false);
         this.btnCancelar.setOpaque(true);
-        this.btnCancelar.setBackground(new Color(148,116,69));
+        this.btnCancelar.setBackground(new Color(148, 116, 69));
     }//GEN-LAST:event_btnCancelarMousePressed
 
+    /**
+     * Evento que se acciona cuando se suelta el botón para regresar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMouseReleased
-        this.btnAceptar.setBackground(new Color(100,156,104));
+        this.btnAceptar.setBackground(new Color(100, 156, 104));
     }//GEN-LAST:event_btnAceptarMouseReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

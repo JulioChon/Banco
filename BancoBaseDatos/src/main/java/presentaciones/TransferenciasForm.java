@@ -21,24 +21,35 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
+ * Frame de transferencias
  *
  * @author julio
  */
 public class TransferenciasForm extends javax.swing.JFrame {
 
-    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
-    private final IClientesDAO clientesDAO;
-    private final IDireccionesDAO direccionesDAO;
-    private final ICuentasDAO cuentasDAO;
-    private final IRetirosSinCuentaDAO retirosDAO;
-    private Cliente cliente;
-    private List<Cuenta> cuentasCliente;
-    private int numCuenta;
-    private final IDepositosDAO depositosDAO;
-    private final IMoviminetosDAO movimientosDAO;
+    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());//Logger para errores
+    private final IClientesDAO clientesDAO;//Interfaz de clientes
+    private final IDireccionesDAO direccionesDAO;//Interfaz de direcciones
+    private final ICuentasDAO cuentasDAO;//Interfaz de cuentas
+    private final IRetirosSinCuentaDAO retirosDAO;//Interfaz de retiros
+    private final IDepositosDAO depositosDAO;//Interfaz de depósitos
+    private final IMoviminetosDAO movimientosDAO;//Interfaz de movimientos
+    private Cliente cliente;//Cliente al que le pertenecen las cuentas
+    private List<Cuenta> cuentasCliente;//Lista de cuentas del cliente
+    private int numCuenta;//Número de la cuenta seleccionada
 
     /**
-     * Creates new form TransferenciasForm
+     * Constructor del formulario de transferencias, se cargan las cuentas del
+     * cliente.
+     *
+     * @param clientesDAO Interfaz de clientes
+     * @param direccionesDAO Interfaz de direcciones
+     * @param cuentasDAO Interfaz de cuentas
+     * @param retirosDAO Interfaz de retiros
+     * @param depositosDAO Interfaz de depósitos
+     * @param movimientosDAO Interfaz de movimientos
+     * @param cliente Cliente que va a transferir
+     * @param cuentasCliente Cuentas del cliente
      */
     public TransferenciasForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente, List<Cuenta> cuentasCliente, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
@@ -54,6 +65,10 @@ public class TransferenciasForm extends javax.swing.JFrame {
         this.cargarCuentas();
     }
 
+    /**
+     * Método que a partir de la lista de cuentas carga las cuentas en un
+     * comboBox.
+     */
     private void cargarCuentas() {
         for (Cuenta cuenta : cuentasCliente) {
             cmbCuentas.addItem(cuenta.getNumeroCuenta());
@@ -261,41 +276,69 @@ public class TransferenciasForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Mensaje cuando la cuenta no existe.
+     */
     public void mostrarMensajeErrorAlConsultarCuenta() {
         JOptionPane.showMessageDialog(this, "La cuenta no existe",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Mensaje cuando la cuenta de destino y emisor es la misma.
+     */
     public void mostrarMensajeErrorCuentaExistente() {
         JOptionPane.showMessageDialog(this, "NO se puede hacer transferencias a la misma cuenta",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Mensaje cuando la contraseña es incorrecta.
+     */
     public void mostrarMensajeErrorContrasena() {
         JOptionPane.showMessageDialog(this, "Verificar Contraseña",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Mensaje cuando la cuenta no cuenta con los fondos para el monto puesto.
+     */
     public void mostrarMensajeErrorMonto() {
         JOptionPane.showMessageDialog(this, "La cuenta no tiene los suficientes fondos",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
+
+    /**
+     * Mensaje que se muestra en caso que la cuenta destino tenga como estado
+     * "Cancelada".
+     */
     public void mostrarMensajeErrorAlVerificarEstado() {
         JOptionPane.showMessageDialog(this, "La cuenta destino esta cancelada",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Mensaje cuando hay un error con el monto.
+     */
     public void mostrarMensajeErrorConMonto() {
         JOptionPane.showMessageDialog(this, "Monto no disponible",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Mensaje cuando se cumplio con la transferencia.
+     */
     public void mostrarMensajeTransferencia() {
         JOptionPane.showMessageDialog(this, "Transferencia realizada",
                 "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Método que a partir de la cuenta se comparan contraseñas.
+     *
+     * @param numCuenta Cuenta de la que se quiere sacar el dinero
+     * @return Boolean dependiendo si la contraseña es correcta o incorrecta
+     */
     private boolean validarContrasena(Integer numCuenta) {
         if (txtContraseña != null) {
             String contrasena = txtContraseña.getText();
@@ -312,10 +355,21 @@ public class TransferenciasForm extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Método que verifica el estado de la cuenta destino.
+     *
+     * @param cuenta Cuenta destino
+     * @return Boolean si esta o no "Activa" la cuenta
+     */
     public boolean verificarEstado(Cuenta cuenta) {
         return cuenta.getEstado().equals("Activa");
     }
 
+    /**
+     * Método que une todo para obtener la información comparar y confirmar que
+     * se puede hacer la transferencia, realizarla y salir de la ventana. En
+     * caso de erro se tienen llamados a mensajes de error.
+     */
     private void comprobarCuentaDestino() {
         try {
             int cuentaDestino = Integer.parseInt(txtCuentaDestino.getText());
@@ -334,7 +388,7 @@ public class TransferenciasForm extends javax.swing.JFrame {
                                 this.dispose();
                             }
                         }
-                    }else{
+                    } else {
                         this.mostrarMensajeErrorAlVerificarEstado();
                     }
                 } else {
@@ -348,45 +402,91 @@ public class TransferenciasForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que se acciona al dar click al botón para cancelar la
+     * transferencia y regresar al frame de las cuentas.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         new AdministracionCuentaForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, cliente, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para comprobar todos los
+     * datos y realizar la transferencia.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         this.comprobarCuentaDestino();
     }//GEN-LAST:event_btnAceptarActionPerformed
 
+    /**
+     * Método que define el valor de la variable numCuenta dependiendo del valor
+     * seleccionado en el comboBox.
+     *
+     * @param evt Evento que se crea al cambiar de item
+     */
     private void cmbCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCuentasActionPerformed
         this.numCuenta = (Integer) cmbCuentas.getSelectedItem();
     }//GEN-LAST:event_cmbCuentasActionPerformed
 
+    /**
+     * Evento que restringe los caracteres para el numero de cuenta, permitiendo
+     * solo numeros.
+     *
+     * @param evt Evento que se crea al teclear algo encima
+     */
     private void txtCuentaDestinoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCuentaDestinoKeyTyped
         char car = evt.getKeyChar();
         if (car < '0' || car > '9')
             evt.consume();
     }//GEN-LAST:event_txtCuentaDestinoKeyTyped
 
+    /**
+     * Evento que restringe los caracteres para el monto, permitiendo puntos.
+     *
+     * @param evt Evento que se crea al teclear algo encima
+     */
     private void txtMontoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoKeyTyped
         char car = evt.getKeyChar();
         if ((car < '0' || car > '9') && (car < '.'))
             evt.consume();
     }//GEN-LAST:event_txtMontoKeyTyped
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de aceptar para
+     * cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMousePressed
         this.btnAceptar.setContentAreaFilled(false);
         this.btnAceptar.setOpaque(true);
-        this.btnAceptar.setBackground(new Color(148,116,69));
+        this.btnAceptar.setBackground(new Color(148, 116, 69));
     }//GEN-LAST:event_btnAceptarMousePressed
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de cancelar para
+     * cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCancelarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMousePressed
         this.btnCancelar.setContentAreaFilled(false);
         this.btnCancelar.setOpaque(true);
-        this.btnCancelar.setBackground(new Color(148,116,69));
+        this.btnCancelar.setBackground(new Color(148, 116, 69));
     }//GEN-LAST:event_btnCancelarMousePressed
 
+    /**
+     * Evento que se acciona cuando se suelta el botón para regresar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMouseReleased
-        this.btnAceptar.setBackground(new Color(100,156,104));
+        this.btnAceptar.setBackground(new Color(100, 156, 104));
     }//GEN-LAST:event_btnAceptarMouseReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

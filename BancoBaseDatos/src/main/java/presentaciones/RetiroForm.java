@@ -21,23 +21,31 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
+ * Frame de retiros sin tarjeta
  *
  * @author julio
  */
 public class RetiroForm extends javax.swing.JFrame {
 
-    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
-    private final IClientesDAO clientesDAO;
-    private final IDireccionesDAO direccionesDAO;
-    private final ICuentasDAO cuentasDAO;
-    private final IRetirosSinCuentaDAO retirosDAO;
-    private final IDepositosDAO depositosDAO;
-    private final IMoviminetosDAO movimientosDAO;
+    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());//Logger para errores
+    private final IClientesDAO clientesDAO;//Interfaz de clientes
+    private final IDireccionesDAO direccionesDAO;//Interfaz de direcciones
+    private final ICuentasDAO cuentasDAO;//Interfaz de cuentas
+    private final IRetirosSinCuentaDAO retirosDAO;//Interfaz de retiros
+    private final IDepositosDAO depositosDAO;//Interfaz de depósitos
+    private final IMoviminetosDAO movimientosDAO;//Interfaz de movimientos
 
     /**
-     * Creates new form RetiroForm
+     * Constructor para los retiros, se inicializan las interfaces
+     *
+     * @param clientesDAO Interfaz de clientes
+     * @param direccionesDAO Interfaz de direcciones
+     * @param cuentasDAO Interfaz de cuentas
+     * @param retirosDAO Interfaz de retiros
+     * @param depositosDAO Interfaz de depósitos
+     * @param movimientosDAO Interfaz de movimientos
      */
-    public RetiroForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO,IDepositosDAO depositosDAO,IMoviminetosDAO movimientosDAO) {
+    public RetiroForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
@@ -243,6 +251,14 @@ public class RetiroForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Método que extrae los datos para el retiro, y válida si estan vacios, si
+     * no estan crea un retiro con la información, si ocurre un error se llaman
+     * los mensajes.
+     *
+     * @return Un retiro sin cuenta con los datos obtenidos
+     * @throws PersistenciaException Para obtener los errores que puedan suceder
+     */
     private RetiroSinCuenta extrarDatosForm() throws PersistenciaException {
         if (txtFolio.getText().isEmpty() || txtContrasena.getText().isEmpty() || txtMonto.getText().isEmpty()) {
             this.mostrarMensajeErrorDatos();
@@ -258,42 +274,68 @@ public class RetiroForm extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Mensaje de error para cuando el folio no es correcto.
+     */
     public void mostrarMensajeErrorConsultarCuenta() {
         JOptionPane.showMessageDialog(this, "El folio no es correcto",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Mensaje de error para cuando hay espacios vacíos en el formulario.
+     */
     public void mostrarMensajeErrorDatos() {
         JOptionPane.showMessageDialog(this, "Todos los datos deben de estar llenos",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Mensaje de error para cuando el saldo en la cuenta es insuficiente.
+     */
     public void mostrarMensajeErrorSaldoInsuficiente() {
         JOptionPane.showMessageDialog(this, "Saldo en cuenta insucificiente",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Mensaje de error para cuando la contraseña dada es incorrecta.
+     */
     public void mostrarMensajeErrorContrasena() {
         JOptionPane.showMessageDialog(this, "La Contraseña no es correcta",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Mensaje de error para cuando el folio ya fue cobrado o se venció el
+     * tiempo.
+     */
     public void mostrarMensajeErrorEstado() {
         JOptionPane.showMessageDialog(this, "Este folio ya fue cobrado o el tiempo vencio",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Mensaje informativo que avisa cuando el retiro ya se realizo.
+     */
     public void mostrarMensajeRealizado() {
         JOptionPane.showMessageDialog(this, "Retiro realizado",
                 "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Método que limpia los campos de texto.
+     */
     public void limpiarDatos() {
         this.txtFolio.setText("");
         this.txtContrasena.setText("");
         this.txtMonto.setText("");
     }
 
+    /**
+     * Método que consulta un retiro a partir del folio para comprobar que
+     * existe.
+     */
     private void comprobarFolio() {
         try {
             RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
@@ -304,6 +346,12 @@ public class RetiroForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que comprueba si hay saldo disponible, se almacenan los datos y se
+     * comparan.
+     *
+     * @return El folio consultado
+     */
     private RetiroSinCuenta comprobarSaldo() {
         try {
             RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
@@ -322,21 +370,28 @@ public class RetiroForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que comprueba si todavia es posible el retiro a traves de
+     * validaciones y consultas.
+     *
+     * @param retiroSinCuenta Es el retiro del cual se prueba
+     * @return Booleano para comprobar el estado
+     */
     private boolean comprobarEstadoTiempo(RetiroSinCuenta retiroSinCuenta) {
         try {
-            this.retirosDAO.comprobarEstao(retiroSinCuenta.getFolio());
+            this.retirosDAO.comprobarEstado(retiroSinCuenta.getFolio());
             RetiroSinCuenta estado = this.retirosDAO.consultar(retiroSinCuenta.getFolio());
-            if (estado.getEstado().equals("Pendiente")) {
-                return true;
-            } else {
-                return false;
-            }
+            return estado.getEstado().equals("Pendiente");
         } catch (PersistenciaException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
             return false;
         }
     }
 
+    /**
+     * Método que engloba los proceos para realizar el retiro, valida los datos
+     * y muestra mensajes de error en caso de necesitarse.
+     */
     private void realizarRetiro() {
         try {
             RetiroSinCuenta retiroSinCuenta = this.extrarDatosForm();
@@ -361,47 +416,95 @@ public class RetiroForm extends javax.swing.JFrame {
         }
 
     }
+
+    /**
+     * Método que se acciona al dar click al botón para volver a la ventana
+     * principal.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
+        new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para realizar el retiro
+     * llamando el método de realizarRetiro.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         this.realizarRetiro();
     }//GEN-LAST:event_btnAceptarActionPerformed
 
+    /**
+     * Evento que restringe los caracteres para la contraseña, permitiendo solo
+     * numeros.
+     *
+     * @param evt Evento que se crea al teclear algo encima
+     */
     private void txtContrasenaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContrasenaKeyTyped
         char car = evt.getKeyChar();
         if (car < '0' || car > '9')
             evt.consume();
     }//GEN-LAST:event_txtContrasenaKeyTyped
 
+    /**
+     * Evento que restringe los caracteres para el folio, permitiendo solo
+     * numeros.
+     *
+     * @param evt Evento que se crea al teclear algo encima
+     */
     private void txtFolioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFolioKeyTyped
         char car = evt.getKeyChar();
         if (car < '0' || car > '9')
             evt.consume();
     }//GEN-LAST:event_txtFolioKeyTyped
 
+    /**
+     * Evento que restringe los caracteres para el monto, permitiendo solo
+     * numeros, comas y puntos.
+     *
+     * @param evt Evento que se crea al teclear algo encima
+     */
     private void txtMontoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoKeyTyped
         char car = evt.getKeyChar();
         if ((car < '0' || car > '9') && (car < ',' || car > '.'))
             evt.consume();
     }//GEN-LAST:event_txtMontoKeyTyped
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de aceptar para cambiar
+     * de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMousePressed
         this.btnAceptar.setContentAreaFilled(false);
         this.btnAceptar.setOpaque(true);
-        this.btnAceptar.setBackground(new Color(148,116,69));
+        this.btnAceptar.setBackground(new Color(148, 116, 69));
     }//GEN-LAST:event_btnAceptarMousePressed
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de cancelar para
+     * cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCancelarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMousePressed
         this.btnCancelar.setContentAreaFilled(false);
         this.btnCancelar.setOpaque(true);
-        this.btnCancelar.setBackground(new Color(148,116,69));
+        this.btnCancelar.setBackground(new Color(148, 116, 69));
     }//GEN-LAST:event_btnCancelarMousePressed
 
+    /**
+     * Evento que se acciona cuando se suelta el botón para regresar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMouseReleased
-        this.btnAceptar.setBackground(new Color(100,156,104));
+        this.btnAceptar.setBackground(new Color(100, 156, 104));
     }//GEN-LAST:event_btnAceptarMouseReleased
 
 

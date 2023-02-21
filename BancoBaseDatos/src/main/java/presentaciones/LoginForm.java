@@ -18,21 +18,29 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
+ * Frame de Login
  *
  * @author julio
  */
 public class LoginForm extends javax.swing.JFrame {
 
-    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
-    private final IClientesDAO clientesDAO;
-    private final IDireccionesDAO direccionesDAO;
-    private final ICuentasDAO cuentasDAO;
-    private final IRetirosSinCuentaDAO retirosDAO;
-    private final IDepositosDAO depositosDAO;
-    private final IMoviminetosDAO movimientosDAO;
+    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());//Logger para errores
+    private final IClientesDAO clientesDAO;//Interfaz de clientes
+    private final IDireccionesDAO direccionesDAO;//Interfaz de direcciones
+    private final ICuentasDAO cuentasDAO;//Interfaz de cuentas
+    private final IRetirosSinCuentaDAO retirosDAO;//Interfaz de retiros
+    private final IDepositosDAO depositosDAO;//Interfaz de depósitos
+    private final IMoviminetosDAO movimientosDAO;//Interfaz de movimientos
 
     /**
-     * Creates new form LoginForm
+     * Constructor del frame de login, incializa las interfaces.
+     *
+     * @param clientesDAO Interfaz de clientes
+     * @param direccionesDAO Interfaz de direcciones
+     * @param cuentasDAO Interfaz de cuentas
+     * @param retirosDAO Interfaz de retiros
+     * @param depositosDAO Interfaz de depósitos
+     * @param movimientosDAO Interfaz de movimientos
      */
     public LoginForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
@@ -199,21 +207,26 @@ public class LoginForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Mensaje de error cuando se equivocan de información o hay espacios
+     * vacíos.
+     */
     public void mostrarMensajeErrorAlConsultarCliente() {
         JOptionPane.showMessageDialog(this, "Correo o contraseña incorrectas",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-    // metodo temporal
-    public void mostrarMensajeInformacionCorrecta() {
-        JOptionPane.showMessageDialog(this, "Informacion correcta",
-                "Informacion",
-                JOptionPane.INFORMATION_MESSAGE);
-    }
 
+    /**
+     * Método que se dedica a extraer los datos de los txtpara validar si estan
+     * vacíos, y asignarse a un cliente.
+     *
+     * @return Cliente con los datos extraídos
+     * @throws PersistenciaException En caso de algpun error
+     */
     public Cliente extraerDatos() throws PersistenciaException {
-        if (txtCorreo.getText().isEmpty() || txtContraseña.getText().isEmpty()){
+        if (txtCorreo.getText().isEmpty() || txtContraseña.getText().isEmpty()) {
             throw new PersistenciaException();
-        }else{
+        } else {
             String correo = txtCorreo.getText();
             String contrasena = txtContraseña.getText();
             Cliente cliente = new Cliente(correo, contrasena);
@@ -221,25 +234,38 @@ public class LoginForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que llama métodos de extraer datos y consultar cliente, para saber
+     * si el cliente extraído existe, sino manda mensaje de error.
+     *
+     * @return El cliente si se encontro, sino regresa nulo
+     */
     public Cliente consultarCliente() {
         try {
             Cliente cliente = this.extraerDatos();
             Cliente clienteGuardado = this.clientesDAO.consultar(cliente.getCorreoElectronico());
-            return clienteGuardado;
+            if (clienteGuardado == null) {
+                this.mostrarMensajeErrorAlConsultarCliente();
+                return null;
+            } else {
+                return clienteGuardado;
+            }
         } catch (PersistenciaException ex) {
             this.mostrarMensajeErrorAlConsultarCliente();
             return null;
         }
     }
 
-
+    /**
+     * Método que comprueba los datos con las consulta, para acceder a la
+     * siguiente ventana, por cualquier error se lanzan sus mensajes.
+     */
     public void comprobacionDatos() {
         try {
             Cliente datosForm = this.extraerDatos();
             Cliente clienteConsultado = this.consultarCliente();
             if (clienteConsultado != null) {
                 if (clienteConsultado.getContrasena().equals(datosForm.getContrasena())) {
-                    this.mostrarMensajeInformacionCorrecta();
                     this.dispose();
                     new AdministracionCuentaForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, clienteConsultado, depositosDAO, movimientosDAO).setVisible(true);
                 } else {
@@ -252,29 +278,58 @@ public class LoginForm extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Método que se acciona al dar click al botón para comprobar los datos del
+     * formulario, inciar sesión e ingresar al sistema.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
         this.comprobacionDatos();
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para volver a la ventana
+     * principal.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de iniciar sesión para
+     * cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnIniciarSesionMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnIniciarSesionMousePressed
         this.btnIniciarSesion.setContentAreaFilled(false);
         this.btnIniciarSesion.setOpaque(true);
-        this.btnIniciarSesion.setBackground(new Color(148,116,69));
+        this.btnIniciarSesion.setBackground(new Color(148, 116, 69));
     }//GEN-LAST:event_btnIniciarSesionMousePressed
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de cancelar para
+     * cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCancelarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMousePressed
         this.btnCancelar.setContentAreaFilled(false);
         this.btnCancelar.setOpaque(true);
-        this.btnCancelar.setBackground(new Color(148,116,69));
+        this.btnCancelar.setBackground(new Color(148, 116, 69));
     }//GEN-LAST:event_btnCancelarMousePressed
 
+    /**
+     * Evento que se acciona cuando se suelta el botón para regresar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnIniciarSesionMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnIniciarSesionMouseReleased
-        this.btnIniciarSesion.setBackground(new Color(100,156,104));
+        this.btnIniciarSesion.setBackground(new Color(100, 156, 104));
     }//GEN-LAST:event_btnIniciarSesionMouseReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

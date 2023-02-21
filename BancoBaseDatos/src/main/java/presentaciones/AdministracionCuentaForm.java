@@ -22,24 +22,33 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * Frame de adminsitración del cliente
  * @author julio
  */
 public class AdministracionCuentaForm extends javax.swing.JFrame {
 
-    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
-    private final IClientesDAO clientesDAO;
-    private final IDireccionesDAO direccionesDAO;
-    private final ICuentasDAO cuentasDAO;
-    private final IRetirosSinCuentaDAO retirosDAO;
-    private Cliente cliente;
-    private List<Cuenta> cuentasCliente;
-    private int numeroCuenta;
-    private final IDepositosDAO depositosDAO;
-    private final IMoviminetosDAO movimientosDAO;
+    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());//Logger para errores
+    private final IClientesDAO clientesDAO;//Interfaz de clientes
+    private final IDireccionesDAO direccionesDAO;//Interfaz de direcciones
+    private final ICuentasDAO cuentasDAO;//Interfaz de cuentas
+    private final IRetirosSinCuentaDAO retirosDAO;//Interfaz de retiros
+    private final Cliente cliente;//Cliente iniciado
+    private List<Cuenta> cuentasCliente;//Lista de cuentas del cliente
+    private int numeroCuenta;//Número de la cuenta en uso
+    private final IDepositosDAO depositosDAO;//Interfaz de depósitos
+    private final IMoviminetosDAO movimientosDAO;//Interfaz de movimientos
 
     /**
-     * Creates new form AdministracionCuentaForm
+     * Constructor del formulario que adminsitra la cuenta, le pone título y
+     * llama al método para cargar las cuentas del cliente.
+     *
+     * @param clientesDAO Interfaz de clientes
+     * @param direccionesDAO Interfaz de direcciones
+     * @param cuentasDAO Interfaz de cuentas
+     * @param retirosDAO Interfaz de retiros
+     * @param cliente Cliente iniciado
+     * @param depositosDAO Interfaz de depósitos
+     * @param movimientosDAO Interfaz de movimientos
      */
     public AdministracionCuentaForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
@@ -297,6 +306,10 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Método encargado de cargar las cuentas del cliente con la sesión
+     * iniciada, en caso de un error se lanza un log.
+     */
     private void cargarCuentasCliente() {
         try {
             cuentasCliente = this.cuentasDAO.consultarCuentasCliente(cliente.getId());
@@ -308,6 +321,13 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que obtiene el saldo de la cuenta seleccionada y llama al método
+     * para cargarlo.
+     *
+     * @param numeroCuenta numero de la cuenta seleccionada para obtenerle el
+     * saldo
+     */
     private void obtenerSaldo(int numeroCuenta) {
         try {
             Cuenta cuenta = this.cuentasDAO.consultarCuenta(numeroCuenta);
@@ -318,36 +338,70 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método encargado de cargar el saldo en un cuadro de texto.
+     *
+     * @param saldo Saldo de la cuenta seleccionada
+     */
     public void cargarSaldo(float saldo) {
         this.txtSaldo.setEditable(false);
         this.txtSaldo.setText("$" + saldo);
     }
 
+    /**
+     * Método que imprime mensaje de error al querer crear una cuenta.
+     */
     public void mostrarMensajeErrorAlCrear() {
         JOptionPane.showMessageDialog(this, "Error al crear cuenta, intentar luego",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Método que imprime mensaje de error al querer obtener el saldo de la
+     * cuenta.
+     */
     public void mostrarMensajeErrorObtenerSaldo() {
         JOptionPane.showMessageDialog(this, "Error al obtener saldo, intentar luego",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Método que se acciona al dar click al botón para acceder a la ventana de
+     * movimientos.
+     *
+     * @param evt Evento que se crea al dar click al botón.
+     */
     private void btnMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovimientosActionPerformed
         new MovimientosForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, cliente, cuentasCliente, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnMovimientosActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para acceder a la ventana de
+     * transferencias.
+     *
+     * @param evt Evento que se crea al dar click al botón.
+     */
     private void btnTransferenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferenciaActionPerformed
         new TransferenciasForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, cliente, cuentasCliente, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnTransferenciaActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para salir de la ventana
+     * actual y regresar al inicio.
+     *
+     * @param evt Evento que se crea al dar click al botón.
+     */
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
 
+    /**
+     * Método encargado de llamar el método de la interfaz para crear una
+     * cuenta, en caso de error se manda un mensaje de error.
+     */
     private void crearCuenta() {
         try {
             this.cuentasDAO.crearCuenta(cliente.getId());
@@ -356,33 +410,59 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que imprime mensaje de error al querer crear un retiro sin cuenta.
+     */
     public void mostrarMensajeErrorCrearRetiroSinCuenta() {
         JOptionPane.showMessageDialog(this, "Error no se pudo crear el retiro sin cuenta",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Método que imprime mensaje de error al querer cancelar una cuenta.
+     */
     public void mostrarMensajeErrorAlCancelar() {
         JOptionPane.showMessageDialog(this, "Error no se pudo cancelar la cuenta",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Método que imprime mensaje con los datos de del retiro sin cuenta, es
+     * decir, el folio y contraseña.
+     *
+     * @param informacion Variable que sirve para recibir el retiro sin cuenta y
+     * usar su información
+     */
     public void mostrarMensajeDatosParaRetiro(RetiroSinCuenta informacion) {
         JOptionPane.showMessageDialog(this, "El folio del retiro es: " + informacion.getFolio()
                 + " La Contraseña para realizar el retiro es: " + informacion.getContraseña(),
                 "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Método que imprime mensaje cuando se elimina una cuenta.
+     */
     public void mostrarMensajeCuentaEliminada() {
         JOptionPane.showMessageDialog(this, "Se ha eliminado la cuenta",
                 "Hecho", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Método que imprime mensaje para pedir confirmación al cancelar cuenta.
+     *
+     * @return Regresa un entero que representa la opción elegida.
+     */
     public int mostrarMensajeConfirmacionCancelar() {
         return JOptionPane.showOptionDialog(this, "¿Esta seguro que desea eliminar la cuenta " + numeroCuenta + "? (Saldo: " + this.txtSaldo.getText() + ")",
                 "Confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                 null, new Object[]{"Sí", "No"}, JOptionPane.YES_OPTION);
     }
 
+    /**
+     * Método que genera un retiro sin cuenta apartir del número de cuenta,
+     * después consulta ese retiro y muestra el mensaje para informar al
+     * usuario.
+     */
     private void retiroSinCuenta() {
         try {
             RetiroSinCuenta folioRetiro = this.retirosDAO.crearRetiro(numeroCuenta);
@@ -393,22 +473,38 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que llama a la interfaz de las cuentas para cancelar una cuenta,
+     * después de haber pedido confirmación, si hay un errror muestra un
+     * mensaje.
+     */
     private void cancelarCuenta() {
         try {
             if (this.mostrarMensajeConfirmacionCancelar() == (JOptionPane.YES_OPTION)) {
                 this.cuentasDAO.cancelarCuenta(numeroCuenta);
             }
         } catch (PersistenciaException e) {
-            this.mostrarMensajeErrorAlCrear();
+            this.mostrarMensajeErrorAlCancelar();
         }
     }
 
+    /**
+     * Método que se acciona al dar click al botón para llamar el método de
+     * crear cuenta y remover los items del comboBox.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCrearCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearCuentaActionPerformed
         this.crearCuenta();
         cmbCuentas.removeAllItems();
-        this.cargarCuentasCliente();
     }//GEN-LAST:event_btnCrearCuentaActionPerformed
 
+    /**
+     * Método que esta constantemente cargando las cuentas en el comboBox,
+     * además obtiene saldo llamando al método correspondiente.
+     *
+     * @param evt Evento que se crea al realizar una acción
+     */
     private void cmbCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCuentasActionPerformed
         if (cmbCuentas.getSelectedItem() == null) {
             this.cargarCuentasCliente();
@@ -420,16 +516,33 @@ public class AdministracionCuentaForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_cmbCuentasActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para llamar al método de
+     * retiro sin cuenta.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnRetiroSinCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetiroSinCuentaActionPerformed
         this.retiroSinCuenta();
     }//GEN-LAST:event_btnRetiroSinCuentaActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para llamar el método de
+     * cancelar la cuenta y remover los items del comboBox.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCancelarCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCuentaActionPerformed
         this.cancelarCuenta();
         cmbCuentas.removeAllItems();
-        this.cargarCuentasCliente();
     }//GEN-LAST:event_btnCancelarCuentaActionPerformed
 
+    /**
+     * Método que se acciona al dar clcik al botón para crear una ventana para
+     * actualizar clientes.
+     * 
+     * @param evt Evento que se crea al dar clicl al botón
+     */
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         new ClientesForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO, cliente.getCorreoElectronico()).setVisible(true);
     }//GEN-LAST:event_btnActualizarActionPerformed

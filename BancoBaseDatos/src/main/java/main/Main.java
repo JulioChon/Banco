@@ -21,12 +21,13 @@ import interfaces.IRetirosSinCuentaDAO;
 import presentaciones.InicioForm;
 
 /**
- *
+ * Main
  * @author julio
  */
 public class Main {
 
     /**
+     * Clase Main donde se ejecuta el programa
      * @param args the command line arguments
      */
     public static void main(String[] args) {

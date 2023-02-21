@@ -14,16 +14,34 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
+/**
+ * Implementación de la IClientesDAO
+ * @author esteb
+ */
 public class ClientesDAO implements IClientesDAO {
 
     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
-    private final IConexionBD GENERADOR_CONEXIONES;
+    private final IConexionBD GENERADOR_CONEXIONES; // Conexion a la base de datos
 
+    /**
+     * Metodo constructor que inicializa la variable GENERADOR_CONEXIONES
+     * @param generadorConexiones Conexion a la base de datos
+     */
     public ClientesDAO(IConexionBD generadorConexiones) {
         this.GENERADOR_CONEXIONES = generadorConexiones;
     }
 
+    /**
+     * Metodo que recibe un objeto de tipo cliente, este lo agrega en la base de datos,
+     * comprobando si este no existe, tomando en cuenta el correo, de igual forma
+     * este metodo regresa un objeto de tipo cliente, el cliente regresado tiene 
+     * todos los atributos de cliente, lanza una excepxion de tipo PersistenciaException,
+     * si al agregar algo a la tabla cliente no se puede realizar
+     * @param cliente cliente que se desea agregar a la tabla cliente
+     * @return cliente registrado en la tabla clientes 
+     * @throws PersistenciaException PersistenciaException si al agregar algo a 
+     * la tabla cliente no se puede realizar
+     */
     @Override
     public Cliente insertar(Cliente cliente) throws PersistenciaException {
         String codigoSQL = "Insert into clientes"
@@ -59,6 +77,16 @@ public class ClientesDAO implements IClientesDAO {
         }
     }
 
+    /**
+    * Metodo que recibe el correo de un cliente, para luego consultar si existe un cliente 
+    * con este correo registrado en la base de datos, regresando un cliente con el 
+    * correo y la contraseña de la cuenta en caso de existir, en caso de no este lanza 
+    * una excepcion de tipo PersistenciaException.
+    * @param correoCliente correo del cliente que desea ser consultado 
+    * @return Cliente con el correo y la contraseña del cliente consultado 
+    * @throws PersistenciaException PersistenciaException si el cliente consultado
+    * no existe
+    */
     @Override
     public Cliente consultar(String correoCliente) throws PersistenciaException {
        String codigoSQL = "Select id,nombre,apellido_paterno,apellido_materno,"
@@ -90,6 +118,18 @@ public class ClientesDAO implements IClientesDAO {
         }
     }
 
+    /**
+    * Metodo que actualiza el cliente de la tabla clientes, con la informacion 
+    * del objeto de tipo cliente que recibe, actualizando el cliente del id 
+    * que recibe en su parametro, regresando el cliente actualizado con toda su 
+    * informacion, lanzando una excepcion de tipo PersistenciaException en caso, 
+    * que el cliente que quiere actualizarse no existe
+    * @param cliente Objjeto de tipo cliente con la nueva informacion del cliente 
+    * @param id id del cliente que se desea actualizar 
+    * @return Objeto de tipo cliente con toda la informacion del cliente actualizada
+    * @throws PersistenciaException PersistenciaException si el cliente que se 
+    * desea actualizar no existe
+    */
     @Override
     public Cliente actualizar(Cliente cliente, Integer id) throws PersistenciaException {
         String codigoSQL = "update clientes set nombre = ?,apellido_paterno = ?,"

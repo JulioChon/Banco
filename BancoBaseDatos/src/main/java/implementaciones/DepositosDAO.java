@@ -10,23 +10,35 @@ import interfaces.IDepositosDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Implementación de la IDepositosDAO
  * @author julio
  */
 public class DepositosDAO implements IDepositosDAO {
 
      private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
-    private final IConexionBD GENERADOR_CONEXIONES;
+    private final IConexionBD GENERADOR_CONEXIONES; // Conexion a la base de datos
 
-    public DepositosDAO(IConexionBD GENERADOR_CONEXIONES) {
+    /**
+     * Metodo constructor que inicializa la variable GENERADOR_CONEXIONES
+     * @param GENERADOR_CONEXIONES Conexion a la base de datos
+     */public DepositosDAO(IConexionBD GENERADOR_CONEXIONES) {
         this.GENERADOR_CONEXIONES = GENERADOR_CONEXIONES;
     }
     
+     /**
+     * Metodo que inserta en la tabla depositosACuenta los depositos que se 
+     * especifican en la cuenta que recibe como parametro y el monto que recibe 
+     * en el mismo. PersistenciaException en caso que no se 
+     * pueda realizar el deposito 
+     * @param numeroCuenta numeroCuenta a la cual se realiza el deposito
+     * @param monto monto del deposito
+     * @throws PersistenciaException PersistenciaException en caso que no se 
+     * pueda realizar el deposito
+     */
     @Override
     public void insertarDeposito(Integer numeroCuenta, float monto) throws PersistenciaException {
        String codigoSQL = "Insert into depositosACuenta(monto,cuenta_depositada) "

@@ -13,25 +13,31 @@ import interfaces.IDireccionesDAO;
 import interfaces.IMoviminetosDAO;
 import interfaces.IRetirosSinCuentaDAO;
 import java.awt.Color;
-import java.awt.Image;
 
 /**
- *
+ * Frame inicial
  * @author julio
  */
 public class InicioForm extends javax.swing.JFrame {
 
-    private final IClientesDAO clientesDAO;
-    private final IDireccionesDAO direccionesDAO;
-    private final ICuentasDAO cuentasDAO;
-    private final IRetirosSinCuentaDAO retirosDAO;
-    private final  IDepositosDAO depositosDAO;
-    private final  IMoviminetosDAO movimientosDAO;
-    
+    private final IClientesDAO clientesDAO;//Interfaz de clientes
+    private final IDireccionesDAO direccionesDAO;//Interfaz de direcciones
+    private final ICuentasDAO cuentasDAO;//Interfaz de cuentas
+    private final IRetirosSinCuentaDAO retirosDAO;//Interfaz de retiros
+    private final IDepositosDAO depositosDAO;//Interfaz de depósitos
+    private final IMoviminetosDAO movimientosDAO;//Interfaz de movimientos
+
     /**
-     * Creates new form InicioForm
+     * Constructor del frame de inicio, incializa las interfaces.
+     *
+     * @param clientesDAO Interfaz de clientes
+     * @param direccionesDAO Interfaz de direcciones
+     * @param cuentasDAO Interfaz de cuentas
+     * @param retirosDAO Interfaz de retiros
+     * @param depositosDAO Interfaz de depósitos
+     * @param movimientosDAO Interfaz de movimientos
      */
-    public InicioForm(IClientesDAO clientesDAO,IDireccionesDAO direccionesDAO,ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO,IMoviminetosDAO movimientosDAO) {
+    public InicioForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
         this.direccionesDAO = direccionesDAO;
         this.cuentasDAO = cuentasDAO;
@@ -41,7 +47,7 @@ public class InicioForm extends javax.swing.JFrame {
         initComponents();
         this.setTitle("Bienvenido a BANUEVO");
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -218,51 +224,99 @@ public class InicioForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Método que se acciona al dar click al botón para llevarnos a la ventana
+     * de Login.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        new LoginForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
+        new LoginForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnLoginActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para llevarnos a la ventana
+     * de crear usuario.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearUsuarioActionPerformed
         Cliente cliente = null;
-        new ClientesForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,depositosDAO,movimientosDAO, null).setVisible(true);
+        new ClientesForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO, null).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCrearUsuarioActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para llevarnos a la ventana
+     * de Retiro sin tarjeta.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnRetiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetiroActionPerformed
-        new RetiroForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
+        new RetiroForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRetiroActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para llevarnos a la ventana
+     * de depósitos.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnDepositoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepositoActionPerformed
-        new DepositosForm(clientesDAO,direccionesDAO,cuentasDAO,retirosDAO,depositosDAO,movimientosDAO).setVisible(true);
+        new DepositosForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnDepositoActionPerformed
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de crear usuario para
+     * cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCrearUsuarioMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCrearUsuarioMousePressed
         this.btnCrearUsuario.setContentAreaFilled(false);
         this.btnCrearUsuario.setOpaque(true);
-        this.btnCrearUsuario.setBackground(new Color(55,81,55));
+        this.btnCrearUsuario.setBackground(new Color(55, 81, 55));
     }//GEN-LAST:event_btnCrearUsuarioMousePressed
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de login para
+     * cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMousePressed
         this.btnLogin.setContentAreaFilled(false);
         this.btnLogin.setOpaque(true);
-        this.btnLogin.setBackground(new Color(55,81,55));
+        this.btnLogin.setBackground(new Color(55, 81, 55));
     }//GEN-LAST:event_btnLoginMousePressed
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de depósitos para
+     * cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnDepositoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDepositoMousePressed
         this.btnDeposito.setContentAreaFilled(false);
         this.btnDeposito.setOpaque(true);
-        this.btnDeposito.setBackground(new Color(55,81,55));
+        this.btnDeposito.setBackground(new Color(55, 81, 55));
     }//GEN-LAST:event_btnDepositoMousePressed
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de retiros para
+     * cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnRetiroMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRetiroMousePressed
         this.btnRetiro.setContentAreaFilled(false);
         this.btnRetiro.setOpaque(true);
-        this.btnRetiro.setBackground(new Color(55,81,55));
+        this.btnRetiro.setBackground(new Color(55, 81, 55));
     }//GEN-LAST:event_btnRetiroMousePressed
- 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCrearUsuario;
     private javax.swing.JButton btnDeposito;

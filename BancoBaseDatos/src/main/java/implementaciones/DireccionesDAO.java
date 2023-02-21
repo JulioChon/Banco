@@ -17,18 +17,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Implementación de la IDireccionesDAO
  * @author julio
  */
 public class DireccionesDAO implements IDireccionesDAO {
 
     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
-    private final IConexionBD GENERADOR_CONEXIONES;
+    private final IConexionBD GENERADOR_CONEXIONES; // Conexion a la base de datos
 
+    /**
+     * Metodo constructor que inicializa la variable GENERADOR_CONEXIONES
+     * @param generadorConexiones Conexion a la base de datos
+     */
     public DireccionesDAO(IConexionBD generadorConexiones) {
         this.GENERADOR_CONEXIONES = generadorConexiones;
     }
 
+    /**
+     * Metodo que consulta en la tabla direcciones la direccion, esta consulta
+     * se hace mediante el id de la direccion que recibe en su parametro, regresando 
+     * un objeto de tipo direccion con todos sus parametros. Lanzando
+     * una excepcion de tipo PersistenciaException en caso que no se pueda realizar 
+     * la consulta
+     * @param id id de la direccion que se desea consultar
+     * @return  objeto de tipo direccion con todos sus parametros
+     * @throws PersistenciaException PersistenciaException en caso que no se pueda realizar 
+     * la consulta
+     */
     @Override
     public Direccion consultar(Integer id)  throws PersistenciaException{
         String codigoSQL = "Select id,calle,colonia,numeroCasa "
@@ -52,6 +67,17 @@ public class DireccionesDAO implements IDireccionesDAO {
         }
     }
 
+    /**
+     * Metodo que inserta en la tabla de cliente la direccion que recibe en su parametro,
+     * regresando un objeto de tipo direccion con todos sus parametros. Lanzando
+     * una excepcion de tipo PersistenciaException en caso que no se pueda insertar la 
+     * dirección
+     * @param direccion objeto de tipo direccion, la informacion de la direccion 
+     * que sea insertar
+     * @return objeto de tipo direccion con todos sus parametros
+     * @throws PersistenciaException ersistenciaException en caso que no se pueda insertar la 
+     * dirección
+     */
     @Override
     public Direccion insertar(Direccion direccion) throws PersistenciaException {
         String codigoSQL = "Insert into direcciones"

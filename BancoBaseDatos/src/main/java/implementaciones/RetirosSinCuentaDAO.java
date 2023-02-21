@@ -17,17 +17,31 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Implementación de la IRetirosSinCuentaDAO
  * @author julio
  */
 public class RetirosSinCuentaDAO implements IRetirosSinCuentaDAO{
     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
-    private final IConexionBD GENERADOR_CONEXIONES;
+    private final IConexionBD GENERADOR_CONEXIONES; // Conexion a la base de datos
 
+    /**
+     * Metodo constructor que inicializa la variable GENERADOR_CONEXIONES
+     * @param GENERADOR_CONEXIONES Conexion a la base de datos
+     */
     public RetirosSinCuentaDAO(IConexionBD GENERADOR_CONEXIONES) {
         this.GENERADOR_CONEXIONES = GENERADOR_CONEXIONES;
     }
     
+    /**
+     * Metodo que recibe la cuenta origen para el retiro, regreando un objeto de 
+     * tipo RetiroSinCuenta con la contraseña y el folio para realizar 
+     * el retiro. Lanzado un objeto de tipo PersistenciaException en caso 
+     * de no poder generarse el retiro.
+     * @param cuentaOrigen cuenta origen para el retiro
+     * @return objeto de tipo RetiroSinCuenta con la contraseña y el folio para realizar
+     * @throws PersistenciaException PersistenciaException en caso 
+     * de no poder generarse el retiro.
+     */
     @Override
     public RetiroSinCuenta crearRetiro(Integer cuentaOrigen) throws PersistenciaException {
      String codigoSQL = "Insert into retirosSinCuenta (cuenta_retirada) values (?)";
@@ -53,6 +67,17 @@ public class RetirosSinCuentaDAO implements IRetirosSinCuentaDAO{
 
     }
 
+     /**
+     * Metodo que recibe el folio del retiro regresando un objeto de 
+     * tipo RetiroSinCuenta con la contraseña, el folio, estado y la cuenta retirada.
+     * Lanzado un objeto de tipo PersistenciaException en caso 
+     * de no poder consultar el retiro.
+     * @param folio folio del retiro
+     * @return objeto de 
+     * tipo RetiroSinCuenta con la contraseña, el folio, estado y la cuenta retirada
+     * @throws PersistenciaException PersistenciaException en caso 
+     * de no poder consultar el retiro.
+     */
     @Override
     public RetiroSinCuenta consultar(Integer folio) throws PersistenciaException {
        String codigoSQL = "Select folio, aes_decrypt(contraseña,'hunter2'),cuenta_retirada,estado from "
@@ -78,6 +103,14 @@ public class RetirosSinCuentaDAO implements IRetirosSinCuentaDAO{
 
     }
 
+    /**
+     * Metodo que actualiza el saldo de la cuenta en la cual se realizo el retiro 
+     * @param folio folio del retiro 
+     * @param numCuenta numero de cuenta de la cual se hizo el retiro 
+     * @param monto monto retirado
+     * @throws PersistenciaException PersistenciaException en caso 
+     * de no poder actualizar el saldo de la cuenta.
+     */
     @Override
     public void actualizarRetiro(Integer folio,Integer numeCuenta,Float monto) throws PersistenciaException {
        String codigoSQL = "call retiroSinCuenta(?,?,?)";
@@ -94,8 +127,15 @@ public class RetirosSinCuentaDAO implements IRetirosSinCuentaDAO{
 
     }
 
+    /**
+     * Metodo que comprueba el estado del retiro para ver si el retiro aun puede 
+     * llevarse acabo, consultado el retiro por el folio que recibe en su parametro
+     * @param folio folio del retiro 
+     * @throws PersistenciaException PersistenciaException en caso que no se pudo 
+     * realizar la comprobacion del estado
+     */
     @Override
-    public void comprobarEstao(Integer folio) throws PersistenciaException {
+    public void comprobarEstado(Integer folio) throws PersistenciaException {
       String codigoSQL = "call  cambiar_estado_retiro_sin_cuenta(?)";
       try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
                 PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {

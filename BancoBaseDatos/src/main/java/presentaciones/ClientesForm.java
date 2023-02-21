@@ -18,30 +18,39 @@ import interfaces.IRetirosSinCuentaDAO;
 import java.awt.Color;
 import java.sql.Date;
 import java.time.LocalDate;
-import validaciones.Validadores;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import validaciones.Validadores;
 
 /**
- *
+ * Frame de registro/actualización de clientes
  * @author julio
  */
 public class ClientesForm extends javax.swing.JFrame {
 
-    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
-    private final IClientesDAO clientesDAO;
-    private final IDireccionesDAO direccionesDAO;
-    private final ICuentasDAO cuentasDAO;
-    private final IRetirosSinCuentaDAO retirosDAO;
-    private final Validadores validadores = new Validadores();
-    private final IDepositosDAO depositosDAO;
-    private final IMoviminetosDAO movimientosDAO;
-    private final String correoCliente;
-    private Cliente cliente;
-    private Integer id;
+    private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());//Logger para errores
+    private final IClientesDAO clientesDAO;//Interfaz de clientes
+    private final IDireccionesDAO direccionesDAO;//Interfaz de direcciones
+    private final ICuentasDAO cuentasDAO;//Interfaz de cuentas
+    private final IRetirosSinCuentaDAO retirosDAO;//Interfaz de retiros
+    private final IDepositosDAO depositosDAO;//Interfaz de depósitos
+    private final IMoviminetosDAO movimientosDAO;//Interfaz de movimientos
+    private final String correoCliente; //Correo que sirve para identificar al cliente
+    private Cliente cliente;//Cliente generado
+    private Integer id;//Id del cliente generado
+    private Validadores validadores; //Clase que maneja los validadores
 
     /**
-     * Creates new form ClientesForm
+     * Constructor del formulario para registrar/actualizar un cliente, delimita
+     * la fecha del calendar panel y carga los datos en caso de actualizar.
+     *
+     * @param clientesDAO Interfaz de clientes
+     * @param direccionesDAO Interfaz de direcciones
+     * @param cuentasDAO Interfaz de cuentas
+     * @param retirosDAO Interfaz de retiros
+     * @param depositosDAO Interfaz de depósitos
+     * @param movimientosDAO Interfaz de movimientos
+     * @param correoCliente Correo del cliente a actualizar
      */
     public ClientesForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO, String correoCliente) {
         this.clientesDAO = clientesDAO;
@@ -324,6 +333,11 @@ public class ClientesForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Método encargado de cargar los datos del cliente en caso de ser usado
+     * para actualizar, llama al método que valida que sea el caso y otro para
+     * cargar la dirección.
+     */
     private void cargar() {
         if (this.validar()) {
             this.setTitle("Actualizar");
@@ -339,6 +353,10 @@ public class ClientesForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método encargado de consultar la dirección del cliente y cargarla en caso
+     * de error se llama un mensaje de error.
+     */
     private void cargarDireccion() {
         try {
             Direccion direccion = this.direccionesDAO.consultar(cliente.getIdDireccion());
@@ -350,6 +368,11 @@ public class ClientesForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que válida si el cliente existe a partir de su correo.
+     *
+     * @return Boolean para válidar si necesita actualizar o registrar.
+     */
     private boolean validar() {
         try {
             cliente = this.clientesDAO.consultar(correoCliente);
@@ -359,10 +382,20 @@ public class ClientesForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que lanza un mensaje de error en caso de no encontrar la
+     * dirección.
+     */
     private void mensajeErrorDireccion() {
         JOptionPane.showMessageDialog(this, "No se encontro la dirección");
     }
 
+    /**
+     * Método que extrae los datos para conformar una dirección, a traves de
+     * métodos de validación, para construir la dirección y regresarla.
+     *
+     * @return La dirección conformada si se cumple, sino null
+     */
     private Direccion extraerDatosFormDireccion() {
         String calle = this.txtCalle.getText();
         String colonia = this.txtColonia.getText();
@@ -374,6 +407,13 @@ public class ClientesForm extends javax.swing.JFrame {
         return null;
     }
 
+    /**
+     * Método que válida un nombre dado, en caso de una falla se imprime un
+     * mensaje de error.
+     *
+     * @param nombre Nombre a validar
+     * @return Boolean indicando si el nombre es correcto o no
+     */
     private boolean validarNombre(String nombre) {
         if (!validadores.validaNombre(nombre)) {
             JOptionPane.showMessageDialog(this, "El nombre no es válido\nSin acentos.");
@@ -381,6 +421,13 @@ public class ClientesForm extends javax.swing.JFrame {
         return validadores.validaNombre(nombre);
     }
 
+    /**
+     * Método que válida un apellido paterno dado, en caso de una falla se
+     * imprime un mensaje de error.
+     *
+     * @param apellidoP Apellido paterno a validar
+     * @return Boolean indicando si el apellido es correcto o no
+     */
     private boolean validarApellidoP(String apellidoP) {
         if (!validadores.validaApellido(apellidoP)) {
             JOptionPane.showMessageDialog(this, "El apellido paterno no es válido\nSin acentos.");
@@ -388,6 +435,13 @@ public class ClientesForm extends javax.swing.JFrame {
         return validadores.validaApellido(apellidoP);
     }
 
+    /**
+     * Método que válida un apellido materno dado, en caso de una falla se
+     * imprime un mensaje de error.
+     *
+     * @param apellidoM Apellido materno a validar
+     * @return Boolean indicando si el apellido es correcto o no
+     */
     private boolean validarApellidoM(String apellidoM) {
         if (!validadores.validaApellido(apellidoM)) {
             JOptionPane.showMessageDialog(this, "El apellido materno no es válido\nSin acentos.");
@@ -395,6 +449,13 @@ public class ClientesForm extends javax.swing.JFrame {
         return validadores.validaApellido(apellidoM);
     }
 
+    /**
+     * Método que válida un correo dado, en caso de una falla se imprime un
+     * mensaje de error.
+     *
+     * @param correo Correo a validar
+     * @return Boolean indicando si el correo es correcto o no
+     */
     private boolean validarCorreo(String correo) {
         if (!validadores.validaCorreo(correo)) {
             JOptionPane.showMessageDialog(this, "El correo no es válido\nPuede usar (.'-_), use el formato Este@ejemplo");
@@ -402,6 +463,13 @@ public class ClientesForm extends javax.swing.JFrame {
         return validadores.validaCorreo(correo);
     }
 
+    /**
+     * Método que válida una contraseña, en caso de una falla se imprime un
+     * mensaje de error.
+     *
+     * @param contrasena Contraseña a validar
+     * @return Boolean indicando si la contraseña es correcto o no
+     */
     private boolean validarContrasena(String contrasena) {
         if (!validadores.validaContrasena(contrasena)) {
             JOptionPane.showMessageDialog(this, "La contraseña no es válida\nUse una minúscula, una mayúscula, un número y un cáracter especial (8-16)");
@@ -409,6 +477,13 @@ public class ClientesForm extends javax.swing.JFrame {
         return validadores.validaContrasena(contrasena);
     }
 
+    /**
+     * Método que válida la edad del cliente, en caso de ser menor se imprime un
+     * mensaje de error.
+     *
+     * @param fechaNacimiento Fecha a validar
+     * @return Boolean indicando si la edad es válida o no
+     */
     private int validarEdad(Date fechaNacimiento) {
         if (validadores.validaEdad(fechaNacimiento) < 15) {
             JOptionPane.showMessageDialog(this, "La edad no es válida\nLa edad para crear una cuenta son 15 años en adelante");
@@ -416,6 +491,13 @@ public class ClientesForm extends javax.swing.JFrame {
         return validadores.validaEdad(fechaNacimiento);
     }
 
+    /**
+     * Método que válida la calle, en caso de tener una falla imprime un mensaje
+     * de error.
+     *
+     * @param calle Calle a validar
+     * @return Boolean indicando si la calle es válida o no
+     */
     private boolean validarCalle(String calle) {
         if (!validadores.validaCalle(calle)) {
             JOptionPane.showMessageDialog(this, "La calle no es válida\nSin acentos");
@@ -423,6 +505,13 @@ public class ClientesForm extends javax.swing.JFrame {
         return validadores.validaCalle(calle);
     }
 
+    /**
+     * Método que válida la colonia, en caso de tener una falla imprime un
+     * mensaje de error.
+     *
+     * @param colonia Colonia a validar
+     * @return Boolean indicando si la colonia es válida o no
+     */
     private boolean validarColonia(String colonia) {
         if (!validadores.validaColonia(colonia)) {
             JOptionPane.showMessageDialog(this, "La colonia no es válida\nSin acentos");
@@ -430,6 +519,13 @@ public class ClientesForm extends javax.swing.JFrame {
         return validadores.validaColonia(colonia);
     }
 
+    /**
+     * Método que válida el número de casa, en caso de tener una falla imprime
+     * un mensaje de error.
+     *
+     * @param numCasa Número de casa a validar
+     * @return Boolean indicando si el número de casa es válido o no
+     */
     private boolean validarNumCasa(String numCasa) {
         if (!validadores.validaNumCasa(numCasa)) {
             JOptionPane.showMessageDialog(this, "El número de casa no es válido\n1-5 cáracteres");
@@ -437,11 +533,22 @@ public class ClientesForm extends javax.swing.JFrame {
         return validadores.validaNumCasa(numCasa);
     }
 
+    /**
+     * Método que manda mensaje de error cuando no se selecciona una fecha
+     */
     private void mensajeErrorFecha() {
         JOptionPane.showMessageDialog(this, "No seleccionaste ninguna fecha");
 
     }
 
+    /**
+     * Método encargado de extraer todos los datos del formulario, para después
+     * validar cada uno de los espcaios y finalmente crear el cliente a
+     * actualizar/registrar, en caso de error con la fecha se llama a su
+     * respectivo mensaje.
+     *
+     * @return El cliente formado por los datos, null en caso de algún error.
+     */
     private Cliente extraerDatosFormCliente() {
         String nombre = this.txtNombre.getText();
         String apellidoPaterno = this.txtApellidoPaterno.getText();
@@ -466,33 +573,57 @@ public class ClientesForm extends javax.swing.JFrame {
         return null;
     }
 
+    /**
+     * Método que imprime mensaje de error cuando hay problemas al guardar la
+     * dirección.
+     */
     public void mostrarMensajeErrorAlGuardarDireccion() {
         JOptionPane.showMessageDialog(this, "NO fue posible agregar la dirrecion",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Método que imprime mensaje de error cuando hay problemas al guardar el
+     * cliente, en este caso porque ya existe.
+     */
     public void mostrarMensajeErrorAlGuardarCliente() {
         JOptionPane.showMessageDialog(this, "NO fue posible agregar el cliente, ya que este ya existe",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Método que imprime mensaje de error cuando hay problemas al actualizar el
+     * cliente.
+     */
     public void mostrarMensajeErrorAlActualizarCliente() {
         JOptionPane.showMessageDialog(this, "NO fue posible actualizar el cliente",
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Método que imprime mensaje cuando se agrega correctamente el cliente.
+     */
     public void mostrarMensajeClienteGuardado() {
-        JOptionPane.showMessageDialog(this, "Se agrego el cliente: ",
+        JOptionPane.showMessageDialog(this, "Se agrego el cliente",
                 "Informacion",
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Método que imprime mensaje cuando se actualiza correctamente el cliente.
+     */
     public void mostrarMensajeClienteActualizado() {
-        JOptionPane.showMessageDialog(this, "Se actualizo el cliente: ",
+        JOptionPane.showMessageDialog(this, "Se actualizo el cliente",
                 "Informacion",
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Método dedicado a guardar las direcciones, extae los datos del formulario
+     * y procede a guardarla.
+     *
+     * @return Dirección guardada si se crea, nulo en caso contrario
+     */
     private Direccion guardarDireccion() {
         try {
             Direccion direccion = this.extraerDatosFormDireccion();
@@ -504,6 +635,10 @@ public class ClientesForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que se encarga de extraer los datos del cliente para actualiarlo y
+     * mostrar mensaje de que se realizo, en caso contrario se imprime el error.
+     */
     private void actualizarCliente() {
         try {
             Cliente cliente = this.extraerDatosFormCliente();
@@ -518,6 +653,11 @@ public class ClientesForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que se encarga de extraer los datos del cliente para guardarlo y
+     * mostrar mensaje de que se realizo y se regresa al inicio, en caso
+     * contrario se imprime el error.
+     */
     private void guardarCliente() {
         try {
             Cliente cliente = this.extraerDatosFormCliente();
@@ -533,6 +673,12 @@ public class ClientesForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que se acciona al dar click al botón para llamar el método de
+     * guardar/actualizar cliente dependiendo de la validación.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         if (!this.validar()) {
             this.guardarCliente();
@@ -541,6 +687,12 @@ public class ClientesForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnAceptarActionPerformed
 
+    /**
+     * Método que se acciona al dar click al botón para volver a la ventana
+     * principal.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         if (!this.validar()) {
             new InicioForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, depositosDAO, movimientosDAO).setVisible(true);
@@ -549,18 +701,33 @@ public class ClientesForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de aceptar para cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMousePressed
         this.btnAceptar.setContentAreaFilled(false);
         this.btnAceptar.setOpaque(true);
         this.btnAceptar.setBackground(new Color(148, 116, 69));
     }//GEN-LAST:event_btnAceptarMousePressed
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de cancelar para cambiar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnCancelarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMousePressed
         this.btnCancelar.setContentAreaFilled(false);
         this.btnCancelar.setOpaque(true);
         this.btnCancelar.setBackground(new Color(148, 116, 69));
     }//GEN-LAST:event_btnCancelarMousePressed
 
+    /**
+     * Evento que se acciona cuando se suelta el botón para regresar de color.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAceptarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMouseReleased
         this.btnAceptar.setBackground(new Color(100, 156, 104));
     }//GEN-LAST:event_btnAceptarMouseReleased

@@ -22,20 +22,33 @@ import java.util.logging.Logger;
 import utils.ConfiguracionPaginado;
 
 /**
- *
+ * Implementación de la IMovimientosDAO
  * @author julio
  */
 public class MovimientosDAO implements IMoviminetosDAO {
 
     private static final Logger LOG = Logger.getLogger(ClientesDAO.class.getName());
-    private final IConexionBD GENERADOR_CONEXIONES;
+    private final IConexionBD GENERADOR_CONEXIONES; // Conexion a la base de datos
 
+    /**
+     * Metodo constructor que inicializa la variable GENERADOR_CONEXIONES
+     * @param GENERADOR_CONEXIONES Conexion a la base de datos
+     */
     public MovimientosDAO(IConexionBD GENERADOR_CONEXIONES) {
         this.GENERADOR_CONEXIONES = GENERADOR_CONEXIONES;
     }
 
-    // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
-    // primero va la fecha inicio y despues de la fecha final
+    /**
+     * Metodo que recibe el numero de cuenta, el periodo de fechas de la cual 
+     * se desean saber las transferencias realizadas. Lanzando una excepcion de tipo
+     * PersistenciaException en caso que ocurra un error en la consulta. 
+     * @param cuentaOrigen cuenta de la cual se realizaron las transferencias
+     * @param paginado Objeto de tipo paginado para saber como se presentaran los datos
+     * @param fechaDesde fecha desde donde comienza la consulta
+     * @param fechaHasta fecha hasta la cual llega la consulta
+     * @return lista con las transferncias realizadas
+     * @throws PersistenciaException PersistenciaException en caso que ocurra un error en la consulta
+     */
     @Override
     public List<Transferencia> realizadas(Integer cuentaOrigen,ConfiguracionPaginado paginado,Date fechaDesde,Date fechaHasta) throws PersistenciaException {
        String codigoSQL = "Call historialTransferenciasRealizadas(?,?,?,?,?)";
@@ -64,8 +77,17 @@ public class MovimientosDAO implements IMoviminetosDAO {
         }
     }
 
-    // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
-    // primero va la fecha inicio y despues de la fecha final
+    /**
+     * Metodo que recibe el numero de cuenta, el periodo de fechas de la cual 
+     * se desean saber las transferencias recibidas. Lanzando una excepcion de tipo
+     * PersistenciaException en caso que ocurra un error en la consulta.
+     * @param cuentaDestino cuenta la cual recibio las transferencias
+     * @param paginado Objeto de tipo paginado para saber como se presentaran los datos
+     * @param fechaDesde fecha desde donde comienza la consulta
+     * @param fechaHasta fecha hasta la cual llega la consulta
+     * @return lista con las transferncias recibidas
+     * @throws PersistenciaException PersistenciaException PersistenciaException en caso que ocurra un error en la consulta
+     */
     @Override
     public List<Transferencia> recibidas(Integer cuentaDestino,ConfiguracionPaginado paginado,Date fechaDesde,Date fechaHasta) throws PersistenciaException {
      String codigoSQL = "Call historialTransferenciasRecibidas(?,?,?,?,?)";
@@ -94,8 +116,17 @@ public class MovimientosDAO implements IMoviminetosDAO {
         }
 
     }
-    // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
-    // primero va la fecha inicio y despues de la fecha final
+    /**
+     * Metodo que recibe el numero de cuenta, el periodo de fechas de la cual 
+     * se desean saber los retiros realizadas. Lanzando una excepcion de tipo
+     * PersistenciaException en caso que ocurra un error en la consulta. 
+     * @param cuentaOrigen cuenta de la cual se realizaron los retiros
+     * @param paginado Objeto de tipo paginado para saber como se presentaran los datos
+     * @param fechaDesde fecha desde donde comienza la consulta
+     * @param fechaHasta fecha hasta la cual llega la consulta
+     * @return lista con los retiros realizados
+     * @throws PersistenciaException PersistenciaException en caso que ocurra un error en la consulta
+     */
     @Override
     public List<RetiroSinCuenta> realizar(Integer cuentaOrigen,ConfiguracionPaginado paginado,Date fechaDesde,Date fechaHasta) throws PersistenciaException {
        String codigoSQL = "call historialRetirosSinCuenta(?,?,?,?,?)";
@@ -124,8 +155,17 @@ public class MovimientosDAO implements IMoviminetosDAO {
 
     }
 
-    // falta poner las fechas en el parametro y en donde se la asigna el valor al signo de interrogacion
-    // primero va la fecha inicio y despues de la fecha final
+     /**
+     * Metodo que recibe el numero de cuenta, el periodo de fechas de la cual 
+     * se desean saber los depositos realizadas. Lanzando una excepcion de tipo
+     * PersistenciaException en caso que ocurra un error en la consulta. 
+     * @param cuentaDestino Cuenta a la que se le depósito
+     * @param paginado Objeto de tipo paginado para saber como se presentaran los datos
+     * @param fechaDesde fecha desde donde comienza la consulta
+     * @param fechaHasta fecha hasta la cual llega la consulta
+     * @return lista con los depositos realizados
+     * @throws PersistenciaException PersistenciaException en caso que ocurra un error en la consulta
+     */
     @Override
     public List<Deposito> Depocitosrecibidos(Integer cuentaDestino,ConfiguracionPaginado paginado,Date fechaDesde,Date fechaHasta) throws PersistenciaException {
         String codigoSQL = "call depositos(?,?,?,?,?)";
