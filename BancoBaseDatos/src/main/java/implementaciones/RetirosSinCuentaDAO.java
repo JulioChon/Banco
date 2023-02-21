@@ -112,12 +112,12 @@ public class RetirosSinCuentaDAO implements IRetirosSinCuentaDAO{
      * de no poder actualizar el saldo de la cuenta.
      */
     @Override
-    public void actualizarRetiro(Integer folio,Integer numeCuenta,Float monto) throws PersistenciaException {
+    public void actualizarRetiro(Integer folio,Integer numCuenta,Float monto) throws PersistenciaException {
        String codigoSQL = "call retiroSinCuenta(?,?,?)";
        try (Connection conexion = this.GENERADOR_CONEXIONES.crearConexiones();
                 PreparedStatement comando = conexion.prepareStatement(codigoSQL);) {
            comando.setInt(1, folio);
-           comando.setInt(2, numeCuenta);
+           comando.setInt(2, numCuenta);
            comando.setFloat(3, monto);
            comando.executeUpdate();
        } catch (SQLException ex) {

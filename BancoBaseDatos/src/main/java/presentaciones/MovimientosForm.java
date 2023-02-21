@@ -61,8 +61,9 @@ public class MovimientosForm extends javax.swing.JFrame {
      * @param retirosDAO Interfaz de retiros
      * @param depositosDAO Interfaz de depósitos
      * @param movimientosDAO Interfaz de movimientos
-     * @param 
-     * 
+     * @param cliente Cliente a revisar
+     * @param cuentasCliente Lista de cuentas del cliente
+     *
      */
     public MovimientosForm(IClientesDAO clientesDAO, IDireccionesDAO direccionesDAO, ICuentasDAO cuentasDAO, IRetirosSinCuentaDAO retirosDAO, Cliente cliente, List<Cuenta> cuentasCliente, IDepositosDAO depositosDAO, IMoviminetosDAO movimientosDAO) {
         this.clientesDAO = clientesDAO;
@@ -89,6 +90,10 @@ public class MovimientosForm extends javax.swing.JFrame {
         this.setTitle("Movimientos");
     }
 
+    /**
+     * Método encargado de cargar las cuentas en el combobox, en caso de error
+     * lanza un LOG.
+     */
     private void cargarCuentas() {
         try {
             cuentasCliente = this.cuentasDAO.consultarCuentasClienteMovimientos(cliente.getId());
@@ -100,6 +105,10 @@ public class MovimientosForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que le indica a la tabla que avance de página por medio de otros
+     * métodos.
+     */
     private void avanzarPagina() {
         this.configPaginado.avanzarPagina();
         this.cargarTablaOtrosMovimientos();
@@ -107,12 +116,20 @@ public class MovimientosForm extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Método que le indica a la tabla que retroceda de página por medio de
+     * otros métodos.
+     */
     private void retrocederPagina() {
         this.configPaginado.retrocederPagina();
         this.cargarTablaOtrosMovimientos();
         this.cargarTablaTransferencias();
     }
 
+    /**
+     * Método que agrega el historial de transferencias realizadas a la tabla,
+     * por medio de movimientosDAO.
+     */
     public void transferenciasRealizas() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try {
@@ -133,6 +150,10 @@ public class MovimientosForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que agrega el historial de transferencias recibidas a la tabla,
+     * por medio de movimientosDAO.
+     */
     public void transferenciasRecibidas() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try {
@@ -153,6 +174,10 @@ public class MovimientosForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que agrega el historial de retiros a la tabla, por medio de
+     * movimientosDAO.
+     */
     public void retiros() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try {
@@ -173,6 +198,10 @@ public class MovimientosForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que agrega el historial de depositos a la tabla, por medio de
+     * movimientosDAO.
+     */
     public void depositos() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         try {
@@ -193,6 +222,9 @@ public class MovimientosForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que cambia el tipo de transferencias de la tabla.
+     */
     public void cargarTablaTransferencias() {
         if (tipoTransferencia == 1) {
             this.transferenciasRealizas();
@@ -202,6 +234,9 @@ public class MovimientosForm extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Método que cambia la tabla entre depósitos y retiros.
+     */
     public void cargarTablaOtrosMovimientos() {
         if (tipoOtroMovimiento == 1) {
             this.depositos();
@@ -210,6 +245,10 @@ public class MovimientosForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que verifica los date picker y los guarda en variables para usar
+     * su información como filtros.
+     */
     public void filtrarPorFechas() {
         if (this.dtpDesde.getDate() == null || this.dtpHasta.getDate() == null) {
             this.mostrarMensajeErrorFechaVacia();
@@ -221,6 +260,9 @@ public class MovimientosForm extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Mensaje de error cuando la fecha es inválida por alguna razón.
+     */
     public void mostrarMensajeErrorFechaVacia() {
         JOptionPane.showMessageDialog(this, "Favor de seleccionar una fecha válida",
                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -239,7 +281,7 @@ public class MovimientosForm extends javax.swing.JFrame {
         btnDepositos = new javax.swing.JButton();
         btnRedroceder = new javax.swing.JButton();
         btnAvanzar = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbxPaginado = new javax.swing.JComboBox<>();
         jSeparator1 = new javax.swing.JSeparator();
         lblFecha = new javax.swing.JLabel();
         dtpDesde = new com.github.lgooddatepicker.components.DatePicker();
@@ -305,12 +347,12 @@ public class MovimientosForm extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "5", "10" }));
-        jComboBox1.setBackground(new java.awt.Color(236, 196, 100));
-        jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+        cbxPaginado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "5", "10" }));
+        cbxPaginado.setBackground(new java.awt.Color(236, 196, 100));
+        cbxPaginado.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbxPaginado.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox1ItemStateChanged(evt);
+                cbxPaginadoItemStateChanged(evt);
             }
         });
 
@@ -474,11 +516,11 @@ public class MovimientosForm extends javax.swing.JFrame {
             }
         });
 
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Movimientos");
         jLabel7.setBackground(new java.awt.Color(236, 196, 100));
         jLabel7.setFont(new java.awt.Font("Segoe UI Semibold", 1, 36)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("Movimientos");
         jLabel7.setOpaque(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -531,7 +573,7 @@ public class MovimientosForm extends javax.swing.JFrame {
                                         .addComponent(btnDepositos, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(pnlTablaOtrosMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cbxPaginado, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(btnAvanzar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE))
@@ -572,7 +614,7 @@ public class MovimientosForm extends javax.swing.JFrame {
                     .addComponent(btnAvanzar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnRedroceder, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cbxPaginado, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -601,54 +643,110 @@ public class MovimientosForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Evento que se acciona cuando se presiona el botón de regresar para volver
+     * a la ventana de administración de las cuentas.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         new AdministracionCuentaForm(clientesDAO, direccionesDAO, cuentasDAO, retirosDAO, cliente, depositosDAO, movimientosDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRegresarActionPerformed
 
+    /**
+     * Evento que le da el número de cuenta a la clase seleccionando el item del
+     * comboBox. Además carga las tablas.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void cmbCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCuentasActionPerformed
         this.numeroCuenta = (Integer) cmbCuentas.getSelectedItem();
         this.cargarTablaOtrosMovimientos();
         this.cargarTablaTransferencias();
     }//GEN-LAST:event_cmbCuentasActionPerformed
 
-    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+    /**
+     * Evento que verifica si cambia el comboBox para página de manera
+     * diferente.
+     *
+     * @param evt Evento que se crea al detectar un cambio
+     */
+    private void cbxPaginadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxPaginadoItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             int elementoPorPagina = Integer.parseInt((String) evt.getItem());
             this.configPaginado.setElementoPorPagina(elementoPorPagina);
             this.cargarTablaOtrosMovimientos();
             this.cargarTablaTransferencias();
         }
-    }//GEN-LAST:event_jComboBox1ItemStateChanged
+    }//GEN-LAST:event_cbxPaginadoItemStateChanged
 
+    /**
+     * Evento que permite cambiar la tabla de transferencias a transferencias
+     * realizadas.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnTransferenciasRealizadasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferenciasRealizadasActionPerformed
         tipoTransferencia = 1;
         this.cargarTablaTransferencias();
     }//GEN-LAST:event_btnTransferenciasRealizadasActionPerformed
 
+    /**
+     * Evento que permite cambiar la tabla de transferencias a transferencias
+     * recibidas.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnTransaferenciasRecibidasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransaferenciasRecibidasActionPerformed
         tipoTransferencia = 2;
         this.cargarTablaTransferencias();
     }//GEN-LAST:event_btnTransaferenciasRecibidasActionPerformed
 
+    /**
+     * Evento que permite cambiar la tabla de otros movimientos a retiros.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnRetirosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetirosActionPerformed
         tipoOtroMovimiento = 2;
         this.cargarTablaOtrosMovimientos();
     }//GEN-LAST:event_btnRetirosActionPerformed
 
+    /**
+     * Evento que permite cambiar la tabla de otros movimientos a depositos.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnDepositosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepositosActionPerformed
         tipoOtroMovimiento = 1;
         this.cargarTablaOtrosMovimientos();
     }//GEN-LAST:event_btnDepositosActionPerformed
 
+    /**
+     * Evento que permite avanza la página de la tabla
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnAvanzarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvanzarActionPerformed
         avanzarPagina();
     }//GEN-LAST:event_btnAvanzarActionPerformed
 
+    /**
+     * Evento que permite retroceder la página de la tabla
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnRedrocederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRedrocederActionPerformed
         retrocederPagina();
     }//GEN-LAST:event_btnRedrocederActionPerformed
 
+    /**
+     * Evento que permite filtrar las tablas por fecha haciendo uso de otro
+     * método.
+     *
+     * @param evt Evento que se crea al dar click al botón
+     */
     private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
         this.filtrarPorFechas();
     }//GEN-LAST:event_btnFiltrarActionPerformed
@@ -663,10 +761,10 @@ public class MovimientosForm extends javax.swing.JFrame {
     private javax.swing.JButton btnRetiros;
     private javax.swing.JButton btnTransaferenciasRecibidas;
     private javax.swing.JButton btnTransferenciasRealizadas;
+    private javax.swing.JComboBox<String> cbxPaginado;
     private javax.swing.JComboBox<Integer> cmbCuentas;
     private com.github.lgooddatepicker.components.DatePicker dtpDesde;
     private com.github.lgooddatepicker.components.DatePicker dtpHasta;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
