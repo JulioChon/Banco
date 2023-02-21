@@ -12,8 +12,8 @@ import interfaces.IDepositosDAO;
 import interfaces.IDireccionesDAO;
 import interfaces.IMoviminetosDAO;
 import interfaces.IRetirosSinCuentaDAO;
-import java.net.URL;
-import javax.swing.ImageIcon;
+import java.awt.Color;
+import java.awt.Image;
 
 /**
  *
@@ -39,13 +39,7 @@ public class InicioForm extends javax.swing.JFrame {
         this.depositosDAO = depositosDAO;
         this.movimientosDAO = movimientosDAO;
         initComponents();
-    }
-
-    public void ponerIcono(){
-        URL iconURL = getClass().getResource("/src/main/resources/images/favicon.png");
-        // iconURL is null when not found
-        ImageIcon icon = new ImageIcon(iconURL);
-        this.setIconImage(icon.getImage());
+        this.setTitle("Bienvenido a BANUEVO");
     }
     
     /**
@@ -73,18 +67,24 @@ public class InicioForm extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(192, 212, 193));
 
         jLabel1.setBackground(new java.awt.Color(236, 196, 100));
-        jLabel1.setFont(new java.awt.Font("OCR A Extended", 1, 48)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI Black", 1, 48)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("BANUEVO");
         jLabel1.setOpaque(true);
 
         btnLogin.setBackground(new java.awt.Color(148, 116, 69));
-        btnLogin.setFont(new java.awt.Font("Swis721 Lt BT", 1, 18)); // NOI18N
+        btnLogin.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         btnLogin.setForeground(new java.awt.Color(255, 255, 255));
         btnLogin.setText("Iniciar Sesión");
         btnLogin.setBorder(null);
+        btnLogin.setBorderPainted(false);
         btnLogin.setFocusPainted(false);
+        btnLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnLoginMousePressed(evt);
+            }
+        });
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoginActionPerformed(evt);
@@ -92,11 +92,17 @@ public class InicioForm extends javax.swing.JFrame {
         });
 
         btnRetiro.setBackground(new java.awt.Color(148, 116, 69));
-        btnRetiro.setFont(new java.awt.Font("Swis721 Lt BT", 1, 18)); // NOI18N
+        btnRetiro.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         btnRetiro.setForeground(new java.awt.Color(255, 255, 255));
         btnRetiro.setText("Retiro Sin Tarjeta");
         btnRetiro.setBorder(null);
+        btnRetiro.setBorderPainted(false);
         btnRetiro.setFocusPainted(false);
+        btnRetiro.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnRetiroMousePressed(evt);
+            }
+        });
         btnRetiro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRetiroActionPerformed(evt);
@@ -104,11 +110,17 @@ public class InicioForm extends javax.swing.JFrame {
         });
 
         btnCrearUsuario.setBackground(new java.awt.Color(148, 116, 69));
-        btnCrearUsuario.setFont(new java.awt.Font("Swis721 Lt BT", 1, 18)); // NOI18N
+        btnCrearUsuario.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         btnCrearUsuario.setForeground(new java.awt.Color(255, 255, 255));
         btnCrearUsuario.setText("Crear Usuario");
         btnCrearUsuario.setBorder(null);
+        btnCrearUsuario.setBorderPainted(false);
         btnCrearUsuario.setFocusPainted(false);
+        btnCrearUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnCrearUsuarioMousePressed(evt);
+            }
+        });
         btnCrearUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCrearUsuarioActionPerformed(evt);
@@ -116,11 +128,17 @@ public class InicioForm extends javax.swing.JFrame {
         });
 
         btnDeposito.setBackground(new java.awt.Color(148, 116, 69));
-        btnDeposito.setFont(new java.awt.Font("Swis721 Lt BT", 1, 18)); // NOI18N
+        btnDeposito.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         btnDeposito.setForeground(new java.awt.Color(255, 255, 255));
         btnDeposito.setText("Depositar a Cuenta");
         btnDeposito.setBorder(null);
+        btnDeposito.setBorderPainted(false);
         btnDeposito.setFocusPainted(false);
+        btnDeposito.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnDepositoMousePressed(evt);
+            }
+        });
         btnDeposito.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDepositoActionPerformed(evt);
@@ -167,22 +185,22 @@ public class InicioForm extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnCrearUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnDeposito, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnCrearUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnDeposito, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -221,8 +239,30 @@ public class InicioForm extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnDepositoActionPerformed
 
- 
+    private void btnCrearUsuarioMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCrearUsuarioMousePressed
+        this.btnCrearUsuario.setContentAreaFilled(false);
+        this.btnCrearUsuario.setOpaque(true);
+        this.btnCrearUsuario.setBackground(new Color(55,81,55));
+    }//GEN-LAST:event_btnCrearUsuarioMousePressed
 
+    private void btnLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMousePressed
+        this.btnLogin.setContentAreaFilled(false);
+        this.btnLogin.setOpaque(true);
+        this.btnLogin.setBackground(new Color(55,81,55));
+    }//GEN-LAST:event_btnLoginMousePressed
+
+    private void btnDepositoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDepositoMousePressed
+        this.btnDeposito.setContentAreaFilled(false);
+        this.btnDeposito.setOpaque(true);
+        this.btnDeposito.setBackground(new Color(55,81,55));
+    }//GEN-LAST:event_btnDepositoMousePressed
+
+    private void btnRetiroMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRetiroMousePressed
+        this.btnRetiro.setContentAreaFilled(false);
+        this.btnRetiro.setOpaque(true);
+        this.btnRetiro.setBackground(new Color(55,81,55));
+    }//GEN-LAST:event_btnRetiroMousePressed
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCrearUsuario;
     private javax.swing.JButton btnDeposito;
